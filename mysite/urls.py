@@ -18,7 +18,7 @@ from django.urls import path, include
 
 # SHERRIFF: added the '' path to handle the root url
 urlpatterns = [
-    path('', include('myapp.urls')),
-    path('myapp/', include('myapp.urls')),
+    path('', include('classlist.urls')),
+    path('classlist/', include('classlist.urls')),
     path('admin/', admin.site.urls),
 ]
