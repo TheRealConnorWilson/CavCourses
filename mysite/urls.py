@@ -21,5 +21,4 @@ urlpatterns = [
     path('', include('classlist.urls')),
     path('classlist/', include('classlist.urls')),
     path('admin/', admin.site.urls),
-    path('accounts/', include('allauth.urls')),  # Includes all django-allauth URL's
 ]
