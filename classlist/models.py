@@ -28,5 +28,7 @@ class User(models.Model):
         return self.first_name + " " + self.last_name
     def get_short_name(self):
         return self.first_name
+    def get_authenticated(self):
+        return self.is_authenticated
 
     class_list = []
