@@ -32,14 +32,12 @@ ALLOWED_HOSTS = ['local host', '127.0.0.1', 'a27-lous-list.herokuapp.com']
 # Application definition
 
 INSTALLED_APPS = [
-    "classlist.apps.ClasslistConfig",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "bootstrap5"
 ]
 
 MIDDLEWARE = [
