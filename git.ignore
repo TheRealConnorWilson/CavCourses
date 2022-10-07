@@ -111,5 +111,3 @@ venv.bak/
 .dmypy.json
 dmypy.json
 
-# ignoring sqlite file
-db.sqlite3
