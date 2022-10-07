@@ -13,6 +13,9 @@ Citations:
 Title: Django Google Authentication using django-allauth
 URL: https://dev.to/mdrhmn/django-google-authentication-using-django-allauth-18f8
 Reason: Used this as a guide for adding Google Login functionality to the app
+
+Title: How to get logged in username in views.py in django
+URL: https://stackoverflow.com/questions/39785934/how-to-get-logged-in-username-in-views-py-in-django
 """
 
 from pathlib import Path
@@ -154,7 +157,7 @@ AUTHENTICATION_BACKENDS = [
 ]
 
 SITE_ID = 2
-LOGIN_REDIRECT_URL = '/'
+LOGIN_REDIRECT_URL = '/login/'
 
 # Additional configuration settings
 SOCIALACCOUNT_QUERY_EMAIL = True

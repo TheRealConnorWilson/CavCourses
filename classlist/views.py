@@ -6,6 +6,9 @@ from .models import User
 Citations:
 Title: Python + Django page redirect
 URL: https://stackoverflow.com/questions/523356/python-django-page-redirect
+
+Title: How to get logged in username in views.py in django
+URL: https://stackoverflow.com/questions/39785934/how-to-get-logged-in-username-in-views-py-in-django
 """
 
 #Very basic index page created
