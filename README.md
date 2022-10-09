@@ -1,3 +1,5 @@
 ## Very Basic App
 
-This is just to get everything up and running and connected with Heroku
+
+Sprint 1: Got Heroku Deployment Set Up
+Sprint 2: This app currently has a google login feature and a basic test for Github CI.
