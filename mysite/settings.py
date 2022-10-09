@@ -8,6 +8,14 @@ https://docs.djangoproject.com/en/dev/topics/settings/
 
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/dev/ref/settings/
+
+Citations:
+Title: Django Google Authentication using django-allauth
+URL: https://dev.to/mdrhmn/django-google-authentication-using-django-allauth-18f8
+Reason: Used this as a guide for adding Google Login functionality to the app
+
+Title: How to get logged in username in views.py in django
+URL: https://stackoverflow.com/questions/39785934/how-to-get-logged-in-username-in-views-py-in-django
 """
 
 from pathlib import Path
@@ -32,12 +40,21 @@ ALLOWED_HOSTS = ['local host', '127.0.0.1', 'a27-lous-list.herokuapp.com']
 # Application definition
 
 INSTALLED_APPS = [
+    'classlist.apps.ClasslistConfig',
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    # "classlist",
+
+    # Google login API
+    "django.contrib.sites",
+    "allauth",
+    "allauth.account",
+    "allauth.socialaccount",
+    "allauth.socialaccount.providers.google", # for Google OAuth 2.0
 ]
 
 MIDDLEWARE = [
@@ -55,7 +72,7 @@ ROOT_URLCONF = "mysite.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": ['templates/'],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -133,3 +150,32 @@ try:
         django_heroku.settings(locals())
 except ImportError:
     found = False
+
+# For Google login API
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend'
+]
+
+SITE_ID = 2
+LOGIN_REDIRECT_URL = '/login/'
+
+# Additional configuration settings
+SOCIALACCOUNT_QUERY_EMAIL = True
+ACCOUNT_LOGOUT_ON_GET= True
+ACCOUNT_UNIQUE_EMAIL = True
+ACCOUNT_EMAIL_REQUIRED = True
+
+# Creates email scope to receive user's email addresses if they login sucessfully
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'SCOPE': [
+            'profile',
+            'email',
+        ],
+        'AUTH_PARAMS': {
+            'access_type': 'online',
+        }
+    }
+}
+

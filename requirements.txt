@@ -8,3 +8,6 @@ gunicorn
 # if you have errors with psycopg2 or django-heroku, use the code at the bottom of settings.py to avoid the error
 # the outcome of using this bypass is that locally you will need to use either SQLite or connect to Heroku's Postgres DB
 django-heroku
+
+# Required for Google Login API
+django-allauth
