@@ -11,3 +11,6 @@ django-heroku
 
 # Required for Google Login API
 django-allauth
+
+#for static images
+whitenoise
