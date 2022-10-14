@@ -34,8 +34,8 @@ SECRET_KEY = "django-insecure-44zvchrmf-&d*$kyxn7@kig%zul770+a3mb(eqjbk%pm#qczgy
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['local host', '127.0.0.1', 'a27-lous-list.herokuapp.com']
-
+ALLOWED_HOSTS = ['local host', '127.0.0.1', 'a27-lous-list.herokuapp.com', 'https://uva-sis-version-2.herokuapp.com/']
+# https://uva-sis-version-2.herokuapp.com/ is Megan's own hosting for testing purposes
 
 # Application definition
 
