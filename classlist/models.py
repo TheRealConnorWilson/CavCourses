@@ -7,6 +7,12 @@ from django.contrib import admin
 # from django.contrib.auth.models import User
 # Create your models here.
 
+""" 
+Whenever making a new model, make sure to run:
+python manage.py makemigrations
+python manage.py migrate
+"""
+
 class User(models.Model): 
     """
     Represents each user in the database
@@ -32,3 +38,12 @@ class User(models.Model):
         return self.is_authenticated
 
     class_list = []
+
+
+class Class(models.Model):
+    Class_title = models.CharField(max_length=200)
+    description = models.CharField(max_length=200)
+    Credits = models.IntegerField()
+
+    def __str__(self):
+        return self.Class_title

@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     # "classlist",
+    'bootstrap5',
 
     # Google login API
     "django.contrib.sites",

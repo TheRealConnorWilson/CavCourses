@@ -1,7 +1,12 @@
-from django.shortcuts import render
+from django.shortcuts import get_object_or_404, render, redirect
 from django.http import HttpResponse, HttpResponseRedirect
-from .models import User
 from django.views import generic
+from django.urls import reverse
+from django.utils import timezone
+from django.forms import modelformset_factory
+from django.views.generic.edit import CreateView
+
+from .models import User, Class
 
 """
 Citations:
@@ -36,3 +41,10 @@ def view_home(request):
     template_name = "classlist/home.html"
     return render(request, template_name)
    
+# first very basic view
+class ClassView(generic.ListView):
+    template_name = 'classlist/class.html'
+    context_object_name = 'classes'
+
+    def get_queryset(self):
+        return Class.objects.all()
