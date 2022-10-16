@@ -28,11 +28,15 @@
     <h1>Classes</h1>
 </div>
 <div class="container text-center">
-    {% for c in classes.all %}
-    <p> {{c.Class_title}}</p>
-    <li>Description: {{c.description}}</li>
-    <li>Credits: {{c.Credits}}</li>
-    {% endfor %}
+    {% if classes %}
+        {% for c in classes.all %}
+        <p> {{c.description}}</p>
+        <li>Description: {{c.description}}</li>
+        <li>Credits: {{c.units}}</li>
+        {% endfor %}
+    {% else %}
+        <p>No classes are currently available.</p>
+    {% endif %}
 </div>
 
 <style>.footer {
