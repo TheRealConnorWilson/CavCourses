@@ -42,7 +42,8 @@ class User(models.Model):
 
 
 class Class(models.Model):
-
+    # refernce for how to add classes to sqlite with shell: https://docs.djangoproject.com/en/4.1/intro/tutorial02/
+    
 
     instructor = {
             "name": models.CharField(max_length=200, blank=True),
@@ -77,6 +78,6 @@ class Class(models.Model):
     # description = models.CharField(max_length=200)
     # Credits = models.IntegerField()
     def __str__(self):
-        return self.subject + " " + self.catalog_number + ": " + self.description
+        return self.subject + " " + str(self.catalog_number) + ": " + self.description
 
     
