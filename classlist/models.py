@@ -4,6 +4,7 @@ from django.db import models
 import datetime
 
 from django.utils import timezone
+import datetime
 from django.contrib import admin
 # from django.contrib.auth.models import User
 # Create your models here.
@@ -12,6 +13,12 @@ from django.contrib import admin
 Whenever making a new model, make sure to run:
 python manage.py makemigrations
 python manage.py migrate
+"""
+
+"""
+Citations:
+Title: DateTimeField - Django Models
+URL: https://www.geeksforgeeks.org/datetimefield-django-models/
 """
 
 class User(models.Model): 
@@ -29,6 +36,8 @@ class User(models.Model):
     is_authenticated = True
     is_anonymous = False
 
+    schedule = []
+
     def get_username(self):
         return self.username
     def get_full_name(self):
@@ -43,7 +52,7 @@ class User(models.Model):
 
 class Class(models.Model):
     # refernce for how to add classes to sqlite with shell: https://docs.djangoproject.com/en/4.1/intro/tutorial02/
-    
+    last_updated = models.DateTimeField('date updated', default=timezone.now)
 
     instructor = {
             "name": models.CharField(max_length=200, blank=True),
