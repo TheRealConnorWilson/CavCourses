@@ -3,7 +3,7 @@
 {% bootstrap_css %}
 {% bootstrap_javascript %}
 
-<!-- nav bar that ca be changed as we get more pages -->
+<!-- nav bar that can be changed as we get more pages -->
 
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
 <a class="navbar-brand" href="">New Lou's List</a>
@@ -28,8 +28,8 @@
     <h1>Classes</h1>
 </div>
 <div class="container text-center">
-    {% if classes %}
-        {% for c in classes.all %}
+    {% if courses %}
+        {% for c in courses.all %}
         <p> {{c.description}}</p>
         <li>Description: {{c.description}}</li>
         <li>Credits: {{c.units}}</li>

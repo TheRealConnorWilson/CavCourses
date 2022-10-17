@@ -1,0 +1,27 @@
+<html>
+
+<head>
+    {% load bootstrap5 %}
+    {% bootstrap_css %}
+    {% bootstrap_javascript%}
+    <meta charset="utf-8">
+    <title>dept_abbr Classes</title>
+</head>
+
+<body>
+    <h1>All classes in dept_abbr dept</h1>
+    {% if dept_courses %}
+        <ul>
+            {% for c in dept_courses %}
+                <li>{{c.subject + c.catalog_number}}</li>
+                <li>{{c.description}}</li>
+                <li>{{c.instructor.name}}</li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No classes are currently available for this department.</p>
+    {% endif %}
+
+</body>
+
+</html>

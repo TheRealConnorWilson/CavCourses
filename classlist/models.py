@@ -48,8 +48,7 @@ class User(models.Model):
 
     class_list = []
 
-
-class Class(models.Model):
+class Course(models.Model):
     # refernce for how to add classes to sqlite with shell: https://docs.djangoproject.com/en/4.1/intro/tutorial02/
     last_updated = models.DateTimeField('date updated', default=timezone.now)
 
@@ -88,4 +87,9 @@ class Class(models.Model):
     def __str__(self):
         return self.subject + " " + str(self.catalog_number) + ": " + self.description
 
-    
+class Department(models.Model):
+    """
+    Represents a department at UVA
+    """
+    dept_abbr = models.CharField(max_length=4)
+    dept_classes = models.ManyToManyField(Course, blank=True)
