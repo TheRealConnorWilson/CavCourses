@@ -52,10 +52,8 @@ class Course(models.Model):
     # refernce for how to add classes to sqlite with shell: https://docs.djangoproject.com/en/4.1/intro/tutorial02/
     last_updated = models.DateTimeField('date updated', default=timezone.now)
 
-    instructor = {
-            "name": models.CharField(max_length=200, blank=True),
-            "email": models.CharField(max_length=200, blank=True)
-        }
+    instructor_name = models.CharField(max_length=200, blank=True)
+    # intructor_email = models.CharField(max_length=200, blank=True)
     
     course_number = models.IntegerField(default=0) # ex. 16351
     semester_code = models.IntegerField(default=0) # ex. 1228
@@ -63,7 +61,7 @@ class Course(models.Model):
     subject = models.CharField(max_length=20, blank=True) # CS
     catalog_number = models.IntegerField(blank=True, default=0) # 1010
     description = models.CharField(max_length=200, blank=True) # Introduction to Information Technology,
-    units = models.IntegerField(default=0) # 3, number of credits
+    units = models.CharField(max_length=20, blank=True) # 3, number of credits
     component = models.CharField(max_length=20, blank=True) # LEC,
     class_capacity = models.IntegerField(default=0) # 75,
     wait_list = models.IntegerField(default=0) # 0
@@ -71,14 +69,11 @@ class Course(models.Model):
     enrollment_total = models.IntegerField(default=0) # 72,
     enrollment_available = models.IntegerField(default=0) # 3
     topic = models.CharField(max_length=200, blank=True) # optional description
-    meetings = [
-        {
-            "days": models.CharField(blank=True), # MoWe,
-            "start_time": models.CharField(blank=True), # 17.00.00.000000-05:00,
-            "end_time": models.CharField(blank=True), # 18.15.00.000000-05:00,
-            "facility_description": models.CharField(blank=True), #Olsson Hall 009
-        }
-    ]
+    
+    # meeting_days = models.CharField(max_length=10, blank=True) # MoWeFr
+    # start_time = models.CharField(blank=True), # 17.00.00.000000-05:00
+    # end_time = models.CharField(blank=True), # 18.15.00.000000-05:00
+    # facility_description = models.CharField(max_length=200, blank=True) # Olsson Hall 009
 
     # class_title = subject + " " + catalog_number + ": " + description
     
@@ -92,4 +87,3 @@ class Department(models.Model):
     Represents a department at UVA
     """
     dept_abbr = models.CharField(max_length=4)
-    dept_classes = models.ManyToManyField(Course, blank=True)

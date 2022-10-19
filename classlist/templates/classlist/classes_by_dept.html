@@ -5,15 +5,16 @@
     {% bootstrap_css %}
     {% bootstrap_javascript%}
     <meta charset="utf-8">
-    <title>dept_abbr Classes</title>
+    <title>{{dept_abbr}} Classes</title>
 </head>
 
 <body>
-    <h1>All classes in dept_abbr dept</h1>
+    <h1>All classes in {{dept_abbr}} department:</h1>
     {% if dept_courses %}
         <ul>
             {% for c in dept_courses %}
-                <li>{{c.subject + c.catalog_number}}</li>
+                <li>{{c.subject}}</li>
+                <li>{{c.catalog_number}}</li>
                 <li>{{c.description}}</li>
                 <li>{{c.instructor.name}}</li>
             {% endfor %}

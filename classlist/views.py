@@ -1,3 +1,5 @@
+import email
+from multiprocessing import context
 from django.shortcuts import get_object_or_404, render, redirect
 from django.http import HttpResponse, HttpResponseRedirect
 from django.views import generic
@@ -44,15 +46,13 @@ def view_home(request):
     template_name = "classlist/home.html"
     return render(request, template_name)
 
-def get_courses_by_dept(dept_abbr):
+def get_courses_by_dept(request, dept_abbr):
     # get all courses in a department
     template_name = "classlist/classes_by_dept.html"
-    context_object_name = "courses_by_dept"
-
     #Access API
     api_url = "http://luthers-list.herokuapp.com/api/dept/" + dept_abbr + "/?format=json"
     dept_json = requests.get(api_url)
-    dept_courses = dept_json.json()
+    all_dept_classes = dept_json.json()
     
     if(Department.objects.filter(dept_abbr=dept_abbr).exists()):
         dept = Department.objects.get(dept_abbr=dept_abbr)
@@ -61,10 +61,11 @@ def get_courses_by_dept(dept_abbr):
         dept.save()
 
     #Assign all fields
-    for course in dept_courses:
+    for course in all_dept_classes:
         course = Course(
             last_updated = datetime.now(),
-            instructor = course["instructor"],
+            instructor_name = course["instructor"]["name"],
+            # instructor_email = course["instructor"]["email"],
             course_number = course["course_number"],
             semester_code = course["semester_code"],
             course_section = course["course_section"],
@@ -79,11 +80,20 @@ def get_courses_by_dept(dept_abbr):
             enrollment_total = course["enrollment_total"],
             enrollment_available = course["enrollment_available"],
             topic = course["topic"],
-            meetings = course["meetings"],
+            # meeting_days = course["meetings"][0]["days"],
+            # start_time = course["meetings"][0]["start_time"],
+            # end_time = course["meetings"][0]["end_time"],
+            # facility_description = course["meetings"][0]["facility_description"],
         )
-        dept.dept_classes.add(course)
+        course.save()
 
-    return dept.dept_classes # return all courses in a department
+    all_courses = Course.objects.filter(subject=dept_abbr)
+    dept_context = {"dept" : dept,
+                    "dept_abbr" : dept.dept_abbr,
+                    "dept_courses" : all_courses,
+                    }
+
+    return render(request, template_name, context=dept_context)
 
 # first very basic view
 class CourseView(generic.ListView):
@@ -93,12 +103,12 @@ class CourseView(generic.ListView):
     def get_queryset(self):
         return Course.objects.all()
 
-class DepartmentView(generic.ListView):
-    template_name = 'classlist/classes_by_dept.html'
-    context_object_name = 'department'
+# class DepartmentView(generic.ListView):
+#     template_name = 'classlist/classes_by_dept.html'
+#     context_object_name = 'department'
 
-    def get_courses_by_dept(self):
-        return get_courses_by_dept(self.dept_abbr)
+#     def get_dept_courses(self):
+#         return get_courses_by_dept(self.dept_abbr)
 
-    def get_queryset(self):
-        return Department.objects.all()
+#     def get_queryset(self):
+#         return Department.objects.all()
