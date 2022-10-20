@@ -26,21 +26,21 @@ class UserModelTests(TestCase):
 #     return Course.objects.create(question_text=class_text, last_updated=last_updated)
 
 
-class ClassModelTests(TestCase):
-    """
-    Add tests for checking class capacity, days of the week, etc.
-    Maybe also class compatibility?
-    """
+# class ClassModelTests(TestCase):
+#     """
+#     Add tests for checking class capacity, days of the week, etc.
+#     Maybe also class compatibility?
+#     """
 
 
-    def test_no_questions(self):
-        """
-        If no questions exist, an appropriate message is displayed.
-        """
-        response = self.client.get(reverse('polls:index'))
-        self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "No polls are available.")
-        self.assertQuerysetEqual(response.context['latest_question_list'], [])
+#     def test_no_questions(self):
+#         """
+#         If no questions exist, an appropriate message is displayed.
+#         """
+#         response = self.client.get(reverse('polls:index'))
+#         self.assertEqual(response.status_code, 200)
+#         self.assertContains(response, "No polls are available.")
+#         self.assertQuerysetEqual(response.context['latest_question_list'], [])
 
     # def test_past_question(self):
     #     """
