@@ -1,6 +1,5 @@
 from django.test import TestCase
-from .models import User, Class
-import datetime
+from .models import User, Course, Department, Instructor, Section
 from django.utils import timezone
 
 #Dummy test added.
@@ -23,7 +22,7 @@ def create_class(instructor, subject, catalog_number, description, units, meetin
     WORK IN PROGRESS
     """
     last_updated = timezone.now()
-    return Class.objects.create(question_text=class_text, last_updated=last_updated)
+    return Course.objects.create(question_text=class_text, last_updated=last_updated)
 
 
 class ClassModelTests(TestCase):
