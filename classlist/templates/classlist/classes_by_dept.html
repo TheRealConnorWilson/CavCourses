@@ -11,14 +11,24 @@
 <body>
     <h1>All classes in {{dept_abbr}} department:</h1>
     {% if dept_courses %}
-        <ul>
-            {% for c in dept_courses %}
-                <li>{{c.subject}}</li>
-                <li>{{c.catalog_number}}</li>
-                <li>{{c.description}}</li>
-                <li>{{c.instructor.name}}</li>
-            {% endfor %}
-        </ul>
+        <table class="table">
+            <thead>
+                <th scope="col">Course</th>
+                <th scope="col">Description</th>
+                <th scope="col">Instructor</th>
+                <th scope="col">Credits</th>
+            </thead>
+            <tbody>
+                {% for c in dept_courses %}
+                    <tr>
+                        <th scope="row">{{c.subject}} {{c.catalog_number}}</th>
+                        <td>{{c.description}}</td>
+                        <td>{{c.instructor.name}}</td>
+                        <td>{{c.units}}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     {% else %}
         <p>No classes are currently available for this department.</p>
     {% endif %}

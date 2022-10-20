@@ -1,5 +1,6 @@
 import email
 from multiprocessing import context
+from unicodedata import name
 from django.shortcuts import get_object_or_404, render, redirect
 from django.http import HttpResponse, HttpResponseRedirect
 from django.views import generic
@@ -8,7 +9,7 @@ from django.utils import timezone
 from django.forms import modelformset_factory
 from django.views.generic.edit import CreateView
 from datetime import datetime
-from .models import User, Course, Department
+from .models import Meeting, Instructor, User, Course, Department
 
 import requests
 
@@ -62,10 +63,31 @@ def get_courses_by_dept(request, dept_abbr):
 
     #Assign all fields
     for course in all_dept_classes:
+        instructor_name = course["instructor"]["name"]
+        instructor_email = course["instructor"]["email"]
+
+        if(Instructor.objects.filter(name=instructor_name).exists()):
+            instructor_obj = Instructor.objects.get(name=instructor_name)
+        else:
+            instructor_obj = Instructor(name=instructor_name)
+            instructor_obj.save()
+
+        # meetings = course["meetings"]
+        # all_meetings = []
+        # for meeting in meetings:
+        #     meeting_days = meeting["days"]
+        #     meeting_start_time = meeting["start_time"]
+        #     meeting_end_time = meeting["end_time"]
+        #     meeting_location = meeting["facility_description"]
+        #     if(Meeting.objects.filter(days=meeting_days, facility_description=meeting_location).exists()):
+        #         meeting_obj = Meeting.objects.get(days=meeting_days, facility_description=meeting_location)
+        #     else:
+        #         meeting_obj = Meeting(days=meeting_days, facility_description=meeting_location)
+        #         meeting_obj.save()
+        #     all_meetings.append(meeting_obj)
+
         course = Course(
             last_updated = datetime.now(),
-            instructor_name = course["instructor"]["name"],
-            # instructor_email = course["instructor"]["email"],
             course_number = course["course_number"],
             semester_code = course["semester_code"],
             course_section = course["course_section"],
@@ -80,14 +102,13 @@ def get_courses_by_dept(request, dept_abbr):
             enrollment_total = course["enrollment_total"],
             enrollment_available = course["enrollment_available"],
             topic = course["topic"],
-            # meeting_days = course["meetings"][0]["days"],
-            # start_time = course["meetings"][0]["start_time"],
-            # end_time = course["meetings"][0]["end_time"],
-            # facility_description = course["meetings"][0]["facility_description"],
+            instructor = instructor_obj,
+            # meetings = all_meetings,
         )
         course.save()
 
     all_courses = Course.objects.filter(subject=dept_abbr)
+    
     dept_context = {"dept" : dept,
                     "dept_abbr" : dept.dept_abbr,
                     "dept_courses" : all_courses,

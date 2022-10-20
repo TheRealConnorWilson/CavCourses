@@ -1,4 +1,6 @@
 from email.policy import default
+from tracemalloc import start
+from unicodedata import name
 from unittest.util import _MAX_LENGTH
 from django.db import models
 
@@ -48,12 +50,29 @@ class User(models.Model):
 
     class_list = []
 
+class Instructor(models.Model):
+    name = models.CharField(max_length=200, blank=True)
+    email = models.CharField(max_length=25, blank=True)
+
+    @classmethod
+    def get_default_instructor():
+        return Instructor.objects.get_or_create(name="No Instuctor Specified", email = "",)[0]
+
+class Meeting(models.Model):
+    days = models.CharField(max_length=10, blank=True) # MoWeFr
+    start_time = models.CharField(blank=True), # 17.00.00.000000-05:00
+    end_time = models.CharField(blank=True), # 18.15.00.000000-05:00
+    facility_description = models.CharField(max_length=200, blank=True) # Olsson Hall 009
+
+    @classmethod
+    def get_default_meeting():
+        return Meeting.objects.get_or_create(days="N/A", start_time="N/A", end_time="N/A", facility_description="N/A")[0]
+
 class Course(models.Model):
     # refernce for how to add classes to sqlite with shell: https://docs.djangoproject.com/en/4.1/intro/tutorial02/
     last_updated = models.DateTimeField('date updated', default=timezone.now)
 
-    instructor_name = models.CharField(max_length=200, blank=True)
-    # intructor_email = models.CharField(max_length=200, blank=True)
+    instructor = models.ForeignKey(Instructor, on_delete=models.CASCADE, default=Instructor.get_default_instructor)
     
     course_number = models.IntegerField(default=0) # ex. 16351
     semester_code = models.IntegerField(default=0) # ex. 1228
@@ -70,15 +89,8 @@ class Course(models.Model):
     enrollment_available = models.IntegerField(default=0) # 3
     topic = models.CharField(max_length=200, blank=True) # optional description
     
-    # meeting_days = models.CharField(max_length=10, blank=True) # MoWeFr
-    # start_time = models.CharField(blank=True), # 17.00.00.000000-05:00
-    # end_time = models.CharField(blank=True), # 18.15.00.000000-05:00
-    # facility_description = models.CharField(max_length=200, blank=True) # Olsson Hall 009
-
-    # class_title = subject + " " + catalog_number + ": " + description
-    
-    # description = models.CharField(max_length=200)
-    # Credits = models.IntegerField()
+    meetings = []
+       
     def __str__(self):
         return self.subject + " " + str(self.catalog_number) + ": " + self.description
 
