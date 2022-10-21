@@ -33,7 +33,7 @@ class User(models.Model):
     is_authenticated = True
     is_anonymous = False
 
-    schedule = []
+    # schedule = []
 
     def get_username(self):
         return self.username
@@ -44,7 +44,7 @@ class User(models.Model):
     def get_authenticated(self):
         return self.is_authenticated
 
-    class_list = []
+    # class_list = []
 
 class Instructor(models.Model):
     name = models.CharField(max_length=200, blank=True)
@@ -82,7 +82,7 @@ class Course(models.Model):
     units = models.CharField(max_length=20, blank=True) # 3, number of credits
     department = models.ForeignKey(Department, on_delete=models.CASCADE, default=Department.get_default_dept)
     subject = models.CharField(max_length = 4, blank=True)
-    sections = []
+    # sections = []
     
     @classmethod
     def get_default_course(self):
@@ -95,7 +95,7 @@ class Course(models.Model):
             units = "", # 3, number of credits
             department = Department.get_default_dept,
             subject = "",
-            sections = []
+            # sections = []
             )[0]
         return default_course.pk
 
@@ -113,7 +113,7 @@ class Section(models.Model):
     enrollment_total = models.IntegerField(default=0) # 72,
     enrollment_available = models.IntegerField(default=0) # 3
     topic = models.CharField(max_length=200, blank=True) # optional description | This may belong in course
-    meetings = []
+    # meetings = []
 
     def __str__(self):
         return str(self.course_id) + ": " + str(self.course_section) + " - " + self.component
