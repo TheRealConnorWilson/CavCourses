@@ -1,3 +1,4 @@
+# install with: pip3 install -r requirements.txt
 # Django is needed to run Django
 Django
 
@@ -14,3 +15,11 @@ django-allauth
 
 #for static images
 whitenoise
+
+# for bootstrap
+django-bootstrap-v5
+
+# other random installs I have
+dj-database-url 
+psycopg2
+psycopg2-binary

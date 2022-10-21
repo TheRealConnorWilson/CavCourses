@@ -1,9 +1,7 @@
-from unittest import mock
-
 from django.test import TestCase
-from .models import User
+from .models import User, Course, Department, Instructor, Section
+from django.utils import timezone
 from django.urls import reverse
-
 
 #Dummy test added.
 class DummyTestCase(TestCase):
@@ -19,51 +17,39 @@ class UserModelTests(TestCase):
         user = User()
         self.assertTrue(user.get_authenticated())
 
-
-def create_user(username, first_name, last_name, email):
-    user = User()
-    user.username = username
-    user.first_name = first_name
-    user.last_name = last_name
-    user.email = email
-    return user
-
-
-# https://docs.djangoproject.com/en/4.1/topics/testing/tools/
-# referenced this article when writing tests
-class GoogleLoginViewTests(TestCase):
-    def test_no_input(self):
-        response = self.client.get(reverse('view_name'))
-        self.assertEqual(response.status_code, 200)  # not for sure 200 is the right code
-        # self.assertContains(response, "Fill out this field")  # not for sure if this is what it returns when empty
-
-    def test_name(self):  # next test basically covers all this, but I'm going to leave it here anyway.
-        user = User()
-        user.first_name = "first"
-        user.last_name = "last"
-        actual = user.get_full_name()
-        if actual == "first" + " " + "last":
-            return True
-
-    def test_correct_user(self):
-        user = create_user("username", "first", "last", "email@gmail.com")
-        #response = self.client.get(reverse('view_name'))
-        self.assertEqual(user.first_name, "first")
-        self.assertEqual(user.last_name, "last")
-        self.assertEqual(user.get_full_name(), "first" + " " + "last")
-        self.assertEqual(user.get_username(), "username")
-        self.assertEqual(user.email, "email@gmail.com")
+# def create_class(instructor, subject, catalog_number, description, units, meetings):
+#     """
+#     Creates a class instance with the provided fields/attributes.
+#     WORK IN PROGRESS
+#     """
+#     last_updated = timezone.now()
+#     return Course.objects.create(question_text=class_text, last_updated=last_updated)
 
 
-# class LoginTestCase(TestCase):
-    # def test_login(self):
-        # response = self.client.get('/classlist/login')
-        # self.assertRedirects(response, '/classlist/accounts/login/')
+# class ClassModelTests(TestCase):
+#     """
+#     Add tests for checking class capacity, days of the week, etc.
+#     Maybe also class compatibility?
+#     """
 
-#with mock.patch('google.oauth2.id_token.verify_oauth2_token') as
-#    mock_verify_oauth2_token:
-#        mock_verify_oauth2_token.return_value = MOCK_RETURN_VALUE_DATA
-# https://stackoverflow.com/questions/68862532/authenticate-with-google-oauth2-in-unit-test-in-python-django
 
-# goog youtube link:
-# https://www.youtube.com/watch?v=ljG1WzBAboQ
+#     def test_no_questions(self):
+#         """
+#         If no questions exist, an appropriate message is displayed.
+#         """
+#         response = self.client.get(reverse('polls:index'))
+#         self.assertEqual(response.status_code, 200)
+#         self.assertContains(response, "No polls are available.")
+#         self.assertQuerysetEqual(response.context['latest_question_list'], [])
+
+    # def test_past_question(self):
+    #     """
+    #     Questions with a pub_date in the past are displayed on the
+    #     index page.
+    #     """
+    #     question = create_question(question_text="Past question.", days=-30)
+    #     response = self.client.get(reverse('polls:index'))
+    #     self.assertQuerysetEqual(
+    #         response.context['latest_question_list'],
+    #         [question],
+    #     )
