@@ -1,3 +1,5 @@
+from unittest import mock
+
 from django.test import TestCase
 from .models import User
 from django.urls import reverse
@@ -33,7 +35,7 @@ class GoogleLoginViewTests(TestCase):
     def test_no_input(self):
         response = self.client.get(reverse('view_name'))
         self.assertEqual(response.status_code, 200)  # not for sure 200 is the right code
-        #self.assertContains(response, "Fill out this field")  # not for sure if this is what it returns when empty
+        # self.assertContains(response, "Fill out this field")  # not for sure if this is what it returns when empty
 
     def test_name(self):  # next test basically covers all this, but I'm going to leave it here anyway.
         user = User()
@@ -57,3 +59,11 @@ class GoogleLoginViewTests(TestCase):
     # def test_login(self):
         # response = self.client.get('/classlist/login')
         # self.assertRedirects(response, '/classlist/accounts/login/')
+
+#with mock.patch('google.oauth2.id_token.verify_oauth2_token') as
+#    mock_verify_oauth2_token:
+#        mock_verify_oauth2_token.return_value = MOCK_RETURN_VALUE_DATA
+# https://stackoverflow.com/questions/68862532/authenticate-with-google-oauth2-in-unit-test-in-python-django
+
+# goog youtube link:
+# https://www.youtube.com/watch?v=ljG1WzBAboQ
