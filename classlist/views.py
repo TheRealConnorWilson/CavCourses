@@ -132,9 +132,9 @@ def get_courses_by_dept(request, dept_abbr):
                                     )
             meetings_obj.save()
 
-        if(meetings_obj not in section.meetings):
-            section.meetings.append(meetings_obj)
-            section.save()
+        # if(meetings_obj not in section.meetings):
+        #     section.meetings.append(meetings_obj)
+        #     section.save()
 
         course_obj.sections.append(section)
         course_obj.save()
