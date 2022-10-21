@@ -75,6 +75,7 @@ class Department(models.Model):
 class Course(models.Model):
     # refernce for how to add classes to sqlite with shell: https://docs.djangoproject.com/en/4.1/intro/tutorial02/
     last_updated = models.DateTimeField('date updated', default=timezone.now)
+    catalog_number = models.CharField(max_length=4)
     semester_code = models.IntegerField(default=0) # ex. 1228
     title = models.CharField(max_length=200, blank=True)
     description = models.CharField(max_length=200, blank=True) # Introduction to Information Technology,
@@ -87,6 +88,7 @@ class Course(models.Model):
     def get_default_course(self):
         default_course = Course.objects.get_or_create(
             last_updated = timezone.now,
+            catalog_number = 0,
             semester_code = 0, # ex. 1228
             title = "N/A", # CS 1110
             description = "N/A", # Introduction to Information Technology,
@@ -98,7 +100,7 @@ class Course(models.Model):
         return default_course.pk
 
     def __str__(self):
-        return self.title
+        return self.title + str(self.catalog_number)
 
 class Section(models.Model):
     course_id = models.IntegerField(default=0) # ex. 16351
