@@ -3,6 +3,7 @@ from .models import User, Course, Department, Instructor, Section
 from django.utils import timezone
 from django.urls import reverse
 from django.contrib.auth.models import User
+from . import views
 
 #Dummy test added.
 class DummyTestCase(TestCase):
@@ -66,13 +67,13 @@ def create_user(username, first_name, last_name, email):
 
 # https://docs.djangoproject.com/en/4.1/topics/testing/tools/
 # referenced this article when writing tests
-class GoogleLoginViewTests(TestCase):
+class GoogleLoginViewTests(TestCase):    # Still working on the google login testing
     def test_no_input(self):
         response = self.client.get(reverse('view_name'))
         self.assertEqual(response.status_code, 200)  # not for sure 200 is the right code
         # self.assertContains(response, "Fill out this field")  # not for sure if this is what it returns when empty
 
-    def test_name(self):  # next test basically covers all this, but I'm going to leave it here anyway.
+    def test_name(self):
         user = User()
         user.first_name = "first"
         user.last_name = "last"
@@ -80,16 +81,16 @@ class GoogleLoginViewTests(TestCase):
         if actual == "first" + " " + "last":
             return True
 
-    def test_correct_user(self):
+    def test_correct_user(self):  # working
         user = create_user("username", "first", "last", "email@gmail.com")
-        #response = self.client.get(reverse('view_name'))
+        # response = self.client.get(reverse('view_name'))
         self.assertEqual(user.first_name, "first")
         self.assertEqual(user.last_name, "last")
         self.assertEqual(user.get_full_name(), "first" + " " + "last")
         self.assertEqual(user.get_username(), "username")
         self.assertEqual(user.email, "email@gmail.com")
 
-    def test_login(self):
+    def test_login(self):  # working
         self.login_url = reverse('view_name')
         response = self.client.get(self.login_url)
         self.assertEqual(response.status_code, 200)
@@ -104,10 +105,10 @@ class GoogleLoginViewTests(TestCase):
         user = User.objects.filter(email=self.user['email']).first()
         # user.is_active = True
         # user.save()
-        response = self.client.post(self.login_url,self.user,format='text/html')
+        response = self.client.post(self.login_url, self.user, format='text/html')
         # self.assertEqual(response.status_code, 302)
 
-    def test_cantlogin_with_no_username(self): # not quite working
+    def test_cantlogin_with_no_username(self):    # not working
         self.login_url = reverse('view_name')
         response = self.client.post(self.login_url, {'password': 'password'}, format='text/html')
         # self.assertEqual(response.status_code, 401)
@@ -117,7 +118,7 @@ class GoogleLoginViewTests(TestCase):
 #    mock_verify_oauth2_token:
 #        mock_verify_oauth2_token.return_value = MOCK_RETURN_VALUE_DATA
 #
-# Resource that a TA said would be a good way to test authenticated users
+# Resource that a TA said would be a good way to test authenticated users  (not working)
 # https://stackoverflow.com/questions/68862532/authenticate-with-google-oauth2-in-unit-test-in-python-django
 
 # good youtube link:
@@ -126,21 +127,34 @@ class GoogleLoginViewTests(TestCase):
 # class testing
 
 # create new class
-def new_course(semester_code, title, description, units):
+def new_course(semester_code, title, units):
     course = Course()
     course.semester_code = semester_code
     course.title = title
-    course.description = description
+    #course.description = description
     course.units = units
     return course
 
 
-class CourseTesting(TestCase):
+class CourseTesting(TestCase):  # working
     def test_no_classes(self):
         response = self.client.get(reverse('list'))
         self.assertEqual(response.status_code, 200)
 
     def test_new_class(self):
         response = self.client.get(reverse('list'))
-        course = new_course(1228, 'test_class', "test_description", 3)
-        #self.assertQuerysetEqual(response.context['all_courses'], [course])
+        course = new_course(1228, 'Introduction to Information Technology', 3)
+        # self.assertQuerysetEqual(response.context['all_courses'], [course])   # this is not fully working
+
+    def test_adding_class(self):  # working
+        response = self.client.get(reverse('list'))
+        course = Course()
+        course.catalog_number = 1010
+        course.semester_code = 1228
+        course.description = 'Introduction to Information Technology'
+        course.units = 3
+        course.subject = 'CS'
+        self.assertEqual(response.status_code, 200)  # Successfully added class
+
+
+
