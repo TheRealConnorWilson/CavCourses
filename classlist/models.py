@@ -1,4 +1,6 @@
+from email.policy import default
 from unittest.util import _MAX_LENGTH
+from xmlrpc.client import DateTime
 from django.db import models
 
 from django.utils import timezone
@@ -82,7 +84,11 @@ class Course(models.Model):
     units = models.CharField(max_length=20, blank=True) # 3, number of credits
     department = models.ForeignKey(Department, on_delete=models.CASCADE, default=Department.get_default_dept)
     subject = models.CharField(max_length = 4, blank=True)
-    sections = []
+    # sections = []
+
+    # https://docs.djangoproject.com/en/dev/ref/models/options/#django.db.models.Options.ordering
+    # allows ListView to know how to order instances?
+    ordering = ['department', 'catalog_number'] 
     
     @classmethod
     def get_default_course(self):
@@ -100,10 +106,16 @@ class Course(models.Model):
         return default_course.pk
 
     def __str__(self):
-        return self.title + str(self.catalog_number)
+        return self.title # + str(self.catalog_number)
 
 class Section(models.Model):
-    course_id = models.IntegerField(default=0) # ex. 16351
+    # additional model fields so that a section knows what course it belongs to
+    course_dept = models.CharField(max_length = 4, blank=True)
+    course_num = models.IntegerField(default=0)
+
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, default=None)
+
+    section_id = models.IntegerField(default=0) # ex. 16351
     section_number = models.CharField(max_length = 4, blank=True) # 001
     instructor = models.ForeignKey(Instructor, on_delete=models.CASCADE, default=Instructor.get_default_instructor)
     component = models.CharField(max_length=20, blank=True) # LEC,
@@ -113,10 +125,10 @@ class Section(models.Model):
     enrollment_total = models.IntegerField(default=0) # 72,
     enrollment_available = models.IntegerField(default=0) # 3
     topic = models.CharField(max_length=200, blank=True) # optional description | This may belong in course
-    meetings = []
+    # meetings = []
 
     def __str__(self):
-        return str(self.course_id) + ": " + str(self.course_section) + " - " + self.component
+        return str(self.section_id) + ": " + str(self.section_number) + " - " + self.component
 
 
 class Meetings(models.Model):
@@ -124,11 +136,23 @@ class Meetings(models.Model):
     start_time = models.CharField(max_length=100, blank=True) # 17.00.00.000000-05:00
     end_time = models.CharField(max_length=100, blank=True) # 18.15.00.000000-05:00
     facility_description = models.CharField(max_length=200, blank=True) # Olsson Hall 009
-    # associated_course = models.ForeignKey(Section, on_delete=models.CASCADE, blank=True)
+    section = models.ForeignKey(Section, on_delete=models.CASCADE, blank=True)
 
     # @classmethod
     # def get_default_meeting():
     #     return Meetings.objects.get_or_create(days="N/A", start_time="N/A", end_time="N/A", facility_description="N/A")[0]
+
+    def start_time_as_date_time(self):
+        if self.start_time != "":
+            start_time_split = self.start_time.split('.')
+            return start_time_split[0] + ":" + start_time_split[1]
+        return self.start_time
+
+    def end_time_as_date_time(self):
+        if self.end_time != "":
+            end_time_split = self.end_time.split('.')
+            return end_time_split[0] + ":" + end_time_split[1]
+        return self.end_time
 
     def __str__(self):
         return self.days + ": " + self.start_time + "-" + self.end_time + " @ " + self.facility_description

@@ -19,60 +19,60 @@
                 <th scope="col">Credits</th>
             </thead>
             <tbody>
-                {% for c in dept_courses %}
-                    <tr>
-                        <td></td>
-                        <td>{{c.title}}</td>
-                        <td>{{c.description}}</td>
-                        <td>{{c.units}}</td>
-                    </tr>
-                    <tr></tr>
-                        <td colspan="4">
-                            <table class="table mb-0">
-                                <thead>
-                                    <th scope="col">#</th>
-                                    <th scope="col">Section</th>
-                                    <th scope="col">Instructor</th>
-                                    <th scope="col">Enrollment</th>
-                                    <th scope="col">Wait List</th>
-                                </thead>
-                                <tbody>
-                                    {% for section in c.sections %}
-                                    <tr>
-                                        <td></td>
-                                        <td>{{section.section_number}} ({{section.component}})</td>
-                                        <td>{{section.instructor.name}} ({{section.instructor.email}})</td>
-                                        <td>{{section.enrollment_available}}/{{section.capacity}}</td>
-                                        <td>{{section.wait_list}}/{{section.wait_cap}}</td>
-                                    </tr>
-                                    <tr>
-                                        <td colspan="4">
-                                            <table class="table mb-0 accordion">
-                                                <thead>
-                                                    <th scope="col">Meetings:</th>
-                                                    <th scope="col">Day</th>
-                                                    <th scope="col">Time</th>
-                                                    <th scope="col">Location</th>
-                                                </thead>
-                                                <tbody>
-                                                    {% for meeting in section.meetings %}
-                                                    <tr>
-                                                        <td></td>
-                                                        <td>{{meeting.days}}</td>
-                                                        <td>{{meeting.start_time}} - {{meeting.end_time}}</td>
-                                                        <td>{{meeting.facility_description}}</td>
-                                                    </tr>
-                                                    {% endfor %}
-                                                </tbody>
-                                            </table>
-                                        </td>
-                                    </tr>
-                                    {% endfor %}
-                                </tbody>
-                            </table>
-                        </td>
-                    </tr>
-                {% endfor %}
+            {% for c in dept_courses %}
+                <tr>
+                    <td></td>
+                    <td>{{c.title}}</td>
+                    <td>{{c.description}}</td>
+                    <td>{{c.units}}</td>
+                </tr>
+                <tr></tr>
+                    <td colspan="4">
+                        <table class="table mb-0">
+                            <thead>
+                                <th scope="col">#</th>
+                                <th scope="col">Section</th>
+                                <th scope="col">Instructor</th>
+                                <th scope="col">Enrollment</th>
+                                <th scope="col">Wait List</th>
+                            </thead>
+                            <tbody>
+                                {% for section in c.section_set.all %}
+                                <tr>
+                                    <td></td>
+                                    <td>{{section.section_number}} ({{section.component}})</td>
+                                    <td>{{section.instructor.name}} ({{section.instructor.email}})</td>
+                                    <td>{{section.enrollment_available}}/{{section.capacity}}</td>
+                                    <td>{{section.wait_list}}/{{section.wait_cap}}</td>
+                                </tr>
+                                <tr>
+                                    <td colspan="4">
+                                        <table class="table mb-0 accordion">
+                                            <thead>
+                                                <th scope="col">Meetings:</th>
+                                                <th scope="col">Day</th>
+                                                <th scope="col">Time</th>
+                                                <th scope="col">Location</th>
+                                            </thead>
+                                            <tbody>
+                                            {% for meeting in section.meetings_set.all %}
+                                            <tr>
+                                                <td></td>
+                                                <td>{{meeting.days}}</td>
+                                                <td>{{meeting.start_time_as_date_time}} - {{meeting.end_time_as_date_time}}</td>
+                                                <td>{{meeting.facility_description}}</td>
+                                            </tr>
+                                            {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+            {% endfor %}
             </tbody>
         </table>
     {% else %}
