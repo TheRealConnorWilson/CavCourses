@@ -82,7 +82,7 @@ class Course(models.Model):
     title = models.CharField(max_length=200, blank=True)
     description = models.CharField(max_length=200, blank=True) # Introduction to Information Technology,
     units = models.CharField(max_length=20, blank=True) # 3, number of credits
-    department = models.ForeignKey(Department, on_delete=models.CASCADE, default=Department.get_default_dept)
+    department = models.ForeignKey(Department, on_delete=models.CASCADE, default=Department.get_default_dept())
     subject = models.CharField(max_length = 4, blank=True)
     # sections = []
 
@@ -99,7 +99,7 @@ class Course(models.Model):
             title = "N/A", # CS 1110
             description = "N/A", # Introduction to Information Technology,
             units = "", # 3, number of credits
-            department = Department.get_default_dept,
+            department = Department.get_default_dept(),
             subject = "",
             # sections = []
             )[0]
