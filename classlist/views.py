@@ -58,7 +58,9 @@ def get_courses_by_dept(request, dept_abbr):
         dept.save()
 
     #Assign all fields
+    # if len(Course.objects.filter(subject = dept_abbr).order_by('department', 'catalog_number')) == 0:
     for course in all_dept_classes:
+        
         instructor_name = course["instructor"]["name"]
         instructor_email = course["instructor"]["email"]
         
@@ -73,9 +75,12 @@ def get_courses_by_dept(request, dept_abbr):
         course_title = course["subject"] + " " + course["catalog_number"]
         course_description = course["description"]
         num_units = course["units"]
+        catalog_num = course['catalog_number']
 
         if(Course.objects.filter(title=course_title).exists()):
             course_obj = Course.objects.get(title=course_title)
+            course_obj.catalog_number = catalog_num
+            # course_obj.sections = []
         else:
             course_obj = Course(title=course_title,
                                 description=course_description,
@@ -83,9 +88,12 @@ def get_courses_by_dept(request, dept_abbr):
                                 semester_code = sem_code,
                                 last_updated = update_timestamp,
                                 department = dept,
-                                subject = course["subject"]
+                                subject = course["subject"],
+                                # sections = [],
+                                catalog_number = catalog_num
                                 )
             course_obj.save()
+
 
         section_id = course["course_number"]
         section_num = course["course_section"]
@@ -97,11 +105,16 @@ def get_courses_by_dept(request, dept_abbr):
         section_available_enrollment = course["enrollment_available"]
         section_topic = course["topic"]
 
-        if(Section.objects.filter(course_id=section_id).exists()):
-            section = Section.objects.get(course_id=section_id)
+        section_dept = course["subject"]
+        section_course_num = course["catalog_number"]
+
+        if(Section.objects.filter(section_id=section_id).exists()):
+            section = Section.objects.get(section_id=section_id)
         else:
             section = Section(
-                course_id = section_id,
+                course_dept = section_dept,
+                course_num = section_course_num,
+                section_id = section_id,
                 section_number = section_num,
                 instructor = instructor_obj,
                 component = course_component,
@@ -110,7 +123,8 @@ def get_courses_by_dept(request, dept_abbr):
                 wait_cap = section_wait_cap,
                 enrollment_total = section_enrollment,
                 enrollment_available = section_available_enrollment,
-                topic = section_topic #This may belong in course
+                topic = section_topic, #This may belong in course
+                course = course_obj
                 )
             section.save()
 
@@ -122,24 +136,21 @@ def get_courses_by_dept(request, dept_abbr):
             meeting_end_time = meeting["end_time"]
             meeting_location = meeting["facility_description"]
         
-        if(Meetings.objects.filter(days=meeting_days, start_time=meeting_start_time, end_time=meeting_end_time, facility_description=meeting_location).exists()):
-            meetings_obj = Meetings.objects.get(days=meeting_days, start_time=meeting_start_time, end_time=meeting_end_time, facility_description=meeting_location)
-        else:
-            meetings_obj = Meetings(days=meeting_days,
-                                    start_time=meeting_start_time,  
-                                    end_time=meeting_end_time,
-                                    facility_description=meeting_location,
-                                    )
-            meetings_obj.save()
-
-        if(meetings_obj not in section.meetings):
-            section.meetings.append(meetings_obj)
-            section.save()
-
-        course_obj.sections.append(section)
+            if(Meetings.objects.filter(days=meeting_days, start_time=meeting_start_time, end_time=meeting_end_time, facility_description=meeting_location).exists()):
+                meetings_obj = Meetings.objects.get(days=meeting_days, start_time=meeting_start_time, end_time=meeting_end_time, facility_description=meeting_location)
+            else:
+                meetings_obj = Meetings(days=meeting_days,
+                                        start_time=meeting_start_time,  
+                                        end_time=meeting_end_time,
+                                        facility_description=meeting_location,
+                                        section = section
+                                        )
+                meetings_obj.save()
+        
+        
         course_obj.save()
 
-    all_courses = Course.objects.filter(subject = dept_abbr)
+    all_courses = Course.objects.filter(subject = dept_abbr).order_by('department', 'catalog_number')
     
     dept_context = {"dept" : dept,
                     "dept_abbr" : dept.dept_abbr,
@@ -154,4 +165,4 @@ class CourseView(generic.ListView):
     context_object_name = 'courses'
 
     def get_queryset(self):
-        return Course.objects.all()
+        return Course.objects.all().order_by('department', 'catalog_number')

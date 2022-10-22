@@ -16,6 +16,10 @@ Reason: Used this as a guide for adding Google Login functionality to the app
 
 Title: How to get logged in username in views.py in django
 URL: https://stackoverflow.com/questions/39785934/how-to-get-logged-in-username-in-views-py-in-django
+
+Title: "no such table" error on Heroku after django syncdb passed
+URL: https://stackoverflow.com/questions/29766780/no-such-table-error-on-heroku-after-django-syncdb-passed 
+
 """
 
 from pathlib import Path
@@ -97,9 +101,11 @@ DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
         "NAME": BASE_DIR / "db.sqlite3",
+        'OPTIONS': { # https://docs.djangoproject.com/en/dev/ref/databases/#sqlite-notes, fix for timing out
+            'timeout': 20,
+        }
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/dev/ref/settings/#auth-password-validators
@@ -159,7 +165,7 @@ AUTHENTICATION_BACKENDS = [
     'allauth.account.auth_backends.AuthenticationBackend',
 ]
 
-SITE_ID = 2
+SITE_ID = 1
 LOGIN_REDIRECT_URL = '/login/'
 
 # Additional configuration settings
@@ -181,3 +187,9 @@ SOCIALACCOUNT_PROVIDERS = {
     }
 }
 
+# from https://stackoverflow.com/questions/29766780/no-such-table-error-on-heroku-after-django-syncdb-passed
+# and https://devcenter.heroku.com/articles/connecting-heroku-postgres
+# adds fix for Heroku server, actually uses PostGres rather than still utilizing db.sqlite3
+if 'DATABASE_URL' in os.environ:
+    import dj_database_url
+    DATABASES['default'] = dj_database_url.config(conn_max_age=600, ssl_require=True)
