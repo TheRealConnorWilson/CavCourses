@@ -140,6 +140,3 @@ class CourseTesting(TestCase):  # working
                     subject='CSS')
         c2.save()
         self.assertEqual(len(Course.objects.all()), 2)
-
-
-
