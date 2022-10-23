@@ -2,7 +2,7 @@ from django.test import TestCase, Client
 from .models import User, Course, Department, Instructor, Section
 from django.utils import timezone
 from django.urls import reverse
-from django.contrib.auth.models import User
+# from django.contrib.auth.models import User
 from . import views
 
 #Dummy test added.
@@ -10,14 +10,15 @@ class DummyTestCase(TestCase):
     def setUp(self):
         x = 1
         y = 2
-
+    
     def test_dummy_test_case(self):
         self.assertEqual(1, 1)
 
 class UserModelTests(TestCase):
-    def user_is_authenticated(self):
+    def test_user_is_authenticated(self):
         user = User()
         self.assertTrue(user.get_authenticated())
+
 
 # def create_class(instructor, subject, catalog_number, description, units, meetings):
 #     """
@@ -68,7 +69,7 @@ class GoogleLoginViewTests(TestCase):    # Still working on the google login tes
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'classlist/google_login.html')
 
-    def test_login_success(self):  # In progress
+    def test_login_success(self):  # in progress
         self.login_url = reverse('view_name')
         self.register_url = reverse('home')
         self.user = {'email': 'email@gmail.com', 'username': 'username', 'password':'password','password2':'password',
@@ -139,3 +140,6 @@ class CourseTesting(TestCase):  # working
                     subject='CSS')
         c2.save()
         self.assertEqual(len(Course.objects.all()), 2)
+
+
+
