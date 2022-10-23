@@ -2,7 +2,7 @@ from django.test import TestCase
 from .models import User, Course, Department, Instructor, Section
 from django.utils import timezone
 from django.urls import reverse
-from django.contrib.auth.models import User
+# from django.contrib.auth.models import User
 from . import views
 
 #Dummy test added.
@@ -15,7 +15,7 @@ class DummyTestCase(TestCase):
         self.assertEqual(1, 1)
 
 class UserModelTests(TestCase):
-    def user_is_authenticated(self):
+    def test_user_is_authenticated(self):
         user = User()
         self.assertTrue(user.get_authenticated())
 

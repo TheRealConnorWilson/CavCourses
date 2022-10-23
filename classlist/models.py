@@ -32,8 +32,8 @@ class User(models.Model):
     # password = models.CharField(max_length=150) # not sure if we need to store this?
     last_login = models.DateTimeField()
     date_joined = models.DateTimeField()
-    is_authenticated = True
-    is_anonymous = False
+    is_authenticated = models.BooleanField(default=True)
+    is_anonymous = models.BooleanField(default=False)
 
     # schedule = []
 
