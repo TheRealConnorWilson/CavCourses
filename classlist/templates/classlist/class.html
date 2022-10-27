@@ -44,29 +44,26 @@ text-align: left;
   <h1>Classes</h1>
 </div>
 
-<div class="col-xs-8 mx-auto">
-<table class="table">
-    <thead>
-        <tr>
-            <th scope="col" class="text-white">Course</th>
-            <th scope="col" class="text-white">Title</th>
-            <th scope="col" class="text-white">Credits</th>
-        </tr>
-    </thead>
-    <tbody class="text-white">
-
+<div class="card" style="width: 18rem;">
+  <div class="card-body">
       {% if courses %}
-
+        var prev = CS
         {% for c in courses.all %}
-          <tr><td>{{c}}</td><td>{{c.description}}</td><td>{{c.units}}</td></tr>
-        {% endfor %}
+          {% if c.subject != prev %}
+          <h5 class="card-title">{{c.subject}}</h5>
+          <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+          <a href="#" class="btn btn-primary">View Classes</a>
+          {% endif %}
+          {% endfor %}
       {% else %}
         <p>No classes are currently available.</p>
       {% endif %}
       </tbody>
-</table>
+  </div>
 <br />
 </div>
+
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ" crossorigin="anonymous"></script>
 </body>
 

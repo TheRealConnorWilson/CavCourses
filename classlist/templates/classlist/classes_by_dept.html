@@ -4,81 +4,77 @@
     {% load bootstrap5 %}
     {% bootstrap_css %}
     {% bootstrap_javascript%}
-    <meta charset="utf-8">
-    <title>{{dept_abbr}} Classes</title>
 </head>
 
-<body>
-    <h1>All classes in {{dept_abbr}} department:</h1>
-    {% if dept_courses %}
-        <table class="table table-striped">
-            <thead>
-                <th>#</th>
-                <th scope="col">Course</th>
-                <th scope="col">Description</th>
-                <th scope="col">Credits</th>
-            </thead>
-            <tbody>
-            {% for c in dept_courses %}
-                <tr>
-                    <td></td>
-                    <td>{{c.title}}</td>
-                    <td>{{c.description}}</td>
-                    <td>{{c.units}}</td>
-                </tr>
-                <tr></tr>
-                    <td colspan="4">
-                        <table class="table mb-0">
-                            <thead>
-                                <th scope="col">#</th>
-                                <th scope="col">Section</th>
-                                <th scope="col">Instructor</th>
-                                <th scope="col">Enrollment</th>
-                                <th scope="col">Wait List</th>
-                            </thead>
-                            <tbody>
-                                {% for section in c.section_set.all %}
-                                <tr>
-                                    <td></td>
-                                    <td>{{section.section_number}} ({{section.component}})</td>
-                                    <td>{{section.instructor.name}} ({{section.instructor.email}})</td>
-                                    <td>{{section.enrollment_available}}/{{section.capacity}}</td>
-                                    <td>{{section.wait_list}}/{{section.wait_cap}}</td>
-                                </tr>
-                                <tr>
-                                    <td colspan="4">
-                                        <table class="table mb-0 accordion">
-                                            <thead>
-                                                <th scope="col">Meetings:</th>
-                                                <th scope="col">Day</th>
-                                                <th scope="col">Time</th>
-                                                <th scope="col">Location</th>
-                                            </thead>
-                                            <tbody>
-                                            {% for meeting in section.meetings_set.all %}
-                                            <tr>
-                                                <td></td>
-                                                <td>{{meeting.days}}</td>
-                                                <td>{{meeting.start_time_as_date_time}} - {{meeting.end_time_as_date_time}}</td>
-                                                <td>{{meeting.facility_description}}</td>
-                                            </tr>
-                                            {% endfor %}
-                                            </tbody>
-                                        </table>
-                                    </td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </td>
-                </tr>
-            {% endfor %}
-            </tbody>
-        </table>
-    {% else %}
-        <p>No classes are currently available for this department.</p>
-    {% endif %}
 
+<body style="background-color: rgb(28, 148, 148);">
+<nav class="navbar navbar-dark bg-dark" >
+    <div class="container-fluid">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="#">Lou's List App</a>
+      <a href="{% url 'list' %}" class="btn btn-primary">View Departments</a>
+    </div>
+    </div>
+</nav>
+<br/>
+    
+<div class="text-center" style="color:white">
+  <h1>{{dept_abbr}} Classes</h1>
+  <br>
+</div>
+
+
+<!-- <body>
+    {% if dept_courses %}
+        <div class = "row">
+            {% for c in dept_courses %}
+                <div class = "col-sm-3">
+                    <div class="card-deck">
+                        <div class="card mb-5" style="width:15rem">
+                            <h5 class="card-header">{{c.title}}</h5>
+                            <div class="card-body">
+                                <h5 class="card-title">{{c.description}}</h6>
+                                <p class="card-text">Credits: {{c.units}}</p>
+                            </div>
+                        </div>  
+                    </div>
+                </div>     
+            {% endfor %}
+        </div>
+    {% endif %}
+</body> -->
+
+
+<body>
+    {% if dept_courses %}
+        <div class = "row">
+            {% for c in dept_courses %}
+                <div class = "col-sm-3">
+                    <div class="card-deck">
+                        <div class="card mb-5" style="width:17rem">
+                            <h5 class="card-header">{{c.title}}</h5>
+                            <ul class="nav nav-tabs" id="myTab" role="tablist">
+                                <li class="nav-item">
+                                  <a class="nav-link active" id="home-tab" data-toggle="tab" role="tab" aria-controls="home" aria-selected="true">Class Info</a>
+                                </li>
+                                <li class="nav-item">
+                                  <a class="nav-link" id="enrollment-tab" data-toggle="tab" role="tab" aria-controls="enrollment" aria-selected="false">Enrollment Info</a>
+                                </li>
+                              </ul>
+
+                            <div class="card-body">
+                                <h5 class="card-title">{{c.description}}</h6>
+                                <p class="card-text">Credits: {{c.units}}</p>
+                            </div>
+                            <a href="#" class="btn btn-primary" class = "card-footer">Add to Schedule</a>
+                        </div>  
+                    </div>
+                </div>     
+            {% endfor %}
+        </div>
+    {% endif %}
 </body>
+
+
 
 </html>
