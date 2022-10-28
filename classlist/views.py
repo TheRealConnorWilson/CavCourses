@@ -168,4 +168,4 @@ class CourseView(generic.ListView):
 
     def get_queryset(self):
         # return Course.objects.all().order_by('department', 'catalog_number')
-        return Department.objects.all()
+        return Department.objects.all().order_by('dept_abbr')
