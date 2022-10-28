@@ -50,7 +50,6 @@ def get_courses_by_dept(request, dept_abbr):
     api_url = "http://luthers-list.herokuapp.com/api/dept/" + dept_abbr + "/?format=json"
     dept_json = requests.get(api_url)
     all_dept_classes = dept_json.json()
-    print(all_dept_classes)
     
     if(Department.objects.filter(dept_abbr=dept_abbr).exists()):
         dept = Department.objects.get(dept_abbr=dept_abbr)
@@ -165,7 +164,8 @@ def get_courses_by_dept(request, dept_abbr):
 # first very basic view
 class CourseView(generic.ListView):
     template_name = 'classlist/class.html'
-    context_object_name = 'courses'
+    context_object_name = 'departments'
 
     def get_queryset(self):
-        return Course.objects.all().order_by('department', 'catalog_number')
+        # return Course.objects.all().order_by('department', 'catalog_number')
+        return Department.objects.all()
