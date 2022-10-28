@@ -43,6 +43,19 @@ def view_home(request):
     template_name = "classlist/home.html"
     return render(request, template_name)
 
+###########
+def get_depts(request):
+    template_name = "classlist/class.html"
+
+    #Access API
+    api_url = "http://luthers-list.herokuapp.com/api/deptlist?format=json"
+    depts_json = requests.get(api_url)
+    all_depts = depts_json.json()
+    
+    return render(request, template_name, {"all_depts":all_depts})
+###########
+
+
 def get_courses_by_dept(request, dept_abbr):
     template_name = "classlist/classes_by_dept.html"
     
@@ -56,6 +69,9 @@ def get_courses_by_dept(request, dept_abbr):
     else:
         dept = Department(dept_abbr=dept_abbr)
         dept.save()
+
+    # return render(request, template_name, {"all_dept_classes":all_dept_classes})
+
 
     #Assign all fields
     # if len(Course.objects.filter(subject = dept_abbr).order_by('department', 'catalog_number')) == 0:
@@ -159,10 +175,12 @@ def get_courses_by_dept(request, dept_abbr):
 
     return render(request, template_name, context=dept_context)
 
+
 # first very basic view
 class CourseView(generic.ListView):
     template_name = 'classlist/class.html'
-    context_object_name = 'courses'
+    context_object_name = 'departments'
 
     def get_queryset(self):
-        return Course.objects.all().order_by('department', 'catalog_number')
+        # return Course.objects.all().order_by('department', 'catalog_number')
+        return Department.objects.all().order_by('dept_abbr')
