@@ -70,6 +70,8 @@ def get_courses_by_dept(request, dept_abbr):
         dept = Department(dept_abbr=dept_abbr)
         dept.save()
 
+    # return render(request, template_name, {"all_dept_classes":all_dept_classes})
+
 
     #Assign all fields
     # if len(Course.objects.filter(subject = dept_abbr).order_by('department', 'catalog_number')) == 0:
