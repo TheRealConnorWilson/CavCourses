@@ -43,6 +43,19 @@ def view_home(request):
     template_name = "classlist/home.html"
     return render(request, template_name)
 
+###########
+def get_depts(request):
+    template_name = "classlist/class.html"
+
+    #Access API
+    api_url = "http://luthers-list.herokuapp.com/api/deptlist?format=json"
+    depts_json = requests.get(api_url)
+    all_depts = depts_json.json()
+    
+    return render(request, template_name, {"all_depts":all_depts})
+###########
+
+
 def get_courses_by_dept(request, dept_abbr):
     template_name = "classlist/classes_by_dept.html"
     
