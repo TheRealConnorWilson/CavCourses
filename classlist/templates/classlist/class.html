@@ -41,20 +41,18 @@ text-align: left;
 <br/>
     
 <div class="text-center" style="color:white">
-  <h1>Classes</h1>
+  <h1>Departments</h1>
 </div>
 
 <div class="card" style="width: 18rem;">
   <div class="card-body">
-      {% if courses %}
-        var prev = CS
-        {% for c in courses.all %}
-          {% if c.subject != prev %}
-          <h5 class="card-title">{{c.subject}}</h5>
+      {% if Departments %}
+        {% for d in Departments.all %}
+          <h5 class="card-title">{{d.dept_abbr}}</h5>
           <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
           <a href="#" class="btn btn-primary">View Classes</a>
-          {% endif %}
-          {% endfor %}
+        {% endfor %}
+
       {% else %}
         <p>No classes are currently available.</p>
       {% endif %}
