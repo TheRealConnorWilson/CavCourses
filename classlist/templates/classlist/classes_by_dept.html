@@ -38,11 +38,8 @@
                                         <p class="card-text">Credits: {{c.units}}</p>
                                     </div>
 
-                                    <button type="button" class="btn btn-secondary" data-bs-toggle="collapse" data-bs-target="#test">Enrollment Information</button>
+                                    <button type="button" class="btn btn-secondary" data-bs-toggle="collapse" data-bs-target="#test">Section Information</button>
                                     {% for section in c.section_set.all %}
-                                        <!-- <div class="card-body" id="test">
-                                            <h5 class="card-title">{{section.enrollment_available}}/{{section.capacity}} seats left</h6>
-                                        </div> -->
                                         <div class="card" id="test">
                                             <ul class="list-group list-group-flush">
                                                 <li class="list-group-item">
@@ -50,6 +47,12 @@
                                                     <p>{{section.instructor.name}} ({{section.instructor.email}})</p>
                                                     <p>{{section.enrollment_available}}/{{section.capacity}} seats open</p>
                                                     <p>{{section.wait_list}}/{{section.wait_cap}} seats open on the waitlist</p>
+                                                    <h6>-------------------------------</h6>
+                                                    {% for meeting in section.meetings_set.all %}
+                                                        <p>{{meeting.days}}</p>
+                                                        <p>{{meeting.start_time_as_date_time}} - {{meeting.end_time_as_date_time}}</p>
+                                                        <p>{{meeting.facility_description}}</p>
+                                                    {% endfor %}
                                                     <a href="#" class="btn btn-success">Add to schedule</a>
                                                 </li>
                                             </ul>
