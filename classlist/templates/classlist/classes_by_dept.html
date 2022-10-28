@@ -38,9 +38,9 @@
                                         <p class="card-text">Credits: {{c.units}}</p>
                                     </div>
 
-                                    <button type="button" class="btn btn-secondary" data-bs-toggle="collapse" data-bs-target="#test">Section Information</button>
+                                    <button type="button" class="btn btn-secondary" data-bs-toggle="collapse" data-bs-target="#card{{c.id}}">Section Information</button>
                                     {% for section in c.section_set.all %}
-                                        <div class="card" id="test">
+                                        <div class="card collapse" id="card{{c.id}}">
                                             <ul class="list-group list-group-flush">
                                                 <li class="list-group-item">
                                                     <h6>{{section.section_number}} ({{section.component}})</h6>
