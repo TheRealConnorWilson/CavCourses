@@ -6,10 +6,15 @@ URL: https://stackoverflow.com/questions/340888/navigation-in-django
 
 Title: 
 URL: https://www.w3schools.com/bootstrap/bootstrap_tabs_pills.asp
+
+Title: Boostrap Documentation - navbar
+URL: https://getbootstrap.com/docs/5.0/components/navbar/
 {% endcomment %}
+
 
 <html>
     <header>
+        
     {% load socialaccount %}
     {% load bootstrap5 %}
     {% bootstrap_css %}
@@ -19,15 +24,17 @@ URL: https://www.w3schools.com/bootstrap/bootstrap_tabs_pills.asp
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
 
     {% comment %} <div class="container"> {% endcomment %}
-    {% block header %}
-    <nav class="navbar navbar-dark bg-dark" >
+    {% comment %} {% block header %}
+    <nav class="navbar navbar-dark bg-dark"> 
         <div class="container-fluid">
         <div class="navbar-header">
           <a class="navbar-brand" href="#">Lou's List App</a>
         </div>
         </div>
     </nav>
-    {% endblock %}
+    {% endblock %} {% endcomment %}
+
+    
     
         {% comment %} 
         <!-- https://getbootstrap.com/docs/5.0/components/navs-tabs/#tabs -->
@@ -41,43 +48,41 @@ URL: https://www.w3schools.com/bootstrap/bootstrap_tabs_pills.asp
         
         {% comment %} {% block navbar %} {% endcomment %}
     <div>
-        <ul class="nav flex-row mx-auto bg-dark">
-            {% comment %} <meta charset="UTF-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1"> {% endcomment %}
-            <li class="nav-item mx-auto">
-                <a class="link-light active" href="{% url 'home' %}" color="#fff">Home</a>
-            </li>
-            <li class="nav-item mx-auto">
-                <a class="link-light active" href="{% url 'list' %}" color="#fff">All Courses</a>
-            </li>
-            <li class="nav-item mx-auto">
-                <a class="link-light active" href="#" color="#fff">My Schedule</a>
-            </li>
-            <li class="nav-item mx-auto">
-                <a class="link-light active" href="#" color="#fff">Account</a>
-            </li>
+        <nav class="navbar navbar-dark bg-dark container-fluid justify-content-start" role="navigation">
+            <a class="navbar-brand" href="#">New Lou's List / CavCourses</a>
 
-            {% comment %} 
-            May want to update these to avoid hardcoding the URL's at some point
-            {% endcomment %}
+            <form class="container-fluid justify-content-start">
+            {% comment %} <ul class="nav flex-row mx-auto bg-dark"> {% endcomment %}
+                <button class="btn me-2 btn-primary" type="button" role="button">
+                    <a href="{% url 'home' %}" style="color:inherit"> Home </a>
+                </button>
+                <button class="btn me-2 btn-primary" type="button" role="button">
+                    <a  href="{% url 'list' %}" style="color:inherit"> View Departments </a>
+                </button>
+                <button class="btn me-2 btn-primary" type="button" role="button">
+                    <a href="#" style="color:inherit"> View Schedule </a>
+                </button>
+                <button class="btn me-2 btn-primary" type="button" role="button">
+                    <a href="#" style="color:inherit"> My Account </a>
+                </button>
 
-            {% if user.is_authenticated %}
-                <li class="nav-item mx-auto">
-                    <a class="link-light active" href="/classlist/accounts/logout" color="#fff">Logout</a>
-                </li>
-                <li class="nav-item mx-auto">
-                    <a class="" href="#" color="#fff">Welcome, {{ user.username }}!</a>
-                </li>
-            {% else %}
-                <li class="nav-item mx-auto">
-                    <a class="" href="/classlist/accounts/google/login/?process=login" color="#fff">Login</a>
-                </li>
-            {% endif %}
+                {% comment %} 
+                May want to update these to avoid hardcoding the URL's at some point
+                {% endcomment %}
+
+                {% if user.is_authenticated %}
+                    <button class="btn me-2 btn-primary" type="button" role="button">
+                        <a href="/classlist/accounts/logout" style="color:inherit"> Logout </a>
+                    </button>
+                    <a class="navbar-text" href="#" color="#fff"> Welcome, {{ user.username }}! </a>
+                {% else %}
+                    <button class="btn me-2 btn-primary" type="" color="#fff" role="button">
+                        <a href="/classlist/accounts/google/login/?process=login" style="color:inherit"> Login </a>
+                    </button>
+                {% endif %}
+        </form>
             {% comment %} <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous"> {% endcomment %}
-    
-        </ul>
-        {% comment %} {% endblock %} {% endcomment %}
-        {% comment %} </div> {% endcomment %}
+        </nav>
 
     </div>
         
