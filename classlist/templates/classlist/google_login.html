@@ -10,6 +10,7 @@ Reason: Used this as a guide for adding Google Login functionality to the app
 <html>
 
 <head>
+    
     <title>Google Registration</title>
 </head>
 
@@ -25,6 +26,7 @@ Reason: Used this as a guide for adding Google Login functionality to the app
 <html lang="en">
 
 <head>
+    {% include "classlist/header.html" %}
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="CS3240 - Lou's List">
@@ -33,7 +35,7 @@ Reason: Used this as a guide for adding Google Login functionality to the app
 </head>
 
 <body style="background-color: rgb(28, 148, 148);">
-<nav class="navbar navbar-dark bg-dark" >
+{% comment %} <nav class="navbar navbar-dark bg-dark" >
     <div class="container-fluid">
     <div class="navbar-header">
       <a class="navbar-brand" href="#">Lou's List App</a>
@@ -43,7 +45,7 @@ Reason: Used this as a guide for adding Google Login functionality to the app
         <ul class="nav navbar-nav">
             <li><a href="?command=login" class="text-white">Logout</a></li>
         </ul>    
-    </div>
+    </div> {% endcomment %}
 </nav>
 
     <div class="container" style="margin-top: 15px;">

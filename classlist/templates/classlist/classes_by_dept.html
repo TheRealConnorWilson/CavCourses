@@ -1,6 +1,9 @@
 <html>
 
 <head>
+    
+    {% include "classlist/header.html" %}
+    
     {% load bootstrap5 %}
     {% bootstrap_css %}
     {% bootstrap_javascript%}
@@ -8,7 +11,7 @@
 
 
 <body style="background-color: rgb(28, 148, 148);">
-<nav class="navbar navbar-dark bg-dark" >
+{% comment %} <nav class="navbar navbar-dark bg-dark" >
     <div class="container-fluid">
     <div class="navbar-header">
       <a class="navbar-brand" href="#">Lou's List App</a>
@@ -16,7 +19,7 @@
     </div>
     </div>
 </nav>
-<br/>
+<br/> {% endcomment %}
     
 <div class="text-center" style="color:white">
   <h1>{{dept_abbr}} Classes</h1>
