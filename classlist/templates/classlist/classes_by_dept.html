@@ -1,26 +1,13 @@
 <html>
-
+    {% extends "base.html" %}
 <head>
-    
-    {% include "classlist/header.html" %}
-    {% include "classlist/footer.html" %}
-    
     {% load bootstrap5 %}
     {% bootstrap_css %}
     {% bootstrap_javascript%}
 </head>
 
-
+{% block body %}
 <body style="background-color: rgb(28, 148, 148);">
-{% comment %} <nav class="navbar navbar-dark bg-dark" >
-    <div class="container-fluid">
-    <div class="navbar-header">
-      <a class="navbar-brand" href="#">Lou's List App</a>
-      <a href="{% url 'list' %}" class="btn btn-primary">View Departments</a>
-    </div>
-    </div>
-</nav>
-<br/> {% endcomment %}
     
 <div class="text-center" style="color:white">
   <h1>{{dept_abbr}} Classes</h1>
@@ -52,11 +39,15 @@
                                                     <p>{{section.enrollment_available}}/{{section.capacity}} seats open</p>
                                                     <p>{{section.wait_list}}/{{section.wait_cap}} seats open on the waitlist</p>
                                                     <h6>-------------------------------</h6>
-                                                    {% for meeting in section.meetings_set.all %}
-                                                        <p>{{meeting.days}}</p>
-                                                        <p>{{meeting.start_time_as_date_time}} - {{meeting.end_time_as_date_time}}</p>
-                                                        <p>{{meeting.facility_description}}</p>
-                                                    {% endfor %}
+                                                    {% if section.meetings_set.all %}
+                                                        {% for meeting in section.meetings_set.all %}
+                                                            <p>{{meeting.days}}</p>
+                                                            <p>{{meeting.start_time_as_date_time}} - {{meeting.end_time_as_date_time}}</p>
+                                                            <p>{{meeting.facility_description}}</p>
+                                                        {% endfor %}
+                                                    {% else %}
+                                                        <p> TBD </p>
+                                                    {% endif %}
                                                     <a href="#" class="btn btn-success">Add to schedule</a>
                                                 </li>
                                             </ul>
@@ -107,6 +98,6 @@
     {% endif %}
 </body> -->
 
-
+{% endblock %}
 
 </html>

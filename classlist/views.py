@@ -124,6 +124,9 @@ def get_courses_by_dept(request, dept_abbr):
         section_dept = course["subject"]
         section_course_num = course["catalog_number"]
 
+        # this was causing an issue with KINE 2000, where both meetings wouldn't show
+        # trying live loading for section as well 
+        
         if(Section.objects.filter(section_id=section_id).exists()):
             section = Section.objects.get(section_id=section_id)
         else:
@@ -145,13 +148,19 @@ def get_courses_by_dept(request, dept_abbr):
             section.save()
 
         meetings = course["meetings"]
-
         for meeting in meetings:
             meeting_days = meeting["days"]
             meeting_start_time = meeting["start_time"]
             meeting_end_time = meeting["end_time"]
             meeting_location = meeting["facility_description"]
-        
+            if meeting_location == "-":
+                meeting_location = "TBA"
+            if meeting_start_time == "-":
+                meeting_start_time = "TBA"
+            if meeting_end_time == "-":
+                meeting_end_time = "TBA"
+            
+            # this was causing an issue with KINE 2000, where both meetings wouldn't show
             if(Meetings.objects.filter(days=meeting_days, start_time=meeting_start_time, end_time=meeting_end_time, facility_description=meeting_location).exists()):
                 meetings_obj = Meetings.objects.get(days=meeting_days, start_time=meeting_start_time, end_time=meeting_end_time, facility_description=meeting_location)
             else:
@@ -161,7 +170,7 @@ def get_courses_by_dept(request, dept_abbr):
                                         facility_description=meeting_location,
                                         section = section
                                         )
-                meetings_obj.save()
+            meetings_obj.save()
         
         
         course_obj.save()
