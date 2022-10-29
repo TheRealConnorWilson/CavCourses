@@ -160,8 +160,8 @@ def get_courses_by_dept(request, dept_abbr):
             if meeting_end_time == "-":
                 meeting_end_time = "TBA"
             
-            # this was causing an issue with KINE 2000, where both meetings wouldn't show
-            if(Meetings.objects.filter(days=meeting_days, start_time=meeting_start_time, end_time=meeting_end_time, facility_description=meeting_location).exists()):
+            # this was causing an issue with KINE 2000, where both meetings wouldn't show, made it so meeting would pair with an individual section
+            if(Meetings.objects.filter(days=meeting_days, start_time=meeting_start_time, end_time=meeting_end_time, facility_description=meeting_location, section=section).exists()):
                 meetings_obj = Meetings.objects.get(days=meeting_days, start_time=meeting_start_time, end_time=meeting_end_time, facility_description=meeting_location)
             else:
                 meetings_obj = Meetings(days=meeting_days,
@@ -171,6 +171,7 @@ def get_courses_by_dept(request, dept_abbr):
                                         section = section
                                         )
             meetings_obj.save()
+            
         
         
         course_obj.save()
