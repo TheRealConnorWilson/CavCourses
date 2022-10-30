@@ -10,4 +10,7 @@ urlpatterns = [
     path('login/', views.view_name, name="view_name"),
     path('list/', views.get_depts, name='list'),
     path('list/<str:dept_abbr>/', views.get_courses_by_dept, name='get_courses_by_dept'),
+    path('send_friend_request/<int:userID>/', views.send_friend_request, name='send friend request'),
+    path('accept_friend_request/<int:requestID>/', views.accept_friend_request, name='accept friend request'),
+    path('my_account/', views.ViewAccount.as_view(), name='my_account')
 ]

@@ -187,6 +187,8 @@ SOCIALACCOUNT_PROVIDERS = {
     }
 }
 
+# AUTH_USER_MODEL = 'users.User'
+
 # from https://stackoverflow.com/questions/29766780/no-such-table-error-on-heroku-after-django-syncdb-passed
 # and https://devcenter.heroku.com/articles/connecting-heroku-postgres
 # adds fix for Heroku server, actually uses PostGres rather than still utilizing db.sqlite3

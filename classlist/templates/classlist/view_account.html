@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% comment %} 
+Citations:
+
+Title: Megan Kuo's django tutorial project
+URL: https://github.com/uva-cs3240-f22/django-megkuo/blob/main/polls/templates/polls/deep_thought_submit.html
+
+{% endcomment %}
+
+<html>
+
+    
+    {% load socialaccount %}
+    <title>View account</title>
+
+    {% block body %}
+
+    <body>
+        <h1>My account information</h1>
+
+        <ul>
+            <p>Username: {{user.username}}</p>
+            <p>Email Address: {{user.email}}
+            <p> My friends: </p>
+            {% if user.friends.all %}
+                {% for user in user.friends.all %}
+                    <p>{{user.username}}</p>
+                {% endfor %}
+            {% else %}
+                <p> No friends found. </p>
+            {% endif %}
+            <p> Add friends: </p>
+
+            <form method="post" novalidate>
+                {% csrf_token %}
+                
+                <div class ="form-group">
+                      <label for="example" size="large">Email</label>
+                      <input type="text" class="form-control" placeholder="Email Address" name="title">
+                        <button type="submit" class="btn btn-primary" size="lg" aria-setsize="small">Send Request</button>
+                    {% comment %} <!-- {% bootstrap_alert "Something went wrong :(" alert_type='error' %}
+                    {% bootstrap_alert "submitted ;3" alert_type='success' %} --> {% endcomment %}
+                </div>
+            </form>
+
+            <p> Delete friends: </p>
+            {% comment %} to be added later {% endcomment %}
+
+        </ul>
+
+
+
+        <ul class="all_users">
+            
+            {% for user in all_users %}
+            {% if user not in request.user.friends.all and user != request.user %}
+            <h1> {{user}} <a href="/send_friend_request/{{user.id}}">send friend request</a></h1>
+            {% endif %}
+            {% endfor %}
+        </ul>
+        <ul class="all_users">
+            {% for friend_request in all_friend_requests %}
+            <h1> {{friend_request.from_user}} 
+                <a href="/accept_friend_request/{{friend_request.id}}">accept friend request</a></h1>
+            {% endfor %}
+        </ul>
+    </body>
+
+{% endblock %}
+
+</html>

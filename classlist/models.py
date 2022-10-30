@@ -18,6 +18,11 @@ python manage.py migrate
 Citations:
 Title: DateTimeField - Django Models
 URL: https://www.geeksforgeeks.org/datetimefield-django-models/
+
+Title: Step by Step guide to add friends with Django
+Sections: Friend Request Model
+URL: https://medium.com/analytics-vidhya/add-friends-with-689a2fa4e41d
+
 """
 
 class User(models.Model): 
@@ -36,6 +41,8 @@ class User(models.Model):
     is_anonymous = models.BooleanField(default=False)
 
     # schedule = []
+    friends = models.ManyToManyField("User", blank=True)
+    schedule = models.ManyToManyField("Section", blank=True)
 
     def get_username(self):
         return self.username
@@ -156,3 +163,9 @@ class Meetings(models.Model):
 
     def __str__(self):
         return self.days + ": " + self.start_time + "-" + self.end_time + " @ " + self.facility_description
+    
+class Friend_Request(models.Model):
+    # call two user models
+    from_user = models.ForeignKey(User, related_name = 'from_user', on_delete=models.CASCADE)
+    to_user = models.ForeignKey(User, related_name = 'to_user', on_delete=models.CASCADE)
+    

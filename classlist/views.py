@@ -1,3 +1,4 @@
+import re
 from django.shortcuts import get_object_or_404, render, redirect
 from django.http import HttpResponse, HttpResponseRedirect
 from django.views import generic
@@ -5,7 +6,10 @@ from django.urls import reverse
 from django.utils import timezone
 from django.forms import modelformset_factory
 from django.views.generic.edit import CreateView
-from .models import Meetings, Instructor, User, Course, Department, Section
+from urllib3 import HTTPResponse
+from .models import Friend_Request, Meetings, Instructor, User, Course, Department, Section
+
+# from .forms import FriendRequestForm
 
 import requests
 
@@ -17,6 +21,9 @@ URL: https://stackoverflow.com/questions/523356/python-django-page-redirect
 
 Title: How to get logged in username in views.py in django
 URL: https://stackoverflow.com/questions/39785934/how-to-get-logged-in-username-in-views-py-in-django
+
+Title: Step by Step guide to add friends with Django
+URL: https://medium.com/analytics-vidhya/add-friends-with-689a2fa4e41d
 """
 
 def index(request):
@@ -38,6 +45,7 @@ def view_name(request):
     }
     
     return render(request, template_name, context)
+    # return HttpResponseRedirect("/accounts/google/login")
 
 def view_home(request):
     template_name = "classlist/home.html"
@@ -191,3 +199,46 @@ class CourseView(generic.ListView):
     def get_queryset(self):
         # return Course.objects.all().order_by('department', 'catalog_number')
         return Department.objects.all().order_by('dept_abbr')
+    
+    
+class ViewAccount(generic.ListView):
+    model = User
+    template_name = 'classlist/view_account.html'
+
+def send_friend_request(request): # ,userID
+    """
+    Creates a relation/model for a friend request between two users
+    """
+    # if request.method == 'POST':
+    #     form = FriendRequestForm(request.POST)
+        
+#         if form.is_valid():
+#             form.save()
+#         context = {
+#             'form' : form,
+#         }
+#         return render(request, 'classlist/view_account.html', context)
+#     else: 
+#         form = FriendRequestForm()
+    
+    # return render(request, 'classlist/view_account.html', context)
+    from_user = request.user
+    to_user = User.objects.get(id=userID)
+    friend_request, created = Friend_Request.objects.get_or_create(from_user=from_user, to_user=to_user)
+    if created:
+        return HTTPResponse('friend request sent')
+    else:
+        return HTTPResponse('friend request was already sent')
+    # else:
+    #     form = 
+    
+
+def accept_friend_request(request, requestID):
+    friend_request = Friend_Request.objects.get(id=request)
+    if friend_request.to_user == request.user:
+        friend_request.to_user.friends.add(friend_request.from_user)
+        friend_request.from_user.friends.add(friend_request.to_user)
+        friend_request.delete()
+        return HTTPResponse('friend request accepted')
+    else:
+        return HTTPResponse('friend request not accepted')

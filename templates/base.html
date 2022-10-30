@@ -1,4 +1,7 @@
 {% comment %} 
+
+extend on every HTML page to have header and footer added
+
 - fill this with header <> and footer <>
 - CSS stuff link here too
 - use blocks to allocate rest of page, then on other HTML pages, put all content into block 
@@ -31,15 +34,16 @@
                     <button class="btn me-2 btn-primary" type="button" role="button">
                         <a href="#" style="color:inherit"> View Schedule </a>
                     </button>
-                    <button class="btn me-2 btn-primary" type="button" role="button">
-                        <a href="#" style="color:inherit"> My Account </a>
-                    </button>
     
                     {% comment %} 
                     May want to update these to avoid hardcoding the URL's at some point
                     {% endcomment %}
     
                     {% if user.is_authenticated %}
+                        
+                        <button class="btn me-2 btn-primary" type="button" role="button">
+                            <a href="/classlist/my_account/" style="color:inherit"> My Account </a>
+                        </button>
                         <button class="btn me-2 btn-primary" type="button" role="button">
                             <a href="/classlist/accounts/logout" style="color:inherit"> Logout </a>
                         </button>
