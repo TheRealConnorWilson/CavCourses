@@ -30,7 +30,7 @@ URL: https://github.com/uva-cs3240-f22/django-megkuo/blob/main/polls/templates/p
                 <p> No friends found. </p>
             {% endif %}
             <p> Add friends: </p>
-
+            {% comment %} 
             <form method="post" novalidate>
                 {% csrf_token %}
                 
@@ -38,10 +38,9 @@ URL: https://github.com/uva-cs3240-f22/django-megkuo/blob/main/polls/templates/p
                       <label for="example" size="large">Email</label>
                       <input type="text" class="form-control" placeholder="Email Address" name="title">
                         <button type="submit" class="btn btn-primary" size="lg" aria-setsize="small">Send Request</button>
-                    {% comment %} <!-- {% bootstrap_alert "Something went wrong :(" alert_type='error' %}
-                    {% bootstrap_alert "submitted ;3" alert_type='success' %} --> {% endcomment %}
                 </div>
-            </form>
+            </form> 
+            {% endcomment %}
 
             <p> Delete friends: </p>
             {% comment %} to be added later {% endcomment %}
