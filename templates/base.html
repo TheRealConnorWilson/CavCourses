@@ -18,7 +18,7 @@
     <header>
         <div>
             <nav class="navbar navbar-dark bg-dark container-fluid justify-content-start" role="navigation">
-                <a class="navbar-brand" href="#">New Lou's List / CavCourses</a>
+                <a class="navbar-brand">New Lou's List / CavCourses</a>
     
                 <form class="container-fluid justify-content-start">
                 {% comment %} <ul class="nav flex-row mx-auto bg-dark"> {% endcomment %}
@@ -43,7 +43,7 @@
                         <button class="btn me-2 btn-primary" type="button" role="button">
                             <a href="/classlist/accounts/logout" style="color:inherit"> Logout </a>
                         </button>
-                        <a class="navbar-text" href="#" color="#fff"> Welcome, {{ user.username }}! </a>
+                        <a class="navbar-brand" color="#fff"> Welcome, {{ user.username }}! </a>
                     {% else %}
                         <button class="btn me-2 btn-primary" type="" color="#fff" role="button">
                             <a href="/classlist/accounts/google/login/?process=login" style="color:inherit"> Login </a>
