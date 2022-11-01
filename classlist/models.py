@@ -26,7 +26,7 @@ URL: https://medium.com/analytics-vidhya/add-friends-with-689a2fa4e41d
 
 """
 
-class User(models.Model): 
+class Account(models.Model): 
     """
     Represents each user in the database
     Reference for models.User: https://docs.djangoproject.com/en/3.1/ref/contrib/auth/#user-model
@@ -41,11 +41,14 @@ class User(models.Model):
     date_joined = models.DateTimeField('date joined', default=timezone.now)
     is_authenticated = models.BooleanField(default=True)
     is_anonymous = models.BooleanField(default=False)
+    
+    account_created = models.BooleanField(default=False)
+    
 
     # schedule = []
-    friends = models.ManyToManyField("User", related_name='my_friends', blank=True)
-    sent_friend_requests = models.ManyToManyField("User", related_name = 'from_user', blank=True)
-    received_friend_requests = models.ManyToManyField("User", related_name = 'to_user', blank=True)
+    friends = models.ManyToManyField("Account", related_name='my_friends', blank=True)
+    sent_friend_requests = models.ManyToManyField("Account", related_name = 'from_user', blank=True)
+    received_friend_requests = models.ManyToManyField("Account", related_name = 'to_user', blank=True)
     
     schedule = models.ManyToManyField("Section", blank=True)
     major = models.CharField(max_length=100, default=True)
@@ -59,6 +62,9 @@ class User(models.Model):
         return self.first_name
     def get_authenticated(self):
         return self.is_authenticated
+    
+    def __str__(self):
+        return self.email
 
     # class_list = []
 

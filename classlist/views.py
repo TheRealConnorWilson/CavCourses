@@ -8,7 +8,7 @@ from django.utils import timezone
 from django.forms import modelformset_factory
 from django.views.generic.edit import CreateView
 from urllib3 import HTTPResponse
-from .models import Meetings, Instructor, User, Course, Department, Section
+from .models import Meetings, Instructor, Account, Course, Department, Section
 from django.contrib.auth import get_user_model
 from .forms import UserAccountForm
 
@@ -40,6 +40,11 @@ def view_name(request):
     
     # options for login page
     # return HttpResponse("This is the login page!")
+    if request.user.is_authenticated:
+        print("apple")
+        if not Account.objects.filter(email=request.user.email, account_created=True).exists():
+            print("pear")
+            return HttpResponseRedirect("/home")
 
     context = {
         'user' : user,
@@ -53,8 +58,25 @@ def view_home(request):
     if not request.user.is_authenticated:
         return HttpResponseRedirect("/login")
     
-    elif not User.objects.filter(email=request.user.email).exists():
+    elif not Account.objects.filter(email=request.user.email, account_created=True).exists():
+        new_account = Account(username=request.user.username, 
+                              email=request.user.email, 
+                              first_name=request.user.first_name,
+                              last_name=request.user.last_name,
+                              date_joined=timezone.now(),
+                              is_authenticated=True,
+                              )
+        new_account.save()
         return HttpResponseRedirect("/create_account")
+    
+    else: 
+        account = Account.objects.get(email=request.user.email)
+        print(account)
+        context = {
+            'user' : account,
+        }
+        return render(request, template_name, context)
+        
     
     return render(request, template_name)
 
@@ -209,18 +231,18 @@ class CourseView(generic.ListView):
     
     
 class ViewAccount(generic.ListView):
-    model = User
+    model = Account
     template_name = 'classlist/view_account.html'
 
 class ViewUsers(generic.ListView):
-    model = User
-    template_name = 'classlist/view_users.html'
+    model = Account
+    template_name = 'classlist/view_Accounts.html'
     context_object_name = 'all_users'
     
     def get_queryset(self):
         # return Course.objects.all().order_by('department', 'catalog_number')
-        User = get_user_model()
-        return User.objects.all()
+        Account = get_user_model()
+        return Account.objects.all()
     
 def create_account(request):
     print(request.user.username, request.user.email)
@@ -228,11 +250,9 @@ def create_account(request):
         print("hi")
         # Create a form instance and populate it with data from the request (binding):
         form = UserAccountForm(request.POST)
+        print(form)
         # print("AHH")
         # # Check if the form is valid:
-        
-        
-        
         
         if form.is_valid():
             print("YAY")
@@ -242,8 +262,7 @@ def create_account(request):
                 'form': form,
                 'submit_alert': "submitted ;)"
             }
-            User = get_user_model()
-            new_user = User.objects.get(username=request.user.username) # , major=request.user.major, year=request.user.year
+            new_user = Account.objects.get(username=request.user.username) # , major=request.user.major, year=request.user.year
             print(new_user.username)
             
             # process the data in form.cleaned_data as required (here we just write it to the model due_back field)

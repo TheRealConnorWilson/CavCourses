@@ -39,7 +39,7 @@ import datetime
 from email.charset import Charset
 
 from django.forms import ModelForm
-from .models import User
+from .models import Account
 
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
@@ -47,7 +47,7 @@ from django.utils.translation import gettext_lazy as _
 class UserAccountForm(ModelForm):
     
         class Meta:
-            model = User
+            model = Account
             fields = ['username', 'major', 'year']
             
 
