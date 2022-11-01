@@ -39,15 +39,17 @@ import datetime
 from email.charset import Charset
 
 from django.forms import ModelForm
-from .models import User, Friend_Request
+from .models import User
 
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
 
-# class FriendRequestForm(ModelForm):
-#         class Meta:
-#             model = Friend_Request
-#             fields = ['to_user, from_user']
+class UserAccountForm(ModelForm):
+    
+        class Meta:
+            model = User
+            fields = ['username', 'major', 'year']
+            
 
             # def clean_email_address(self):
             #     data = self.cleaned_data['email_address']

@@ -1,4 +1,5 @@
 import re
+from xml.dom import UserDataHandler
 from django.shortcuts import get_object_or_404, render, redirect
 from django.http import HttpResponse, HttpResponseRedirect
 from django.views import generic
@@ -7,9 +8,9 @@ from django.utils import timezone
 from django.forms import modelformset_factory
 from django.views.generic.edit import CreateView
 from urllib3 import HTTPResponse
-from .models import Friend_Request, Meetings, Instructor, User, Course, Department, Section
-
-# from .forms import FriendRequestForm
+from .models import Meetings, Instructor, User, Course, Department, Section
+from django.contrib.auth import get_user_model
+from .forms import UserAccountForm
 
 import requests
 
@@ -49,6 +50,12 @@ def view_name(request):
 
 def view_home(request):
     template_name = "classlist/home.html"
+    if not request.user.is_authenticated:
+        return HttpResponseRedirect("/login")
+    
+    elif not User.objects.filter(email=request.user.email).exists():
+        return HttpResponseRedirect("/create_account")
+    
     return render(request, template_name)
 
 ###########
@@ -205,40 +212,151 @@ class ViewAccount(generic.ListView):
     model = User
     template_name = 'classlist/view_account.html'
 
-def send_friend_request(request): # ,userID
+class ViewUsers(generic.ListView):
+    model = User
+    template_name = 'classlist/view_users.html'
+    context_object_name = 'all_users'
+    
+    def get_queryset(self):
+        # return Course.objects.all().order_by('department', 'catalog_number')
+        User = get_user_model()
+        return User.objects.all()
+    
+def create_account(request):
+    print(request.user.username, request.user.email)
+    if request.method == 'POST':
+        print("hi")
+        # Create a form instance and populate it with data from the request (binding):
+        form = UserAccountForm(request.POST)
+        # print("AHH")
+        # # Check if the form is valid:
+        
+        
+        
+        
+        if form.is_valid():
+            print("YAY")
+            
+            form.save() # save to database
+            context = {
+                'form': form,
+                'submit_alert': "submitted ;)"
+            }
+            User = get_user_model()
+            new_user = User.objects.get(username=request.user.username) # , major=request.user.major, year=request.user.year
+            print(new_user.username)
+            
+            # process the data in form.cleaned_data as required (here we just write it to the model due_back field)
+            # return render(request, 'polls/deep_thought_submit.html', context)
+            return HttpResponse("success!")
+    else:     
+        # If this is a GET (or any other method) create the default form.
+        form = UserAccountForm(initial={'username': request.user.username, 'year': "Unknown", 'major': "Unknown", 'last_login' : timezone.now, 'date_joined' : timezone.now})
+        
+    return render(request, 'classlist/create_account.html', {'form': form})
+    
+
+def send_friend_request(request, userID): # ,userID
     """
     Creates a relation/model for a friend request between two users
     """
     # if request.method == 'POST':
+    #     print(email)
+        
+        
     #     form = FriendRequestForm(request.POST)
         
-#         if form.is_valid():
-#             form.save()
-#         context = {
-#             'form' : form,
-#         }
-#         return render(request, 'classlist/view_account.html', context)
-#     else: 
-#         form = FriendRequestForm()
+    #     if form.is_valid():
+    #         print("hi")
+    #         form.save()
+    #     context = {
+    #         'form' : form,
+    #     }
+    #     return render(request, 'classlist/view_account.html', context)
+    # else: 
+    #     form = FriendRequestForm()
+    #     context = {
+    #         'form': form,
+    #     }
     
-    # return render(request, 'classlist/view_account.html', context)
-    from_user = request.user
-    to_user = User.objects.get(id=userID)
-    friend_request, created = Friend_Request.objects.get_or_create(from_user=from_user, to_user=to_user)
-    if created:
-        return HTTPResponse('friend request sent')
-    else:
-        return HTTPResponse('friend request was already sent')
+    # return render(request, 'classlist/send_friend_request.html', context)
+
+    # if request.method == 'POST':
+    #     # form = FriendRequestForm(request.POST)
+    # User = get_user_model()
+    # from_user_id = request.user.id
+    # the_from_user = User.objects.get(pk=from_user_id)
+    
+    # try:
+        # the_to_user = User.objects.get(pk=userID)
+        # from_user - User.objects.get(pk=from_user.pk)
+        # print(type(the_from_user), type(the_to_user))
+        # friend_request, created = Friend_Request.objects.get_or_create(from_user=from_user, to_user=to_user)
+        # print(friend_request.to_user, friend_request.from_user)
+    # created = False
+    # print(Friend_Request.objects.all())
+    # print(Friend_Request.objects.filter(to_user=userID))
+    # if(Friend_Request.objects.filter(to_user=userID, from_user=from_user_id).exists()):
+    #     print("exists")
+        # course_obj = Course.objects.get(title=course_title)
+        # course_obj.catalog_number = catalog_num
+        # course_obj.sections = []
     # else:
-    #     form = 
+    #     friend_request = Friend_Request(from_user=from_user_id, to_user=userID)
+    #     friend_request.save()
+    #     created = True
+    #     print("yay")
+    # if created:
+    #     return HttpResponse('friend request sent')
+    # else:
+    #     return HttpResponse('friend request was already sent')
+    # return redirect
+    # except (KeyError, User.DoesNotExist):
+    #     # Redisplay the question voting form.
+    # User = get_user_model()
+    # context = {
+    #     'all_users': User.objects.all(),
+    # }
+    # print(context['all_users'])
+    # return render(request, 'classlist/send_friend_request.html', context)
+    #     if form.is_valid():
+    #         print("YAY")
+    #         form.save() # save to database
+    #     context = {
+    #         'form': form,
+    #         'submit_alert': "submitted ;)"
+    #     }
+    #     # process the data in form.cleaned_data as required (here we just write it to the model due_back field)
+    #     return render(request, 'polls/deep_thought_submit.html', context)
+    # else:
+    #     form = FriendRequestForm()
+    
+    # return render(request, 'classlist/send_friend_request.html', {})
+    # try:
+    #     selected_choice = question.choice_set.get(pk=request.POST['choice'])
+    # except (KeyError, User.DoesNotExist):
+    #     print("ERROR")
+    #     # Redisplay the question voting form.
+    #     return render(request, 'classlist/view_users.html', {
+    #         'error_message': "You didn't select a choice.",
+    #     })
+    # else:
+    #     selected_choice.votes += 1
+    #     selected_choice.save()
+    #     # Always return an HttpResponseRedirect after successfully dealing
+    #     # with POST data. This prevents data from being posted twice if a
+    #     # user hits the Back button.
+    #     return HttpResponseRedirect(reverse('polls:results', args=(question.id,)))
+    
     
 
 def accept_friend_request(request, requestID):
-    friend_request = Friend_Request.objects.get(id=request)
-    if friend_request.to_user == request.user:
-        friend_request.to_user.friends.add(friend_request.from_user)
-        friend_request.from_user.friends.add(friend_request.to_user)
-        friend_request.delete()
-        return HTTPResponse('friend request accepted')
-    else:
-        return HTTPResponse('friend request not accepted')
+    print("hi")
+    # friend_request = Friend_Request.objects.get(id=request)
+    # if friend_request.to_user == request.user:
+    #     friend_request.to_user.friends.add(friend_request.from_user)
+    #     friend_request.from_user.friends.add(friend_request.to_user)
+    #     friend_request.delete()
+    #     return HTTPResponse('friend request accepted')
+    # else:
+    #     return HTTPResponse('friend request not accepted')

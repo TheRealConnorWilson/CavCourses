@@ -27,23 +27,24 @@ URL: https://github.com/uva-cs3240-f22/django-megkuo/blob/main/polls/templates/p
                     <p>{{user.username}}</p>
                 {% endfor %}
             {% else %}
-                <p> No friends found. </p>
+                <p> No friends found. :( </p>
             {% endif %}
-            <p> Add friends: </p>
-            {% comment %} 
-            <form method="post" novalidate>
+            <p> Send friend request: </p>
+            <button class="btn me-2 btn-primary" type="button" role="button">
+                <a  href="{% url 'view users' %}" style="color:inherit"> Request friend </a>
+            </button>
+            <p> Delete friends: </p>
+            {% comment %} to be added later {% endcomment %}
+
+            {% comment %} <form method="post" novalidate>
                 {% csrf_token %}
                 
                 <div class ="form-group">
                       <label for="example" size="large">Email</label>
                       <input type="text" class="form-control" placeholder="Email Address" name="title">
-                        <button type="submit" class="btn btn-primary" size="lg" aria-setsize="small">Send Request</button>
+                        <button type="submit" class="btn btn-primary" size="lg" aria-setsize="small" href="/send_friend_request/">Send Request</button>
                 </div>
-            </form> 
-            {% endcomment %}
-
-            <p> Delete friends: </p>
-            {% comment %} to be added later {% endcomment %}
+            </form>  {% endcomment %}
 
         </ul>
 

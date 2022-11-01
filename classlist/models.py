@@ -5,6 +5,7 @@ from django.db import models
 
 from django.utils import timezone
 from django.contrib import admin
+from django.contrib.auth.models import User
 # from django.contrib.auth.models import User
 # Create your models here.
 
@@ -30,19 +31,25 @@ class User(models.Model):
     Represents each user in the database
     Reference for models.User: https://docs.djangoproject.com/en/3.1/ref/contrib/auth/#user-model
     """
-    username = models.CharField(max_length=150)
-    first_name = models.CharField(max_length=150, blank=True) # blank=True means that it is optional
-    last_name = models.CharField(max_length=150, blank=True)
-    email = models.EmailField(max_length=150)
+    # user = models.OneToOneField(User, on_delete=models.CASCADE)
+    username = models.CharField(max_length=150, default="User")
+    first_name = models.CharField(max_length=150, blank=True, default="User") # blank=True means that it is optional
+    last_name = models.CharField(max_length=150, blank=True, default="Name")
+    email = models.EmailField(max_length=150, default="none@gmail.com")
     # password = models.CharField(max_length=150) # not sure if we need to store this?
-    last_login = models.DateTimeField()
-    date_joined = models.DateTimeField()
+    last_login = models.DateTimeField('last date logged in', default=timezone.now)
+    date_joined = models.DateTimeField('date joined', default=timezone.now)
     is_authenticated = models.BooleanField(default=True)
     is_anonymous = models.BooleanField(default=False)
 
     # schedule = []
-    friends = models.ManyToManyField("User", blank=True)
+    friends = models.ManyToManyField("User", related_name='my_friends', blank=True)
+    sent_friend_requests = models.ManyToManyField("User", related_name = 'from_user', blank=True)
+    received_friend_requests = models.ManyToManyField("User", related_name = 'to_user', blank=True)
+    
     schedule = models.ManyToManyField("Section", blank=True)
+    major = models.CharField(max_length=100, default=True)
+    year = models.CharField(max_length=100, default=True)
 
     def get_username(self):
         return self.username
@@ -164,8 +171,14 @@ class Meetings(models.Model):
     def __str__(self):
         return self.days + ": " + self.start_time + "-" + self.end_time + " @ " + self.facility_description
     
-class Friend_Request(models.Model):
-    # call two user models
-    from_user = models.ForeignKey(User, related_name = 'from_user', on_delete=models.CASCADE)
-    to_user = models.ForeignKey(User, related_name = 'to_user', on_delete=models.CASCADE)
+# class Friend_Request(models.Model):
+#     # call two user models
+#     # from_user = models.ForeignKey(User, related_name = 'from_user', on_delete=models.CASCADE)
+#     # to_user = models.ForeignKey(User, related_name = 'to_user', on_delete=models.CASCADE)
+    
+#     from_user = models.IntegerField(default=0)
+#     to_user = models.IntegerField(default=0)
+    
+#     def __str__(self):
+#         return str("Request from " + str(self.from_user) + " to " + str(self.to_user))
     

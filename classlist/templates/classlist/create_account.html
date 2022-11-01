@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+{% comment %} 
+Citations:
+
+Title: Megan Kuo's django tutorial project
+URL: https://github.com/uva-cs3240-f22/django-megkuo/blob/main/polls/templates/polls/deep_thought_submit.html
+
+{% endcomment %}
+
+<html>
+
+    
+    {% load socialaccount %}
+    <title>Create account</title>
+
+    {% block body %}
+
+    <body>
+        <h1>Create an account</h1>
+
+        <ul>
+            {% comment %} <p>Username: {{user.username}}</p>
+            <p>Email Address: {{user.email}}
+            <p> My friends: </p>
+            {% if user.friends.all %}
+                {% for user in user.friends.all %}
+                    <p>{{user.username}}</p>
+                {% endfor %}
+            {% else %}
+                <p> No friends found. :( </p>
+            {% endif %}
+            <p> Send friend request: </p>
+            <button class="btn me-2 btn-primary" type="button" role="button">
+                <a  href="{% url 'view users' %}" style="color:inherit"> Request friend </a>
+            </button>
+            <p> Delete friends: </p> {% endcomment %}
+            {% comment %} to be added later {% endcomment %}
+
+            <form method="post" novalidate>
+                {% csrf_token %}
+                
+                <div class ="form-group">
+                    <div class="row text-center">
+                      <div class="col-sm-5 mx-auto mb-2">
+                        <label for="example" size="large">Username</label>
+                        <input type="text" class="form-control" placeholder="default is {{request.user.username}}" name="username">
+                      </div>
+                    </div>
+                    <div class="row text-center">
+                        <div class="col-sm-7 mx-auto mb-4">
+                            <div class ="form-group">
+                                <label for="example">Year</label>
+                                <input type="text" class="form-control" placeholder="e.g. First year, Second year, Faculty, etc." name="year">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row text-center">
+                        <div class="col-sm-7 mx-auto mb-4">
+                            <div class ="form-group">
+                                <label for="example">Major</label>
+                                <input type="text" class="form-control" placeholder="e.g. Computer Science, Psychology" name="major">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row text-center">
+                        <div class="column">
+                            <button type="submit" class="btn btn-primary" size="lg" aria-setsize="small">Create account!</button>
+                        </div>
+                    </div>
+                </div>
+              </form>
+
+        </ul>
+
+    </body>
+
+{% endblock %}
+
+</html>

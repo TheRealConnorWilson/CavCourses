@@ -19,8 +19,8 @@ URL: https://github.com/uva-cs3240-f22/django-megkuo/blob/main/polls/templates/p
             {% comment %} <p> Send friend request: </p>
             <button class="btn me-2 btn-primary" type="button" role="button">
                 <a  href="{% url 'send friend request' %}" style="color:inherit"> Request friend </a>
-            </button> {% endcomment %}
-            {% comment %} <p> Delete friends: </p>  {% endcomment %}
+            </button>
+            <p> Delete friends: </p> {% endcomment %}
             {% comment %} to be added later {% endcomment %}
 
             {% comment %} <form method="post" novalidate>
@@ -35,7 +35,26 @@ URL: https://github.com/uva-cs3240-f22/django-megkuo/blob/main/polls/templates/p
 
         {% comment %} </ul> {% endcomment %}
 
-        
+
+
+        <ul class="all_users">
+            
+            {% for user2 in all_users %}
+            {% comment %} {% if user not in request.user.friends.all and user != request.user %} {% endcomment %}
+            {% if user2.pk != request.user.pk %}
+                <h1> {{user2}} 
+                    {% if user2 in request.user.friends.all %}
+                    
+                    <p> already friends </p>
+                    <p> freinds: {{ user.friends.all }} </p>
+                    {% else %}
+
+                    <a href="send_friend_request/{{user2.pk}}">Send friend request</a>
+                    {% endif %}
+                </h1>
+            {% endif %}
+            {% endfor %}
+        </ul>
         {% comment %} <ul class="all_users">
             {% for friend_request in all_friend_requests %}
             <h1> {{friend_request.from_user}} 
