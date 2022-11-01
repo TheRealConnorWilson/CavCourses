@@ -20,7 +20,7 @@ Reason: Used this as a guide for adding Google Login functionality to the app
         <div class="row justify-content-center" style="color: white;">
             {% if user.is_authenticated %}
             <div class="">
-            <h1 class="text-center">Welcome, {{ user.username }} !</h1>
+            <h1 class="text-center">Welcome, {{ user.USERNAME_FIELD }} !</h1>
             <div class="text-center">
                 <a class="btn btn-dark" href="{% url 'list' %}">View classes</a>
             </div>

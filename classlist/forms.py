@@ -38,32 +38,38 @@ also gets called for get request, generates new form
 import datetime
 from email.charset import Charset
 
-from django.forms import ModelForm
+from django import forms
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.models import User
 from .models import Account
 
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
 
-class UserAccountForm(ModelForm):
+class UserAccountForm(UserCreationForm):
+    username = forms.CharField()
+    email = forms.EmailField()
+    major = forms.CharField()
+    year = forms.CharField()
     
-        class Meta:
-            model = Account
-            fields = ['username', 'major', 'year']
+    class Meta:
+        model = Account
+        fields = ['username', 'major', 'year']
+        
+
+        # def clean_email_address(self):
+        #     data = self.cleaned_data['email_address']
+
+        #     # Check if a title is not blank.
+        #     if len(data) == 0:
+        #         raise ValidationError(_('No text in submission!'))
+
+        #     # # Check if a date is in the allowed range (+4 weeks from today).
+        #     # if data > datetime.date.today() + datetime.timedelta(weeks=4):
+        #     #     raise ValidationError(_('Invalid date - renewal more than 4 weeks ahead'))
+
+        #     # # Remember to always return the cleaned data.
+        #     # cleaned_data = super(ContactForm, self).clean()
             
-
-            # def clean_email_address(self):
-            #     data = self.cleaned_data['email_address']
-
-            #     # Check if a title is not blank.
-            #     if len(data) == 0:
-            #         raise ValidationError(_('No text in submission!'))
-
-            #     # # Check if a date is in the allowed range (+4 weeks from today).
-            #     # if data > datetime.date.today() + datetime.timedelta(weeks=4):
-            #     #     raise ValidationError(_('Invalid date - renewal more than 4 weeks ahead'))
-
-            #     # # Remember to always return the cleaned data.
-            #     # cleaned_data = super(ContactForm, self).clean()
-                
-            #     return data
+        #     return data
 

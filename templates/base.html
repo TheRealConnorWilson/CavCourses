@@ -47,7 +47,7 @@ extend on every HTML page to have header and footer added
                         <button class="btn me-2 btn-primary" type="button" role="button">
                             <a href="/classlist/accounts/logout" style="color:inherit"> Logout </a>
                         </button>
-                        <a class="navbar-brand" color="#fff"> Welcome, {{ user.username }}! </a>
+                        <a class="navbar-brand" color="#fff"> Welcome, {{ user.USERNAME_FIELD }}! </a>
                     {% else %}
                         <button class="btn me-2 btn-primary" type="" color="#fff" role="button">
                             <a href="/classlist/accounts/google/login/?process=login" style="color:inherit"> Login </a>

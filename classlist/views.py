@@ -30,6 +30,15 @@ URL: https://medium.com/analytics-vidhya/add-friends-with-689a2fa4e41d
 def index(request):
     return HttpResponseRedirect("/home")
 
+def get_user_info(request):
+    if request.user.is_authenticated:
+        account = Account.objects.get(email=request.user.email)
+        # print(account)
+        context = {
+            'user' : account,
+        }
+        return context
+
 def view_name(request):
     # ex. http://127.0.0.1:8000/accounts/google/login/
     template_name = "classlist/google_login.html"
@@ -41,14 +50,12 @@ def view_name(request):
     # options for login page
     # return HttpResponse("This is the login page!")
     if request.user.is_authenticated:
-        print("apple")
+        # print("apple")
         if not Account.objects.filter(email=request.user.email, account_created=True).exists():
-            print("pear")
+            # print("pear")
             return HttpResponseRedirect("/home")
 
-    context = {
-        'user' : user,
-    }
+    context = get_user_info(request)
     
     return render(request, template_name, context)
     # return HttpResponseRedirect("/accounts/google/login")
@@ -58,23 +65,14 @@ def view_home(request):
     if not request.user.is_authenticated:
         return HttpResponseRedirect("/login")
     
-    elif not Account.objects.filter(email=request.user.email, account_created=True).exists():
-        new_account = Account(username=request.user.username, 
-                              email=request.user.email, 
-                              first_name=request.user.first_name,
-                              last_name=request.user.last_name,
-                              date_joined=timezone.now(),
-                              is_authenticated=True,
-                              )
-        new_account.save()
+    elif not Account.objects.filter(email=request.user.email).exists():
+        
         return HttpResponseRedirect("/create_account")
     
     else: 
         account = Account.objects.get(email=request.user.email)
-        print(account)
-        context = {
-            'user' : account,
-        }
+        # print(account)
+        context = context = get_user_info(request)
         return render(request, template_name, context)
         
     
@@ -89,7 +87,10 @@ def get_depts(request):
     depts_json = requests.get(api_url)
     all_depts = depts_json.json()
     
-    return render(request, template_name, {"all_depts":all_depts})
+    context = get_user_info(request)
+    context['all_depts'] = all_depts
+    
+    return render(request, template_name, context)
 ###########
 
 
@@ -215,6 +216,7 @@ def get_courses_by_dept(request, dept_abbr):
     dept_context = {"dept" : dept,
                     "dept_abbr" : dept.dept_abbr,
                     "dept_courses" : all_courses,
+                    'user' : Account.objects.get(email=request.user.email),
                     }
 
     return render(request, template_name, context=dept_context)
@@ -233,6 +235,10 @@ class CourseView(generic.ListView):
 class ViewAccount(generic.ListView):
     model = Account
     template_name = 'classlist/view_account.html'
+    def get_context_data(self,*args, **kwargs):
+        context = super().get_context_data(*args,**kwargs)
+        context = get_user_info(self.request)
+        return context
 
 class ViewUsers(generic.ListView):
     model = Account
@@ -244,33 +250,52 @@ class ViewUsers(generic.ListView):
         Account = get_user_model()
         return Account.objects.all()
     
+    def get_context_data(self,*args, **kwargs):
+        context = super().get_context_data(*args,**kwargs)
+        context = get_user_info(self.request)
+        return context
+    
 def create_account(request):
     print(request.user.username, request.user.email)
     if request.method == 'POST':
         print("hi")
         # Create a form instance and populate it with data from the request (binding):
-        form = UserAccountForm(request.POST)
-        print(form)
+        # form = UserAccountForm(request.POST)
+        # print(request.POST)
+        # print(request.POST['username'])
         # print("AHH")
-        # # Check if the form is valid:
+        # Check if the form is valid:
         
-        if form.is_valid():
-            print("YAY")
+        # if form.is_valid():
+            # print("YAY")
             
-            form.save() # save to database
-            context = {
-                'form': form,
-                'submit_alert': "submitted ;)"
-            }
-            new_user = Account.objects.get(username=request.user.username) # , major=request.user.major, year=request.user.year
-            print(new_user.username)
-            
-            # process the data in form.cleaned_data as required (here we just write it to the model due_back field)
-            # return render(request, 'polls/deep_thought_submit.html', context)
-            return HttpResponse("success!")
+            # form.save() # save to database
+            # context = {
+            #     'form': form,
+            #     'submit_alert': "submitted ;)"
+            # }
+            # new_user = Account.objects.get(username=request.user.username) # , major=request.user.major, year=request.user.year
+        new_account = Account(USERNAME_FIELD=request.POST['username'], 
+                            email=request.user.email, 
+                            first_name=request.user.first_name,
+                            last_name=request.user.last_name,
+                            date_joined=timezone.now(),
+                            is_authenticated=True,
+                            major=request.POST['major'],
+                            year=request.POST['year']
+                            )
+        new_account.save()
+        
+        # print(new_account.USERNAME_FIELD, new_account.major)
+        
+        # process the data in form.cleaned_data as required (here we just write it to the model due_back field)
+        # return render(request, 'polls/deep_thought_submit.html', context)
+        # return HttpResponse("success!")
+        return HttpResponseRedirect('/home')
+        
     else:     
         # If this is a GET (or any other method) create the default form.
-        form = UserAccountForm(initial={'username': request.user.username, 'year': "Unknown", 'major': "Unknown", 'last_login' : timezone.now, 'date_joined' : timezone.now})
+        form = UserAccountForm(initial={'USERNAME_FIELD': request.user.username, 'year': "Unknown", 'major': "Unknown", 'last_login' : timezone.now, 'date_joined' : timezone.now})
         
     return render(request, 'classlist/create_account.html', {'form': form})
     

@@ -32,7 +32,7 @@ class Account(models.Model):
     Reference for models.User: https://docs.djangoproject.com/en/3.1/ref/contrib/auth/#user-model
     """
     # user = models.OneToOneField(User, on_delete=models.CASCADE)
-    username = models.CharField(max_length=150, default="User")
+    USERNAME_FIELD = models.CharField(max_length=150, default="User")
     first_name = models.CharField(max_length=150, blank=True, default="User") # blank=True means that it is optional
     last_name = models.CharField(max_length=150, blank=True, default="Name")
     email = models.EmailField(max_length=150, default="none@gmail.com")
