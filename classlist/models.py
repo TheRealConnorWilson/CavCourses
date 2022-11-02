@@ -88,7 +88,7 @@ class Department(models.Model):
 
     @classmethod
     def get_default_dept(self):
-        default_dept =  Department.objects.get_or_create(dept_abbr="No Department Specified")[0]
+        default_dept =  Department.objects.get_or_create(dept_abbr="NULL")[0] # dept_abbr CANNOT be longer than 4 characters -- will break database!
         return default_dept.pk
 
     def __str__(self):
