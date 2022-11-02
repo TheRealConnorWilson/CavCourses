@@ -25,7 +25,21 @@ URL: https://stackoverflow.com/questions/39785934/how-to-get-logged-in-username-
 
 Title: Step by Step guide to add friends with Django
 URL: https://medium.com/analytics-vidhya/add-friends-with-689a2fa4e41d
+
+Title: How to Pass Additional Context into a Class Based View (Django)?
+URL: https://www.geeksforgeeks.org/how-to-pass-additional-context-into-a-class-based-view-django/
 """
+
+class AuthenticatedListView(generic.ListView):
+    """
+    Extend this version of ListView so that the header/page will be able to access the user's information
+    """
+    def get_context_data(self,*args, **kwargs):
+        context = super().get_context_data(*args,**kwargs)
+        context.update(get_user_info(self.request))
+        return context
+    
+
 
 def index(request):
     return HttpResponseRedirect("/home")
@@ -223,7 +237,7 @@ def get_courses_by_dept(request, dept_abbr):
 
 
 # first very basic view
-class CourseView(generic.ListView):
+class CourseView(AuthenticatedListView):
     template_name = 'classlist/class.html'
     context_object_name = 'departments'
 
@@ -232,28 +246,20 @@ class CourseView(generic.ListView):
         return Department.objects.all().order_by('dept_abbr')
     
     
-class ViewAccount(generic.ListView):
+class ViewAccount(AuthenticatedListView):
     model = Account
     template_name = 'classlist/view_account.html'
-    def get_context_data(self,*args, **kwargs):
-        context = super().get_context_data(*args,**kwargs)
-        context = get_user_info(self.request)
-        return context
 
-class ViewUsers(generic.ListView):
+class ViewUsers(AuthenticatedListView):
     model = Account
-    template_name = 'classlist/view_Accounts.html'
-    context_object_name = 'all_users'
+    template_name = 'classlist/view_users.html'
+    context_object_name = 'all_accounts'
+    print(Account.objects.all())
     
     def get_queryset(self):
         # return Course.objects.all().order_by('department', 'catalog_number')
-        Account = get_user_model()
+        
         return Account.objects.all()
-    
-    def get_context_data(self,*args, **kwargs):
-        context = super().get_context_data(*args,**kwargs)
-        context = get_user_info(self.request)
-        return context
     
 def create_account(request):
     print(request.user.username, request.user.email)
@@ -304,47 +310,15 @@ def send_friend_request(request, userID): # ,userID
     """
     Creates a relation/model for a friend request between two users
     """
-    # if request.method == 'POST':
-    #     print(email)
         
-        
-    #     form = FriendRequestForm(request.POST)
-        
-    #     if form.is_valid():
-    #         print("hi")
-    #         form.save()
-    #     context = {
-    #         'form' : form,
-    #     }
-    #     return render(request, 'classlist/view_account.html', context)
-    # else: 
-    #     form = FriendRequestForm()
-    #     context = {
-    #         'form': form,
-    #     }
-    
-    # return render(request, 'classlist/send_friend_request.html', context)
-
-    # if request.method == 'POST':
-    #     # form = FriendRequestForm(request.POST)
-    # User = get_user_model()
-    # from_user_id = request.user.id
-    # the_from_user = User.objects.get(pk=from_user_id)
-    
-    # try:
-        # the_to_user = User.objects.get(pk=userID)
-        # from_user - User.objects.get(pk=from_user.pk)
-        # print(type(the_from_user), type(the_to_user))
-        # friend_request, created = Friend_Request.objects.get_or_create(from_user=from_user, to_user=to_user)
-        # print(friend_request.to_user, friend_request.from_user)
-    # created = False
-    # print(Friend_Request.objects.all())
-    # print(Friend_Request.objects.filter(to_user=userID))
-    # if(Friend_Request.objects.filter(to_user=userID, from_user=from_user_id).exists()):
+    created = False
+    my_account = Account.objects.filter(email=request.user.email)
+    their_account = Account.objects.filter(pk=userID)
+    # if(my_account.friends):
     #     print("exists")
-        # course_obj = Course.objects.get(title=course_title)
-        # course_obj.catalog_number = catalog_num
-        # course_obj.sections = []
+    #     course_obj = Course.objects.get(title=course_title)
+    #     course_obj.catalog_number = catalog_num
+    #     course_obj.sections = []
     # else:
     #     friend_request = Friend_Request(from_user=from_user_id, to_user=userID)
     #     friend_request.save()
@@ -354,43 +328,7 @@ def send_friend_request(request, userID): # ,userID
     #     return HttpResponse('friend request sent')
     # else:
     #     return HttpResponse('friend request was already sent')
-    # return redirect
-    # except (KeyError, User.DoesNotExist):
-    #     # Redisplay the question voting form.
-    # User = get_user_model()
-    # context = {
-    #     'all_users': User.objects.all(),
-    # }
-    # print(context['all_users'])
-    # return render(request, 'classlist/send_friend_request.html', context)
-    #     if form.is_valid():
-    #         print("YAY")
-    #         form.save() # save to database
-    #     context = {
-    #         'form': form,
-    #         'submit_alert': "submitted ;)"
-    #     }
-    #     # process the data in form.cleaned_data as required (here we just write it to the model due_back field)
-    #     return render(request, 'polls/deep_thought_submit.html', context)
-    # else:
-    #     form = FriendRequestForm()
     
-    # return render(request, 'classlist/send_friend_request.html', {})
-    # try:
-    #     selected_choice = question.choice_set.get(pk=request.POST['choice'])
-    # except (KeyError, User.DoesNotExist):
-    #     print("ERROR")
-    #     # Redisplay the question voting form.
-    #     return render(request, 'classlist/view_users.html', {
-    #         'error_message': "You didn't select a choice.",
-    #     })
-    # else:
-    #     selected_choice.votes += 1
-    #     selected_choice.save()
-    #     # Always return an HttpResponseRedirect after successfully dealing
-    #     # with POST data. This prevents data from being posted twice if a
-    #     # user hits the Back button.
-    #     return HttpResponseRedirect(reverse('polls:results', args=(question.id,)))
     
     
 

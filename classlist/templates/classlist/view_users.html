@@ -37,23 +37,28 @@ URL: https://github.com/uva-cs3240-f22/django-megkuo/blob/main/polls/templates/p
 
 
 
-        <ul class="all_users">
-            
-            {% for user2 in all_users %}
-            {% comment %} {% if user not in request.user.friends.all and user != request.user %} {% endcomment %}
-            {% if user2.pk != request.user.pk %}
-                <h1> {{user2}} 
-                    {% if user2 in request.user.friends.all %}
-                    
-                    <p> already friends </p>
-                    <p> freinds: {{ user.friends.all }} </p>
-                    {% else %}
+        <ul class="all_accounts">
+            {% if all_accounts %}
+                {% for other_user in all_accounts %}
+                {% comment %} {% if user not in request.user.friends.all and user != request.user %} {% endcomment %}
+                    {% if other_user.email != account.email %}
+                        <h1> {{other_user.USERNAME_FIELD}} 
+                            {% if other_user in account.friends.all %}
+                            
+                            <p> already friends </p>
+                            <p> freinds: {{ account.friends.all }} </p>
+                            {% else %}
 
-                    <a href="send_friend_request/{{user2.pk}}">Send friend request</a>
+                            {% comment %} Friending others is a work in progress {% endcomment %}
+                            {% comment %} <a href="send_friend_request/{{other_user.pk}}">Send friend request</a> {% endcomment %}
+                            <a href="#">Send friend request</a>
+                            {% endif %}
+                        </h1>
                     {% endif %}
-                </h1>
+                {% endfor %}
+            {% else %}
+            <p> No friends found. You are a lonely wumpus... </p>
             {% endif %}
-            {% endfor %}
         </ul>
         {% comment %} <ul class="all_users">
             {% for friend_request in all_friend_requests %}
