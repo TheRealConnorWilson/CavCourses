@@ -28,11 +28,11 @@ URL: https://medium.com/analytics-vidhya/add-friends-with-689a2fa4e41d
 
 class Account(models.Model): 
     """
-    Represents each user in the database
+    Represents each user's account in the database
     Reference for models.User: https://docs.djangoproject.com/en/3.1/ref/contrib/auth/#user-model
     """
     # user = models.OneToOneField(User, on_delete=models.CASCADE)
-    USERNAME_FIELD = models.CharField(max_length=150, default="User")
+    USERNAME_FIELD = models.CharField(max_length=150, default="User") # something was demanding this be USERNAME_FIELD instead of username
     first_name = models.CharField(max_length=150, blank=True, default="User") # blank=True means that it is optional
     last_name = models.CharField(max_length=150, blank=True, default="Name")
     email = models.EmailField(max_length=150, default="none@gmail.com")
@@ -42,14 +42,14 @@ class Account(models.Model):
     is_authenticated = models.BooleanField(default=True)
     is_anonymous = models.BooleanField(default=False)
     
-    account_created = models.BooleanField(default=False)
+    account_created = models.BooleanField(default=False) # currently not used
     
-
-    # schedule = []
+    # friends fields
     friends = models.ManyToManyField("Account", related_name='my_friends', blank=True)
     sent_friend_requests = models.ManyToManyField("Account", related_name = 'from_user', blank=True)
     received_friend_requests = models.ManyToManyField("Account", related_name = 'to_user', blank=True)
     
+    # account info
     schedule = models.ManyToManyField("Section", blank=True)
     major = models.CharField(max_length=100, default=True)
     year = models.CharField(max_length=100, default=True)

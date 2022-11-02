@@ -1,5 +1,5 @@
 from django.test import TestCase, Client
-from .models import User, Course, Department, Instructor, Section
+from .models import Account, Course, Department, Instructor, Section
 from django.utils import timezone
 from django.urls import reverse
 # from django.contrib.auth.models import User
@@ -14,9 +14,9 @@ class DummyTestCase(TestCase):
     def test_dummy_test_case(self):
         self.assertEqual(1, 1)
 
-class UserModelTests(TestCase):
+class AccountModelTests(TestCase):
     def test_user_is_authenticated(self):
-        user = User()
+        user = Account()
         self.assertTrue(user.get_authenticated())
 
 
@@ -30,7 +30,7 @@ class UserModelTests(TestCase):
 
 
 def create_user(username, first_name, last_name, email):
-    user = User()
+    user = Account()
     user.username = username
     user.first_name = first_name
     user.last_name = last_name
@@ -47,7 +47,7 @@ class GoogleLoginViewTests(TestCase):    # Still working on the google login tes
         # self.assertContains(response, "Fill out this field")  # not for sure if this is what it returns when empty
 
     def test_name(self):
-        user = User()
+        user = Account()
         user.first_name = "first"
         user.last_name = "last"
         actual = user.get_full_name()
@@ -75,7 +75,7 @@ class GoogleLoginViewTests(TestCase):    # Still working on the google login tes
         self.user = {'email': 'email@gmail.com', 'username': 'username', 'password':'password','password2':'password',
                      'name': 'fullname'}
         self.client.post(self.register_url, self.user, format='text/html')
-        user = User.objects.filter(email=self.user['email']).first()
+        user = Account.objects.filter(email=self.user['email']).first()
         # user.is_active = True
         # user.save()
         response = self.client.post(self.login_url, self.user, format='text/html')

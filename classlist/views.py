@@ -32,7 +32,7 @@ URL: https://www.geeksforgeeks.org/how-to-pass-additional-context-into-a-class-b
 
 class AuthenticatedListView(generic.ListView):
     """
-    Extend this version of ListView so that the header/page will be able to access the user's information
+    Extend this version of ListView so that the header/page will be able to access the user's account information for the header and such!
     """
     def get_context_data(self,*args, **kwargs):
         context = super().get_context_data(*args,**kwargs)
@@ -45,6 +45,9 @@ def index(request):
     return HttpResponseRedirect("/home")
 
 def get_user_info(request):
+    """
+    This function generates a context that includes the user's matching account information for rendering the templates in other views
+    """
     if request.user.is_authenticated:
         account = Account.objects.get(email=request.user.email)
         # print(account)
@@ -52,6 +55,8 @@ def get_user_info(request):
             'user' : account,
         }
         return context
+    else:
+        return {}
 
 def view_name(request):
     # ex. http://127.0.0.1:8000/accounts/google/login/
@@ -64,9 +69,7 @@ def view_name(request):
     # options for login page
     # return HttpResponse("This is the login page!")
     if request.user.is_authenticated:
-        # print("apple")
-        if not Account.objects.filter(email=request.user.email, account_created=True).exists():
-            # print("pear")
+        if not Account.objects.filter(email=request.user.email).exists():
             return HttpResponseRedirect("/home")
 
     context = get_user_info(request)
@@ -75,12 +78,17 @@ def view_name(request):
     # return HttpResponseRedirect("/accounts/google/login")
 
 def view_home(request):
+    """
+    Allows the user to view the home page, takes into account the login status of the user
+    - if the user is not logged in: directs them to view the departments page (they can still browse)
+    - if the user is logged in but hasn't created an account yet: directs them to account creation page
+    - if the user has an account: loads the home page and welcomes them
+    """
     template_name = "classlist/home.html"
     if not request.user.is_authenticated:
-        return HttpResponseRedirect("/login")
+        return HttpResponseRedirect("/list")
     
     elif not Account.objects.filter(email=request.user.email).exists():
-        
         return HttpResponseRedirect("/create_account")
     
     else: 
@@ -88,9 +96,6 @@ def view_home(request):
         # print(account)
         context = context = get_user_info(request)
         return render(request, template_name, context)
-        
-    
-    return render(request, template_name)
 
 ###########
 def get_depts(request):
@@ -222,27 +227,30 @@ def get_courses_by_dept(request, dept_abbr):
             meetings_obj.save()
             
         
-        
         course_obj.save()
 
     all_courses = Course.objects.filter(subject = dept_abbr).order_by('department', 'catalog_number')
     
-    dept_context = {"dept" : dept,
+    if request.user.is_authenticated:
+        dept_context = {"dept" : dept,
                     "dept_abbr" : dept.dept_abbr,
                     "dept_courses" : all_courses,
                     'user' : Account.objects.get(email=request.user.email),
                     }
+    else:
+        dept_context = {"dept" : dept,
+                        "dept_abbr" : dept.dept_abbr,
+                        "dept_courses" : all_courses,
+                        }
 
     return render(request, template_name, context=dept_context)
 
 
-# first very basic view
 class CourseView(AuthenticatedListView):
     template_name = 'classlist/class.html'
     context_object_name = 'departments'
 
     def get_queryset(self):
-        # return Course.objects.all().order_by('department', 'catalog_number')
         return Department.objects.all().order_by('dept_abbr')
     
     
@@ -251,36 +259,29 @@ class ViewAccount(AuthenticatedListView):
     template_name = 'classlist/view_account.html'
 
 class ViewUsers(AuthenticatedListView):
+    """
+    Allows users to view the other users on the site and potentially friend them
+    TODO improve HTML layout
+    
+    """
     model = Account
     template_name = 'classlist/view_users.html'
     context_object_name = 'all_accounts'
-    print(Account.objects.all())
     
     def get_queryset(self):
-        # return Course.objects.all().order_by('department', 'catalog_number')
-        
         return Account.objects.all()
     
 def create_account(request):
-    print(request.user.username, request.user.email)
+    """
+    Asks the user to input a username, major, and year
+    Once submitted, it creates an account for them on the site
+    
+    TODO check for invalid submissions
+    TODO add warning messages/error messages
+    TODO add drop downs for HTML
+    """
+    # print(request.user.username, request.user.email)
     if request.method == 'POST':
-        print("hi")
-        # Create a form instance and populate it with data from the request (binding):
-        # form = UserAccountForm(request.POST)
-        # print(request.POST)
-        # print(request.POST['username'])
-        # print("AHH")
-        # Check if the form is valid:
-        
-        # if form.is_valid():
-            # print("YAY")
-            
-            # form.save() # save to database
-            # context = {
-            #     'form': form,
-            #     'submit_alert': "submitted ;)"
-            # }
-            # new_user = Account.objects.get(username=request.user.username) # , major=request.user.major, year=request.user.year
         new_account = Account(USERNAME_FIELD=request.POST['username'], 
                             email=request.user.email, 
                             first_name=request.user.first_name,
@@ -291,12 +292,6 @@ def create_account(request):
                             year=request.POST['year']
                             )
         new_account.save()
-        
-        # print(new_account.USERNAME_FIELD, new_account.major)
-        
-        # process the data in form.cleaned_data as required (here we just write it to the model due_back field)
-        # return render(request, 'polls/deep_thought_submit.html', context)
-        # return HttpResponse("success!")
         return HttpResponseRedirect('/home')
         
     else:     
@@ -309,11 +304,15 @@ def create_account(request):
 def send_friend_request(request, userID): # ,userID
     """
     Creates a relation/model for a friend request between two users
+    
+    TODO 
+    
     """
         
     created = False
     my_account = Account.objects.filter(email=request.user.email)
     their_account = Account.objects.filter(pk=userID)
+    
     # if(my_account.friends):
     #     print("exists")
     #     course_obj = Course.objects.get(title=course_title)
@@ -333,6 +332,9 @@ def send_friend_request(request, userID): # ,userID
     
 
 def accept_friend_request(request, requestID):
+    """
+    TODO 
+    """
     print("hi")
     # friend_request = Friend_Request.objects.get(id=request)
     # if friend_request.to_user == request.user:
