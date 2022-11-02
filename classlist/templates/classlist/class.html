@@ -18,6 +18,17 @@
 
 <body>
   {% if all_depts %}
+  <div class="text-center" style="color:black">
+    <h2>Search for a department</h2>
+    <form action="/list/" method="post">
+      {% csrf_token %}
+      {{ form }}
+      <input type="submit" value="Search">
+    </form>
+    <br>
+
+  </div>
+    
       <div class = "row">
           {% for d in all_depts %}
               <div class = "col-sm-3">

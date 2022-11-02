@@ -11,6 +11,7 @@ from urllib3 import HTTPResponse
 from .models import Meetings, Instructor, Account, Course, Department, Section
 from django.contrib.auth import get_user_model
 from .forms import UserAccountForm
+from .forms import SearchForm
 
 import requests
 
@@ -106,10 +107,22 @@ def get_depts(request):
     depts_json = requests.get(api_url)
     all_depts = depts_json.json()
     
-    context = get_user_info(request)
-    context['all_depts'] = all_depts
-    
-    return render(request, template_name, context)
+
+    if request.method == 'POST':
+        form = SearchForm(request.POST)
+    else:
+        form = SearchForm()
+
+    if form.is_valid():
+        for d in all_depts:
+            if d['subject'] == form.cleaned_data.get('searched_dept'):
+                dept_dict = {}
+                dept_dict['subject'] = d['subject']
+                all_depts = []
+                all_depts.append(dept_dict)
+                break
+
+    return render(request, 'classlist/class.html', {'form':form, "all_depts":all_depts})
 ###########
 
 
