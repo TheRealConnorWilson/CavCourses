@@ -73,3 +73,6 @@ class UserAccountForm(UserCreationForm):
             
         #     return data
 
+class SearchForm(forms.Form):
+    searched_dept = forms.CharField(label='', max_length=4)
+
