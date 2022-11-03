@@ -52,7 +52,7 @@
 
                                                     <form action="/schedule/" method="post">
                                                         {% csrf_token %}
-                                                        <button type = 'submit' button name = 'schedule-button' value = "{{c.title}} {{section.section_number}}" class = 'btn btn-success'>Add to Schedule</button>
+                                                        <button type = 'submit' button name = 'schedule-button' value = "{{c}} {{section}}" class = 'btn btn-success'>Add to Schedule</button>
                                                     </form>
 
                                                 </li>
