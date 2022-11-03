@@ -309,7 +309,7 @@ def create_account(request):
         
     else:     
         # If this is a GET (or any other method) create the default form.
-        form = UserAccountForm(initial={'USERNAME_FIELD': request.user.username, 'year': "Unknown", 'major': "Unknown", 'last_login' : timezone.now, 'date_joined' : timezone.now})
+        form = UserAccountForm(initial={'USERNAME_FIELD': request.user.username, 'year': "Other", 'major': "Unknown", 'last_login' : timezone.now, 'date_joined' : timezone.now})
         
     return render(request, 'classlist/create_account.html', {'form': form})
     

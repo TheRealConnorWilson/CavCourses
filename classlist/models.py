@@ -24,6 +24,9 @@ Title: Step by Step guide to add friends with Django
 Sections: Friend Request Model
 URL: https://medium.com/analytics-vidhya/add-friends-with-689a2fa4e41d
 
+Title: Models Fields
+URL: https://docs.djangoproject.com/en/4.1/ref/models/fields/
+
 """
 
 class Account(models.Model): 
@@ -52,7 +55,23 @@ class Account(models.Model):
     # account info
     schedule = models.ManyToManyField("Section", blank=True)
     major = models.CharField(max_length=100, default=True)
-    year = models.CharField(max_length=100, default=True)
+    # year = models.CharField(max_length=100, default=True)
+    
+    FIRST_YEAR = 1
+    SECOND_YEAR = 2
+    THIRD_YEAR = 3
+    FOURTH_YEAR = 4
+    OTHER = 5
+    
+    YEAR_IN_SCHOOL_CHOICES = [
+        (FIRST_YEAR, 'First year'),
+        (SECOND_YEAR, 'Second year'),
+        (THIRD_YEAR, 'Third year'),
+        (FOURTH_YEAR, 'Fourth year'),
+        (OTHER, 'Other')
+    ]
+    
+    year = models.IntegerField(choices=YEAR_IN_SCHOOL_CHOICES,default=OTHER)
 
     def get_username(self):
         return self.username

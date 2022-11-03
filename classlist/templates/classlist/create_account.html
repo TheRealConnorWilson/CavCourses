@@ -5,6 +5,9 @@ Citations:
 Title: Megan Kuo's django tutorial project
 URL: https://github.com/uva-cs3240-f22/django-megkuo/blob/main/polls/templates/polls/deep_thought_submit.html
 
+Title: HTML select
+URL: https://developer.mozilla.org/en-US/docs/Web/HTML/Element/select
+
 {% endcomment %}
 
 <html>
@@ -48,8 +51,15 @@ URL: https://github.com/uva-cs3240-f22/django-megkuo/blob/main/polls/templates/p
     <th><label for="id_year">Year:</label></th>
     <td>
       
-      <input type="text" name="year" value="Unknown" required id="id_year">
-      
+      {% comment %} <input type="text" name="year" value="Unknown" required id="id_year"> {% endcomment %}
+      <select name="year" required id="id_year">
+        <option value="">--Please choose an option--</option>
+        <option value="1">First year</option>
+        <option value="2">Second year</option>
+        <option value="3">Third year</option>
+        <option value="4">Fourth year</option>
+        <option value="5">Other</option>
+      </select>
       
     </td>
   </tr>
