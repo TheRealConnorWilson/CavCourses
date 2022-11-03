@@ -1,0 +1,23 @@
+<html>
+
+<head>
+    {% load bootstrap5 %}
+    {% bootstrap_css %}
+    {% bootstrap_javascript%}
+</head>
+
+{% block body %}
+<h1>My Schedule</h1>
+
+<body>
+    {% if added_classes %}
+        {% for class in added_classes %}
+            <h2>{{class}}</h2>
+        {% endfor %}
+    {% endif %}
+</body>
+{% endblock %}
+
+
+</html>
+

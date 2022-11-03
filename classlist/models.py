@@ -66,7 +66,7 @@ class Account(models.Model):
     def __str__(self):
         return self.email
 
-    # class_list = []
+    class_list = []
 
 class Instructor(models.Model):
     name = models.CharField(max_length=200, blank=True)

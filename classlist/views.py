@@ -357,3 +357,13 @@ def accept_friend_request(request, requestID):
     #     return HTTPResponse('friend request accepted')
     # else:
     #     return HTTPResponse('friend request not accepted')
+
+
+def schedule_view(request):
+    if request.method == 'POST':
+        a = Account() 
+        a.save() 
+        a.class_list.append(request.POST['schedule-button'])   
+        context = {'added_classes' : a.class_list}
+        # context = {'added_class' : request.POST['schedule-button']}
+        return render(request, 'classlist/schedule.html', context)

@@ -15,5 +15,6 @@ urlpatterns = [
     path('accept_friend_request/<int:requestID>/', views.accept_friend_request, name='accept friend request'),
     path('my_account/', views.ViewAccount.as_view(), name='my_account'),
     path('create_account/', views.create_account, name='create account'),
+    path('schedule/', views.schedule_view, name ='schedule')
     
 ]
