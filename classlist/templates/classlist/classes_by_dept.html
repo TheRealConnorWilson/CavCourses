@@ -44,16 +44,17 @@
                                                             <p>{{meeting.days}}</p>
                                                             <p>{{meeting.start_time_as_date_time}} - {{meeting.end_time_as_date_time}}</p>
                                                             <p>{{meeting.facility_description}}</p>
+                                                            <form action="/schedule/" method="post">
+                                                                {% csrf_token %}
+                                                                <button type = 'submit' button name = 'schedule-button' value = "{{c}} {{section}} {{meeting.days}}" class = 'btn btn-success'>Add to Schedule</button>
+                                                            </form>
                                                         {% endfor %}
                                                     {% else %}
                                                         <p> TBD </p>
                                                     {% endif %}
                                                     <!-- <a href="#" class="btn btn-success">Add to schedule</a> -->
 
-                                                    <form action="/schedule/" method="post">
-                                                        {% csrf_token %}
-                                                        <button type = 'submit' button name = 'schedule-button' value = "{{c}} {{section}}" class = 'btn btn-success'>Add to Schedule</button>
-                                                    </form>
+                                                    
 
                                                 </li>
                                             </ul>

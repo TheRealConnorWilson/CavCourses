@@ -66,7 +66,31 @@ class Account(models.Model):
     def __str__(self):
         return self.email
 
-    class_list = []
+    # class_list = []
+
+class Schedule(models.Model):
+    course_name = models.CharField(max_length=200, blank=True)
+    mon = models.BooleanField()
+    tue = models.BooleanField()
+    wed = models.BooleanField()
+    thu = models.BooleanField()
+    fri = models.BooleanField()
+    sat = models.BooleanField()
+    sun = models.BooleanField()
+    
+    @classmethod
+    def get_default_schedule(self):
+        default_schedule = Schedule.objects.get_or_create(
+            course_name = "NA",
+            mon = False,
+            tue = False,
+            wed = False,
+            thu = False,
+            fri = False,
+            sat = False,
+            sun = False,
+            )[0]
+        return default_schedule.pk
 
 class Instructor(models.Model):
     name = models.CharField(max_length=200, blank=True)
