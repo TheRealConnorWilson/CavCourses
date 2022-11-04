@@ -1,3 +1,4 @@
+# from curses.ascii import HT
 import re
 from xml.dom import UserDataHandler
 from django.shortcuts import get_object_or_404, render, redirect
@@ -358,13 +359,12 @@ def accept_friend_request(request, requestID):
     # else:
     #     return HTTPResponse('friend request not accepted')
 
-id = 0
+
 def schedule_view(request):
+    
     if request.method == 'POST':
         # s = Schedule() 
-        # s.save() 
-
-        
+        # s.save()         
         # c = request.POST['schedule-button']
         c = request.POST.get('schedule-button')
         if c != None:
@@ -407,17 +407,21 @@ def schedule_view(request):
                                     sun = su
                                     )
             schedule_obj.save()
-        
+            added_courses = Schedule.objects.all()
+            schedule_context = {'added_courses' : added_courses}
+            return render(request, 'classlist/schedule.html', schedule_context)
+        else:
+            return HttpResponseRedirect('/schedule/')
 
-        added_courses = Schedule.objects.all()
-
-        schedule_context = {'added_courses' : added_courses}
-        return render(request, 'classlist/schedule.html', schedule_context)
 
 def delete_course(request):
     if request.method == 'POST':
         # course_id = request.POST['delete-button']
-        course_id = request.POST.get('delete-button')
+        course_id = int(request.POST.get('delete-button'))
         course = Schedule.objects.get(pk=course_id)
         course.delete()
-    return redirect('schedule')
+        Schedule.objects.all().save()
+        # schedule_context = {'added_courses' : added_courses}
+        return redirect('schedule')
+    # return render(request, 'classlist/schedule.html', schedule_context)
+
