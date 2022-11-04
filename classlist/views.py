@@ -358,55 +358,66 @@ def accept_friend_request(request, requestID):
     # else:
     #     return HTTPResponse('friend request not accepted')
 
-
+id = 0
 def schedule_view(request):
     if request.method == 'POST':
         # s = Schedule() 
         # s.save() 
 
-        # added class
-        c = request.POST['schedule-button']
-
-        mo = False
-        if c.find("Mo") != -1:
-            mo = True
         
-        tu = False
-        if c.find("Tu") != -1:
-            tu = True
+        # c = request.POST['schedule-button']
+        c = request.POST.get('schedule-button')
+        if c != None:
+            
+            mo = False
+            if c.find("Mo") != -1:
+                mo = True
+            
+            tu = False
+            if c.find("Tu") != -1:
+                tu = True
 
-        we = False
-        if c.find("We") != -1:
-            we = True
+            we = False
+            if c.find("We") != -1:
+                we = True
+            
+            th = False
+            if c.find("Th") != -1:
+                th = True
+
+            fr = False
+            if c.find("Fr") != -1:
+                fr = True
+
+            sa = False
+            if c.find("Sa") != -1:
+                sa = True
+
+            su = False
+            if c.find("Su") != -1:
+                su = True
+
+            schedule_obj = Schedule(course_name = c,
+                                    mon = mo,
+                                    tue = tu,
+                                    wed = we,
+                                    thu = th,
+                                    fri = fr,
+                                    sat = sa,
+                                    sun = su
+                                    )
+            schedule_obj.save()
         
-        th = False
-        if c.find("Th") != -1:
-            th = True
-
-        fr = False
-        if c.find("Fr") != -1:
-            fr = True
-
-        sa = False
-        if c.find("Sa") != -1:
-            sa = True
-
-        su = False
-        if c.find("Su") != -1:
-            su = True
-
-        schedule_obj = Schedule(course_name = c,
-                                mon = mo,
-                                tue = tu,
-                                wed = we,
-                                thu = th,
-                                fri = fr,
-                                sat = sa,
-                                sun = su
-                                )
-        schedule_obj.save()
 
         added_courses = Schedule.objects.all()
 
         schedule_context = {'added_courses' : added_courses}
         return render(request, 'classlist/schedule.html', schedule_context)
+
+def delete_course(request):
+    if request.method == 'POST':
+        # course_id = request.POST['delete-button']
+        course_id = request.POST.get('delete-button')
+        course = Schedule.objects.get(pk=course_id)
+        course.delete()
+    return redirect('schedule')
