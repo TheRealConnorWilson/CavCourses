@@ -361,7 +361,6 @@ def accept_friend_request(request, requestID):
 
 
 def schedule_view(request):
-    
     if request.method == 'POST':
         # s = Schedule() 
         # s.save()         
@@ -407,11 +406,11 @@ def schedule_view(request):
                                     sun = su
                                     )
             schedule_obj.save()
-            added_courses = Schedule.objects.all()
-            schedule_context = {'added_courses' : added_courses}
-            return render(request, 'classlist/schedule.html', schedule_context)
-        else:
-            return HttpResponseRedirect('/schedule/')
+    added_courses = Schedule.objects.all()
+    schedule_context = {'added_courses' : added_courses}
+    return render(request, 'classlist/schedule.html', schedule_context)
+        # else:
+        #     return HttpResponseRedirect('/schedule/')
 
 
 def delete_course(request):
@@ -420,8 +419,8 @@ def delete_course(request):
         course_id = int(request.POST.get('delete-button'))
         course = Schedule.objects.get(pk=course_id)
         course.delete()
-        Schedule.objects.all().save()
+        # Schedule.objects.all().save()
         # schedule_context = {'added_courses' : added_courses}
-        return redirect('schedule')
+    return redirect('schedule')
     # return render(request, 'classlist/schedule.html', schedule_context)
 
