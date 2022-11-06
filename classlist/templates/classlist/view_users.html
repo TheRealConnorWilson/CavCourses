@@ -1,73 +1,306 @@
 {% extends "base.html" %}
-{% comment %} 
+<!-- 
 Citations:
-
-Title: Megan Kuo's django tutorial project
-URL: https://github.com/uva-cs3240-f22/django-megkuo/blob/main/polls/templates/polls/deep_thought_submit.html
-
-{% endcomment %}
+https://www.bootdey.com/snippets/view/Card-user-transfer-list#html 
+-->
 
 <html>
-
-    
     {% load socialaccount %}
-    <title>Send friend request</title>
+    <title>Find Friends</title>
 
     {% block body %}
+        <body>
+                <!-- {% comment %} <p> Send friend request: </p>
+                <button class="btn me-2 btn-primary" type="button" role="button">
+                    <a  href="{% url 'send friend request' %}" style="color:inherit"> Request friend </a>
+                </button>
+                <p> Delete friends: </p> {% endcomment %}
+                {% comment %} to be added later {% endcomment %}
 
-    <body>
-            {% comment %} <p> Send friend request: </p>
-            <button class="btn me-2 btn-primary" type="button" role="button">
-                <a  href="{% url 'send friend request' %}" style="color:inherit"> Request friend </a>
-            </button>
-            <p> Delete friends: </p> {% endcomment %}
-            {% comment %} to be added later {% endcomment %}
+                {% comment %} <form method="post" novalidate>
+                    {% csrf_token %}
+                    
+                    <div class ="form-group">
+                        <label for="example" size="large">Email</label>
+                        <input type="text" class="form-control" placeholder="Email Address" name="email">
+                            <button type="submit" class="btn btn-primary" size="lg" aria-setsize="small">Send Request</button>
+                    </div>
+                </form>   {% endcomment %}
 
-            {% comment %} <form method="post" novalidate>
-                {% csrf_token %}
+            {% comment %} </ul> {% endcomment %} -->
+
+                {% if all_accounts %}
+                    <div class="justify-content-center">
+                        <div class="row">
+                            <div class="col-md-5">
+                                <div class="card ccard radius-t-0 h-100">
+
+                                    <div class="card-header pb-3 brc-secondary-l3">
+                                        <h5 class="card-title mb-2 mb-md-0 text-dark-m3 text-center">
+                                            Other Users
+                                        </h5>
+                                    </div>
+                                    <div class="card-body pt-2 pb-1">
+                                        {% for other_user in all_accounts %}
+                                            {% if other_user.email != user.email %}
+                                                <div role="button" class="d-flex flex-wrap align-items-center my-2 bgc-secondary-l4 bgc-h-secondary-l3 radius-1 p-25 d-style">
+                                                    <span class="mr-25 w-4 h-4 overflow-hidden text-center border-1 brc-secondary-m2 radius-round shadow-sm d-zoom-2">
+                                                        <img src="{{other_user.socialaccount_set.all.0.get_avatar_url}}" class="h-4 w-4" />
+                                                    </span>
+                                                    <span class="text-default-d3 text-90 text-600 text-left">
+                                                        {{other_user.USERNAME_FIELD}} ({{other_user.major}} Major)
+                                                    </span>
+                                                    <span>
+                                                        &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp
+                                                    </span>
+
+                                                    {% if other_user in user.friends.all %}
+                                                        <span> 
+                                                            Already Friends 
+                                                        </span>
+                                                    {% else %}
+                                                        <span class="ml-auto text-dark-l2 text-right">
+                                                            <a class="text-right" href="send_friend_request/{{other_user.pk}}">Send friend request</a>
+                                                        </span>
+                                                    {% endif %}
+                                                </div>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% else %}
+                    <p> No accounts exist right now. There is an error. </p>
+                {% endif %}
                 
-                <div class ="form-group">
-                      <label for="example" size="large">Email</label>
-                      <input type="text" class="form-control" placeholder="Email Address" name="email">
-                        <button type="submit" class="btn btn-primary" size="lg" aria-setsize="small">Send Request</button>
-                </div>
-            </form>   {% endcomment %}
-
-        {% comment %} </ul> {% endcomment %}
-
-
-
-        <ul class="all_accounts">
-            {% if all_accounts %}
-                {% for other_user in all_accounts %}
-                {% comment %} {% if user not in request.user.friends.all and user != request.user %} {% endcomment %}
-                    {% if other_user.email != account.email %}
-                        <h1> {{other_user.USERNAME_FIELD}} 
-                            {% if other_user in account.friends.all %}
-                            
-                            <p> already friends </p>
-                            <p> freinds: {{ account.friends.all }} </p>
-                            {% else %}
-
-                            {% comment %} Friending others is a work in progress {% endcomment %}
-                            {% comment %} <a href="send_friend_request/{{other_user.pk}}">Send friend request</a> {% endcomment %}
-                            <a href="#">Send friend request</a>
-                            {% endif %}
-                        </h1>
-                    {% endif %}
+                
+                
+                <!-- {% if all_accounts %}
+                    {% for other_user in all_accounts %}
+                    {% comment %} {% if user not in request.user.friends.all and user != request.user %} {% endcomment %}
+                        {% if other_user.email != user.email %}
+                            <h6> {{other_user.USERNAME_FIELD}} 
+                                {% if other_user in account.friends.all %}
+                                    <p> already friends </p>
+                                    <p> friends: {{ account.friends.all }} </p>
+                                {% else %}
+                                    {% comment %} Friending others is a work in progress {% endcomment %}
+                                    <a href="send_friend_request/{{other_user.pk}}">Send friend request</a>
+                                {% endif %}
+                            </h6>
+                        {% endif %}
+                    {% endfor %}
+                {% else %}
+                <p> No accounts exist right now. There is an error. </p>
+                {% endif %} -->
+            <!-- </ul>
+            {% comment %} <ul class="all_users">
+                {% for friend_request in all_friend_requests %}
+                <h1> {{friend_request.from_user}} 
+                    <a href="/accept_friend_request/{{friend_request.id}}">accept friend request</a></h1>
                 {% endfor %}
-            {% else %}
-            <p> No friends found. You are a lonely wumpus... </p>
-            {% endif %}
-        </ul>
-        {% comment %} <ul class="all_users">
-            {% for friend_request in all_friend_requests %}
-            <h1> {{friend_request.from_user}} 
-                <a href="/accept_friend_request/{{friend_request.id}}">accept friend request</a></h1>
-            {% endfor %}
-        </ul> {% endcomment %}
-    </body>
-
-{% endblock %}
-
+            </ul> {% endcomment %} -->
+        </body>
+    {% endblock %}
 </html>
+
+{% if all_accounts %}
+    <div class="container">
+        <div class="row">
+            <div class="col-md-5">
+                <div class="card ccard radius-t-0 h-100">
+                    <div class="position-tl w-102 border-t-3 brc-primary-tp3 ml-n1px mt-n1px"></div>
+                    <!-- the blue line on top -->
+
+                    <div class="card-header pb-3 brc-secondary-l3">
+                        <h5 class="card-title mb-2 mb-md-0 text-dark-m3">
+                            Other Users
+                        </h5>
+                    </div>
+                    <div class="card-body pt-2 pb-1">
+                        {% for other_user in all_accounts %}
+                            {% if other_user.email != user.email %}
+                                <div role="button" class="d-flex flex-wrap align-items-center my-2 bgc-secondary-l4 bgc-h-secondary-l3 radius-1 p-25 d-style">
+                                    <span class="mr-25 w-4 h-4 overflow-hidden text-center border-1 brc-secondary-m2 radius-round shadow-sm d-zoom-2">
+                                        <img src="{{other_user.socialaccount_set.all.0.get_avatar_url}}" class="h-4 w-4" />
+                                    </span>
+                                    <span class="text-default-d3 text-90 text-600">
+                                        {{other_user.USERNAME_FIELD}}
+                                    </span>
+                                    <span class="ml-auto text-dark-l2 text-nowrap">
+                                        <a href="send_friend_request/{{other_user.pk}}">Send friend request</a>
+                                    </span>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% else %}
+    <p> No accounts exist right now. There is an error. </p>
+{% endif %}
+    
+    
+<div class="container">
+    <div class="row">
+        <div class="col-md-5">
+            <div class="card ccard radius-t-0 h-100">
+                <div class="position-tl w-102 border-t-3 brc-primary-tp3 ml-n1px mt-n1px"></div>
+                <!-- the blue line on top -->
+
+                <div class="card-header pb-3 brc-secondary-l3">
+                    <h5 class="card-title mb-2 mb-md-0 text-dark-m3">
+                        Other Users
+                    </h5>
+                </div>
+
+                <div class="card-body pt-2 pb-1">
+                    <div role="button" class="d-flex flex-wrap align-items-center my-2 bgc-secondary-l4 bgc-h-secondary-l3 radius-1 p-25 d-style">
+                        <span class="mr-25 w-4 h-4 overflow-hidden text-center border-1 brc-secondary-m2 radius-round shadow-sm d-zoom-2">
+                            <img alt="Alexa's avatar" src="https://bootdey.com/img/Content/avatar/avatar1.png" class="h-4 w-4" />
+                        </span>
+
+                        <span class="text-default-d3 text-90 text-600">
+                            Alexa
+                        </span>
+
+                        <span class="ml-auto text-dark-l2 text-nowrap">
+                            1,250
+                            <span class="text-80">
+                                USD
+                            </span>
+                        </span>
+
+                        <span class="ml-2">
+                            <i class="fa fa-arrow-up text-green-m1 text-95"></i>
+                        </span>
+                    </div>
+                    <div role="button" class="d-flex flex-wrap align-items-center my-2 bgc-secondary-l4 bgc-h-secondary-l3 radius-1 p-25 d-style">
+                        <span class="mr-25 w-4 h-4 overflow-hidden text-center border-1 brc-secondary-m2 radius-round shadow-sm d-zoom-2">
+                            <img alt="Derek's avatar" src="https://bootdey.com/img/Content/avatar/avatar2.png" class="h-4 w-4" />
+                        </span>
+
+                        <span class="text-default-d3 text-90 text-600">
+                            Derek
+                        </span>
+
+                        <span class="ml-auto text-dark-l2 text-nowrap">
+                            350
+                            <span class="text-80">
+                                EUR
+                            </span>
+                        </span>
+
+                        <span class="ml-2">
+                            <i class="fa fa-arrow-up text-green-m1 text-95"></i>
+                        </span>
+                    </div>
+                    <div role="button" class="d-flex flex-wrap align-items-center my-2 bgc-secondary-l4 bgc-h-secondary-l3 radius-1 p-25 d-style">
+                        <span class="mr-25 w-4 h-4 overflow-hidden text-center border-1 brc-secondary-m2 radius-round shadow-sm d-zoom-2">
+                            <img alt="Antonio's avatar" src="https://bootdey.com/img/Content/avatar/avatar3.png" class="h-4 w-4" />
+                        </span>
+
+                        <span class="text-default-d3 text-90 text-600">
+                            Antonio
+                        </span>
+
+                        <span class="ml-auto text-dark-l2 text-nowrap">
+                            120
+                            <span class="text-80">
+                                CAD
+                            </span>
+                        </span>
+
+                        <span class="ml-2">
+                            <i class="fa fa-arrow-down text-danger-m1 text-95"></i>
+                        </span>
+                    </div>
+                    <div role="button" class="d-flex flex-wrap align-items-center my-2 bgc-secondary-l4 bgc-h-secondary-l3 radius-1 p-25 d-style">
+                        <span class="mr-25 w-4 h-4 overflow-hidden text-center border-1 brc-secondary-m2 radius-round shadow-sm d-zoom-2">
+                            <img alt="Gabriel's avatar" src="https://bootdey.com/img/Content/avatar/avatar4.png" class="h-4 w-4" />
+                        </span>
+
+                        <span class="text-default-d3 text-90 text-600">
+                            Gabriel
+                        </span>
+
+                        <span class="ml-auto text-dark-l2 text-nowrap">
+                            620
+                            <span class="text-80">
+                                GBP
+                            </span>
+                        </span>
+
+                        <span class="ml-2">
+                            <i class="fa fa-arrow-up text-green-m1 text-95"></i>
+                        </span>
+                    </div>
+                    <div role="button" class="d-flex flex-wrap align-items-center my-2 bgc-secondary-l4 bgc-h-secondary-l3 radius-1 p-25 d-style">
+                        <span class="mr-25 w-4 h-4 overflow-hidden text-center border-1 brc-secondary-m2 radius-round shadow-sm d-zoom-2">
+                            <img alt="David's avatar" src="https://bootdey.com/img/Content/avatar/avatar5.png" class="h-4 w-4" />
+                        </span>
+
+                        <span class="text-default-d3 text-90 text-600">
+                            David
+                        </span>
+
+                        <span class="ml-auto text-dark-l2 text-nowrap">
+                            330
+                            <span class="text-80">
+                                AUD
+                            </span>
+                        </span>
+
+                        <span class="ml-2">
+                            <i class="fa fa-arrow-down text-danger-m1 text-95"></i>
+                        </span>
+                    </div>
+                    <div role="button" class="d-flex flex-wrap align-items-center my-2 bgc-secondary-l4 bgc-h-secondary-l3 radius-1 p-25 d-style">
+                        <span class="mr-25 w-4 h-4 overflow-hidden text-center border-1 brc-secondary-m2 radius-round shadow-sm d-zoom-2">
+                            <img alt="Jason's avatar" src="https://bootdey.com/img/Content/avatar/avatar6.png" class="h-4 w-4" />
+                        </span>
+
+                        <span class="text-default-d3 text-90 text-600">
+                            Jason
+                        </span>
+
+                        <span class="ml-auto text-dark-l2 text-nowrap">
+                            1,400
+                            <span class="text-80">
+                                AED
+                            </span>
+                        </span>
+
+                        <span class="ml-2">
+                            <i class="fa fa-arrow-down text-danger-m1 text-95"></i>
+                        </span>
+                    </div>
+                    <div role="button" class="d-flex flex-wrap align-items-center my-2 bgc-secondary-l4 bgc-h-secondary-l3 radius-1 p-25 d-style">
+                        <span class="mr-25 w-4 h-4 overflow-hidden text-center border-1 brc-secondary-m2 radius-round shadow-sm d-zoom-2">
+                            <img alt="Rebecca's avatar" src="https://bootdey.com/img/Content/avatar/avatar1.png" class="h-4 w-4" />
+                        </span>
+
+                        <span class="text-default-d3 text-90 text-600">
+                            Rebecca
+                        </span>
+
+                        <span class="ml-auto text-dark-l2 text-nowrap">
+                            350
+                            <span class="text-80">
+                                USD
+                            </span>
+                        </span>
+
+                        <span class="ml-2">
+                            <i class="fa fa-arrow-up text-green-m1 text-95"></i>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
