@@ -9,19 +9,18 @@ URL: https://github.com/uva-cs3240-f22/django-megkuo/blob/main/polls/templates/p
 
 <html>
 
-    
     {% load socialaccount %}
     <title>View account</title>
 
     {% block body %}
-
     <body>
-        <h1>My account information</h1>
+        <br/>
+        <h1 class="text-center">My Account Information</h1>
 
         <ul>
-            <p>Username: {{user.USERNAME_FIELD}}</p>
-            <p>Email Address: {{user.email}}
-            <p> My friends: </p>
+            <p><strong>Username:</strong> {{user.USERNAME_FIELD}}</p>
+            <p><strong>Email Address:</strong> {{user.email}}
+            <p><strong>My friends:</strong></p>
             {% if user.friends.all %}
                 {% for user in user.friends.all %}
                     <p>{{user.username}}</p>
@@ -29,11 +28,13 @@ URL: https://github.com/uva-cs3240-f22/django-megkuo/blob/main/polls/templates/p
             {% else %}
                 <p> No friends found. You are a lonely wumpus... :( </p>
             {% endif %}
-            <p> Send friend request: </p>
+
+            <p><strong>Send friend request:</strong></p>
             <button class="btn me-2 btn-primary" type="button" role="button">
-                <a  href="{% url 'view users' %}" style="color:inherit"> Request friend </a>
+                <a href="{% url 'view users' %}" style="color:inherit">Request friend</a>
             </button>
-            <p> Delete friends: </p>
+            
+            <p><strong>Delete friends:</strong></p>
             {% comment %} to be added later {% endcomment %}
 
             {% comment %} <form method="post" novalidate>
@@ -48,24 +49,28 @@ URL: https://github.com/uva-cs3240-f22/django-megkuo/blob/main/polls/templates/p
 
         </ul>
 
-
-
         <ul class="all_users">
-            
             {% for user in all_users %}
-            {% if user not in request.user.friends.all and user != request.user %}
-            <h1> {{user}} <a href="/send_friend_request/{{user.id}}">send friend request</a></h1>
-            {% endif %}
+              {% if user not in request.user.friends.all and user != request.user %}
+                <h1> {{user}} <a href="/send_friend_request/{{user.id}}">send friend request</a></h1>
+              {% endif %}
             {% endfor %}
         </ul>
+
         <ul class="all_users">
             {% for friend_request in all_friend_requests %}
-            <h1> {{friend_request.from_user}} 
-                <a href="/accept_friend_request/{{friend_request.id}}">accept friend request</a></h1>
+            <h1>{{friend_request.from_user}} <a href="/accept_friend_request/{{friend_request.id}}">accept friend request</a></h1>
             {% endfor %}
         </ul>
     </body>
 
+    <footer>
+        <div class="container-fluid fixed-bottom bg-dark text-light mt-5 pt-5">
+            <div class="container text-center py-3">
+                <p style="font-size:14px">Made by Team A-27</p>
+                <p style="font-size:14px">Fall 2022 CS 3240</p>
+            </div>
+        </div>
+    </footer>
 {% endblock %}
-
 </html>

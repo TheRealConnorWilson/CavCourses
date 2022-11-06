@@ -15,9 +15,7 @@
   <br>
 </div>
 
-
-<body>
-  {% if all_depts %}
+{% if all_depts %}
   <div class="text-center" style="color:black">
     <h2>Search for a department</h2>
     <form action="/list/" method="post">
@@ -42,10 +40,17 @@
           {% endfor %}
       </div>
   {% endif %}
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ" crossorigin="anonymous"></script>
 </body>
 
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ" crossorigin="anonymous"></script>
-</body>
+<footer>
+  <div class="container-fluid bg-dark text-light mt-5 pt-5">
+      <div class="container text-center py-3">
+          <p style="font-size:14px">Made by Team A-27</p>
+          <p style="font-size:14px">Fall 2022 CS 3240</p>
+      </div>
+  </div>
+</footer>
 {% endblock %}
 </html>
