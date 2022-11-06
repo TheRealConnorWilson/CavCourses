@@ -49,8 +49,8 @@ class Account(models.Model):
     
     # friends fields
     friends = models.ManyToManyField("Account", related_name='my_friends', blank=True)
-    sent_friend_requests = models.ManyToManyField("Account", related_name = 'from_user', blank=True)
-    received_friend_requests = models.ManyToManyField("Account", related_name = 'to_user', blank=True)
+    # sent_friend_requests = models.ManyToManyField("Account", related_name = 'from_user', blank=True)
+    # received_friend_requests = models.ManyToManyField("Account", related_name = 'to_user', blank=True)
     
     # account info
     schedule = models.ManyToManyField("Section", blank=True)
@@ -85,8 +85,40 @@ class Account(models.Model):
     def __str__(self):
         return self.email
 
-    # class_list = []
-
+class Friend_Request(models.Model):
+    # call two user models
+    from_user = models.ForeignKey(Account, related_name = 'from_user', on_delete=models.CASCADE)
+    to_user = models.ForeignKey(Account, related_name = 'to_user', on_delete=models.CASCADE)
+    
+    # from_user = models.IntegerField(default=0)
+    # to_user = models.IntegerField(default=0)
+    
+    def __str__(self):
+        return str("Request from " + str(self.from_user) + " to " + str(self.to_user))
+    
+class Schedule(models.Model):
+    course_name = models.CharField(max_length=200, blank=True)
+    mon = models.BooleanField()
+    tue = models.BooleanField()
+    wed = models.BooleanField()
+    thu = models.BooleanField()
+    fri = models.BooleanField()
+    sat = models.BooleanField()
+    sun = models.BooleanField()
+    
+    @classmethod
+    def get_default_schedule(self):
+        default_schedule = Schedule.objects.get_or_create(
+            course_name = "NA",
+            mon = False,
+            tue = False,
+            wed = False,
+            thu = False,
+            fri = False,
+            sat = False,
+            sun = False,
+            )[0]
+        return default_schedule.pk
 class Instructor(models.Model):
     name = models.CharField(max_length=200, blank=True)
     email = models.CharField(max_length=25, blank=True)
@@ -98,7 +130,6 @@ class Instructor(models.Model):
 
     def __str__(self):
         return self.name
-
 class Department(models.Model):
     """
     Represents a department at UVA
@@ -112,7 +143,6 @@ class Department(models.Model):
 
     def __str__(self):
         return self.dept_abbr
-
 class Course(models.Model):
     # refernce for how to add classes to sqlite with shell: https://docs.djangoproject.com/en/4.1/intro/tutorial02/
     last_updated = models.DateTimeField('date updated', default=timezone.now)
@@ -146,7 +176,6 @@ class Course(models.Model):
 
     def __str__(self):
         return self.title # + str(self.catalog_number)
-
 class Section(models.Model):
     # additional model fields so that a section knows what course it belongs to
     course_dept = models.CharField(max_length = 4, blank=True)
@@ -168,8 +197,6 @@ class Section(models.Model):
 
     def __str__(self):
         return str(self.section_id) + ": " + str(self.section_number) + " - " + self.component
-
-
 class Meetings(models.Model):
     days = models.CharField(max_length=10, blank=True) # MoWeFr
     start_time = models.CharField(max_length=100, blank=True) # 17.00.00.000000-05:00
@@ -195,15 +222,3 @@ class Meetings(models.Model):
 
     def __str__(self):
         return self.days + ": " + self.start_time + "-" + self.end_time + " @ " + self.facility_description
-    
-# class Friend_Request(models.Model):
-#     # call two user models
-#     # from_user = models.ForeignKey(User, related_name = 'from_user', on_delete=models.CASCADE)
-#     # to_user = models.ForeignKey(User, related_name = 'to_user', on_delete=models.CASCADE)
-    
-#     from_user = models.IntegerField(default=0)
-#     to_user = models.IntegerField(default=0)
-    
-#     def __str__(self):
-#         return str("Request from " + str(self.from_user) + " to " + str(self.to_user))
-    

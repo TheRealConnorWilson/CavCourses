@@ -1,5 +1,3 @@
-import re
-from xml.dom import UserDataHandler
 from django.shortcuts import get_object_or_404, render, redirect
 from django.http import HttpResponse, HttpResponseRedirect
 from django.views import generic
@@ -8,8 +6,9 @@ from django.utils import timezone
 from django.forms import modelformset_factory
 from django.views.generic.edit import CreateView
 from urllib3 import HTTPResponse
-from .models import Meetings, Instructor, Account, Course, Department, Section
-from django.contrib.auth import get_user_model
+from .models import Meetings, Instructor, Account, Course, Department, Section, Schedule, Friend_Request
+from django.contrib.auth.decorators import login_required
+from django.contrib import auth
 from .forms import UserAccountForm
 from .forms import SearchForm
 
@@ -29,7 +28,21 @@ URL: https://medium.com/analytics-vidhya/add-friends-with-689a2fa4e41d
 
 Title: How to Pass Additional Context into a Class Based View (Django)?
 URL: https://www.geeksforgeeks.org/how-to-pass-additional-context-into-a-class-based-view-django/
+
+Title: django: Purpose of django.utils.functional.SimpleLazyObject?
+URL: https://stackoverflow.com/questions/10506766/django-purpose-of-django-utils-functional-simplelazyobject/10507200#10507200
 """
+
+def get_user(request):
+        """
+        Title: django: Purpose of django.utils.functional.SimpleLazyObject?
+        URL: https://stackoverflow.com/questions/10506766/django-purpose-of-django-utils-functional-simplelazyobject/10507200#10507200
+
+        Use this in place of request.user, as that returns a lazy unactivated object
+        """
+        if not hasattr(request, '_cached_user'):
+            request._cached_user = auth.get_user(request)
+        return request._cached_user
 
 class AuthenticatedListView(generic.ListView):
     """
@@ -41,7 +54,6 @@ class AuthenticatedListView(generic.ListView):
         return context
     
 
-
 def index(request):
     return HttpResponseRedirect("/home")
 
@@ -51,7 +63,6 @@ def get_user_info(request):
     """
     if request.user.is_authenticated:
         account = Account.objects.get(email=request.user.email)
-        # print(account)
         context = {
             'user' : account,
         }
@@ -241,6 +252,7 @@ def get_courses_by_dept(request, dept_abbr):
             
         
         course_obj.save()
+        # print(course_obj)
 
     all_courses = Course.objects.filter(subject = dept_abbr).order_by('department', 'catalog_number')
     
@@ -255,9 +267,10 @@ def get_courses_by_dept(request, dept_abbr):
                         "dept_abbr" : dept.dept_abbr,
                         "dept_courses" : all_courses,
                         }
+        
+    
 
     return render(request, template_name, context=dept_context)
-
 
 class CourseView(AuthenticatedListView):
     template_name = 'classlist/class.html'
@@ -265,11 +278,19 @@ class CourseView(AuthenticatedListView):
 
     def get_queryset(self):
         return Department.objects.all().order_by('dept_abbr')
-    
-    
+ 
 class ViewAccount(AuthenticatedListView):
+    """
+    https://www.geeksforgeeks.org/how-to-pass-additional-context-into-a-class-based-view-django/
+    """
     model = Account
     template_name = 'classlist/view_account.html'
+    # extra_context = {"all_friend_requests": Friend_Request.objects.all()}
+    
+    def get_context_data(self,*args, **kwargs):
+        context = super().get_context_data(*args,**kwargs)
+        context.update({"all_friend_requests": Friend_Request.objects.all()})
+        return context
 
 class ViewUsers(AuthenticatedListView):
     """
@@ -313,47 +334,135 @@ def create_account(request):
         
     return render(request, 'classlist/create_account.html', {'form': form})
     
-
-def send_friend_request(request, userID): # ,userID
+@login_required
+def send_friend_request(request, userID):
     """
-    Creates a relation/model for a friend request between two users
-    
-    TODO 
-    
+    https://medium.com/analytics-vidhya/add-friends-with-689a2fa4e41d
     """
-        
-    created = False
-    my_account = Account.objects.filter(email=request.user.email)
-    their_account = Account.objects.filter(pk=userID)
+    # template_name = 'classlist/view_account.html'
+    # context = {"all_friend_requests": Friend_Request.objects.all()}
     
-    # if(my_account.friends):
-    #     print("exists")
-    #     course_obj = Course.objects.get(title=course_title)
-    #     course_obj.catalog_number = catalog_num
-    #     course_obj.sections = []
-    # else:
-    #     friend_request = Friend_Request(from_user=from_user_id, to_user=userID)
-    #     friend_request.save()
-    #     created = True
-    #     print("yay")
-    # if created:
-    #     return HttpResponse('friend request sent')
-    # else:
-    #     return HttpResponse('friend request was already sent')
-    
-    
-    
+    user_email = get_user(request).email
 
+    from_user = Account.objects.get(email=user_email)
+    to_user = Account.objects.get(id=userID)
+    friend_request = Friend_Request(
+        from_user = from_user,
+        to_user = to_user,
+    )
+    friend_request.save()
+
+    # return render(request, template_name, context)
+    return HttpResponseRedirect('/my_account')
+
+@login_required
 def accept_friend_request(request, requestID):
     """
-    TODO 
+    https://medium.com/analytics-vidhya/add-friends-with-689a2fa4e41d
     """
-    print("hi")
-    # friend_request = Friend_Request.objects.get(id=request)
-    # if friend_request.to_user == request.user:
-    #     friend_request.to_user.friends.add(friend_request.from_user)
-    #     friend_request.from_user.friends.add(friend_request.to_user)
-    #     friend_request.delete()
-    #     return HTTPResponse('friend request accepted')
-    # else:
-    #     return HTTPResponse('friend request not accepted')
+    # template_name = 'classlist/view_account.html'
+    # context = {"all_friend_requests": Friend_Request.objects.all()}
+
+    friend_request = Friend_Request.objects.filter(id=requestID)[0]
+    user_email = get_user(request).email
+    current_user = Account.objects.filter(email=user_email)[0]
+
+    if friend_request.to_user == current_user:
+        friend_request.to_user.friends.add(friend_request.from_user)
+        friend_request.from_user.friends.add(friend_request.to_user)
+        friend_request.delete()
+    else:
+        return HttpResponse("Error accepting friend request. Friend request outgoing field did not match current user.")
+
+    # return render(request, template_name, context)
+    return HttpResponseRedirect('/my_account')
+
+@login_required
+def deny_friend_request(request, requestID):
+    """
+    https://medium.com/analytics-vidhya/add-friends-with-689a2fa4e41d
+    """
+    # template_name = 'classlist/view_account.html'
+    # context = {"all_friend_requests": Friend_Request.objects.all()}
+
+    friend_request = Friend_Request.objects.get(id=requestID)
+    friend_request.delete()
+
+    # return render(request, template_name, context)
+    return HttpResponseRedirect('/my_account')
+
+@login_required
+def remove_friend(request, requestID):
+    
+    current_user_email = get_user(request).email
+    current_account = Account.objects.filter(email = current_user_email)[0]
+    user_friend = Account.objects.get(id=requestID)
+    current_account.friends.remove(user_friend)
+    user_friend.friends.remove(current_account)
+
+    return redirect('/classlist/my_account/')
+
+
+def schedule_view(request):
+    if request.method == 'POST':
+        # s = Schedule() 
+        # s.save()         
+        # c = request.POST['schedule-button']
+        c = request.POST.get('schedule-button')
+        if c != None:
+            
+            mo = False
+            if c.find("Mo") != -1:
+                mo = True
+            
+            tu = False
+            if c.find("Tu") != -1:
+                tu = True
+
+            we = False
+            if c.find("We") != -1:
+                we = True
+            
+            th = False
+            if c.find("Th") != -1:
+                th = True
+
+            fr = False
+            if c.find("Fr") != -1:
+                fr = True
+
+            sa = False
+            if c.find("Sa") != -1:
+                sa = True
+
+            su = False
+            if c.find("Su") != -1:
+                su = True
+
+            schedule_obj = Schedule(course_name = c,
+                                    mon = mo,
+                                    tue = tu,
+                                    wed = we,
+                                    thu = th,
+                                    fri = fr,
+                                    sat = sa,
+                                    sun = su
+                                    )
+            schedule_obj.save()
+    added_courses = Schedule.objects.all()
+    schedule_context = {'added_courses' : added_courses}
+    return render(request, 'classlist/schedule.html', schedule_context)
+        # else:
+        #     return HttpResponseRedirect('/schedule/')
+
+def delete_course(request):
+    if request.method == 'POST':
+        # course_id = request.POST['delete-button']
+        course_id = int(request.POST.get('delete-button'))
+        course = Schedule.objects.get(pk=course_id)
+        course.delete()
+        # Schedule.objects.all().save()
+        # schedule_context = {'added_courses' : added_courses}
+    return redirect('schedule')
+    # return render(request, 'classlist/schedule.html', schedule_context)
+

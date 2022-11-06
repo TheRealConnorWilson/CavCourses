@@ -44,11 +44,17 @@
                                                             <p>{{meeting.days}}</p>
                                                             <p>{{meeting.start_time_as_date_time}} - {{meeting.end_time_as_date_time}}</p>
                                                             <p>{{meeting.facility_description}}</p>
+                                                            <form action="/schedule/" method="post">
+                                                                {% csrf_token %}
+                                                                <button type = 'submit' button name = 'schedule-button' value = "{{c}} {{section}} {{meeting.days}}" class = 'btn btn-success'>Add to Schedule</button>
+                                                            </form>
                                                         {% endfor %}
                                                     {% else %}
                                                         <p> TBD </p>
                                                     {% endif %}
-                                                    <a href="#" class="btn btn-success">Add to schedule</a>
+
+                                                    
+
                                                 </li>
                                             </ul>
                                           </div>
@@ -67,45 +73,6 @@
 </body>
 
 
-
-
-<!-- <body>
-    {% if dept_courses %}
-        <div class = "row">
-            {% for c in dept_courses %}
-                <div class = "col-sm-3">
-                    <div class="card-deck">
-                        <div class="card mb-5" style="width:17rem">
-                            <h5 class="card-header">{{c.title}}</h5>
-                            <ul class="nav nav-tabs" id="myTab" role="tablist">
-                                <li class="nav-item">
-                                  <a class="nav-link active" id="home-tab" data-toggle="tab" role="tab" aria-controls="home" aria-selected="true">Class Info</a>
-                                </li>
-                                <li class="nav-item">
-                                  <a class="nav-link" id="enrollment-tab" data-toggle="tab" role="tab" aria-controls="enrollment" aria-selected="false">Enrollment Info</a>
-                                </li>
-                              </ul>
-                            <div class="card-body">
-                                <h5 class="card-title">{{c.description}}</h6>
-                                <p class="card-text">Credits: {{c.units}}</p>
-                            </div>
-                            <a href="#" class="btn btn-primary" class = "card-footer">Add to Schedule</a>
-                        </div>  
-                    </div>
-                </div>     
-            {% endfor %}
-        </div>
-    {% endif %}
-</body> -->
-
-<footer>
-    <div class="container-fluid bg-dark text-light mt-5 pt-5">
-        <div class="container text-center py-3">
-            <p style="font-size:14px">Made by Team A-27</p>
-            <p style="font-size:14px">Fall 2022 CS 3240</p>
-        </div>
-    </div>
-</footer>
 {% endblock %}
 
 </html>

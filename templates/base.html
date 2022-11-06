@@ -9,6 +9,12 @@ extend on every HTML page to have header and footer added
 - credit to michael lin, a fellow student -- he explained best organizational practices
 {% endcomment %}
 
+<!-- 
+References:
+https://getbootstrap.com/docs/5.0/components/navbar/ 
+https://stackoverflow.com/questions/30810028/how-to-display-image-from-google-account-django-allauth 
+-->
+
 <html>
     {% load socialaccount %}
     {% load bootstrap5 %}
@@ -19,50 +25,64 @@ extend on every HTML page to have header and footer added
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
 
     <header>
-        <div>
-            <nav class="navbar navbar-dark bg-dark container-fluid justify-content-start" role="navigation">
-                <a class="navbar-brand">New Lou's List / CavCourses</a>
-    
-                <form class="container-fluid justify-content-start">
-                {% comment %} <ul class="nav flex-row mx-auto bg-dark"> {% endcomment %}
-                    <button class="btn me-2 btn-primary" type="button" role="button">
-                        <a href="{% url 'home' %}" style="color:inherit"> Home </a>
-                    </button>
-                    <button class="btn me-2 btn-primary" type="button" role="button">
-                        <a  href="{% url 'list' %}" style="color:inherit"> View Departments </a>
-                    </button>
-                    <button class="btn me-2 btn-primary" type="button" role="button">
-                        <a href="#" style="color:inherit"> View Schedules </a>
-                    </button>
-    
-                    {% comment %} 
-                    May want to update these to avoid hardcoding the URL's at some point
-                    {% endcomment %}
-    
-                    {% if user.is_authenticated %}
-                        
+
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <div class="container-fluid">
+              <a class="navbar-brand" href="#">New Lou's List / CavCourses</a>
+              <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+              </button>
+              <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                  <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="{% url 'home' %}">Home</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link active" href="{% url 'list' %}">Departments</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link active" href="{% url 'schedule' %}">Schedule Builder</a>
+                  </li>
+                </ul>
+                {% if user.is_authenticated %}
                         <button class="btn me-2 btn-primary" type="button" role="button">
                             <a href="/classlist/my_account/" style="color:inherit"> My Account </a>
                         </button>
                         <button class="btn me-2 btn-primary" type="button" role="button">
                             <a href="/classlist/accounts/logout" style="color:inherit"> Logout </a>
                         </button>
-                        <a class="navbar-brand" color="#fff"> Welcome, {{ user.USERNAME_FIELD }}! </a>
-                    {% else %}
+                        <img src="{{user.socialaccount_set.all.0.get_avatar_url}}" class="rounded-circle" height="30" width="30">
+                {% else %}
                         <button class="btn me-2 btn-primary" type="" color="#fff" role="button">
                             <a href="/classlist/accounts/google/login/?process=login" style="color:inherit"> Login </a>
                         </button>
-                    {% endif %}
-            </form>
-                {% comment %} <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous"> {% endcomment %}
-            </nav>
-    
-        </div>
+                {% endif %}
+              </div>
+            </div>
+        </nav>
             
     </header>
 
     {% block body %}
     {% endblock%}
+
+    <footer class="bg-dark text-center text-white">
+        <!-- Grid container -->
+        <div class="container p-4">
+    
+        <!-- Section: Text -->
+        <section class="mb-4">
+            <p>
+            Team A-27 | University of Virginia | CS 3240 | Fall 2022
+            </p>
+        </section>
+        <!-- Section: Text -->
+    
+    
+        </div>
+        <!-- Grid container -->
+    
+    </footer>
 
 </html>
 
