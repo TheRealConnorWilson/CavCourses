@@ -252,6 +252,7 @@ def get_courses_by_dept(request, dept_abbr):
             
         
         course_obj.save()
+        # print(course_obj)
 
     all_courses = Course.objects.filter(subject = dept_abbr).order_by('department', 'catalog_number')
     
@@ -266,6 +267,8 @@ def get_courses_by_dept(request, dept_abbr):
                         "dept_abbr" : dept.dept_abbr,
                         "dept_courses" : all_courses,
                         }
+        
+    
 
     return render(request, template_name, context=dept_context)
 
@@ -282,7 +285,12 @@ class ViewAccount(AuthenticatedListView):
     """
     model = Account
     template_name = 'classlist/view_account.html'
-    extra_context = {"all_friend_requests": Friend_Request.objects.all()}
+    # extra_context = {"all_friend_requests": Friend_Request.objects.all()}
+    
+    def get_context_data(self,*args, **kwargs):
+        context = super().get_context_data(*args,**kwargs)
+        context.update({"all_friend_requests": Friend_Request.objects.all()})
+        return context
 
 class ViewUsers(AuthenticatedListView):
     """
@@ -331,8 +339,8 @@ def send_friend_request(request, userID):
     """
     https://medium.com/analytics-vidhya/add-friends-with-689a2fa4e41d
     """
-    template_name = 'classlist/view_account.html'
-    context = {"all_friend_requests": Friend_Request.objects.all()}
+    # template_name = 'classlist/view_account.html'
+    # context = {"all_friend_requests": Friend_Request.objects.all()}
     
     user_email = get_user(request).email
 
@@ -344,15 +352,16 @@ def send_friend_request(request, userID):
     )
     friend_request.save()
 
-    return render(request, template_name, context)
+    # return render(request, template_name, context)
+    return HttpResponseRedirect('/my_account')
 
 @login_required
 def accept_friend_request(request, requestID):
     """
     https://medium.com/analytics-vidhya/add-friends-with-689a2fa4e41d
     """
-    template_name = 'classlist/view_account.html'
-    context = {"all_friend_requests": Friend_Request.objects.all()}
+    # template_name = 'classlist/view_account.html'
+    # context = {"all_friend_requests": Friend_Request.objects.all()}
 
     friend_request = Friend_Request.objects.filter(id=requestID)[0]
     user_email = get_user(request).email
@@ -363,22 +372,24 @@ def accept_friend_request(request, requestID):
         friend_request.from_user.friends.add(friend_request.to_user)
         friend_request.delete()
     else:
-        return HTTPResponse("Error accepting friend request. Friend request outgoing field did not match current user.")
+        return HttpResponse("Error accepting friend request. Friend request outgoing field did not match current user.")
 
-    return render(request, template_name, context)
+    # return render(request, template_name, context)
+    return HttpResponseRedirect('/my_account')
 
 @login_required
 def deny_friend_request(request, requestID):
     """
     https://medium.com/analytics-vidhya/add-friends-with-689a2fa4e41d
     """
-    template_name = 'classlist/view_account.html'
-    context = {"all_friend_requests": Friend_Request.objects.all()}
+    # template_name = 'classlist/view_account.html'
+    # context = {"all_friend_requests": Friend_Request.objects.all()}
 
     friend_request = Friend_Request.objects.get(id=requestID)
     friend_request.delete()
 
-    return render(request, template_name, context)
+    # return render(request, template_name, context)
+    return HttpResponseRedirect('/my_account')
 
 @login_required
 def remove_friend(request, requestID):

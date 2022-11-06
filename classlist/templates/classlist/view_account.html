@@ -80,11 +80,13 @@ URL: https://mdbootstrap.com/docs/standard/extended/profiles/
                             <hr class="mt-0 mb-4">
                             {% if all_friend_requests %}
                                 {% for friend_req in all_friend_requests %}
-                                    <div class="d-flex">
-                                        <p class="p-2 flex-strech">{{friend_req.from_user.USERNAME_FIELD}} wants to be your friend!</p>
-                                        <a  class="p-2 flex-strech" mr-2 href="/accept_friend_request/{{friend_req.id}}/">Accept Friend Request</a>
-                                        <a  class="p-2 flex-strech" mr-2 href="/deny_friend_request/{{friend_req.id}}/">Decline Friend Request</a>
-                                    </div>
+                                    {% if friend_req.to_user.USERNAME_FIELD == user.USERNAME_FIELD %}
+                                        <div class="d-flex">
+                                            <p class="p-2 flex-strech">{{friend_req.from_user.USERNAME_FIELD}} wants to be your friend!</p>
+                                            <a  class="p-2 flex-strech" mr-2 href="/accept_friend_request/{{friend_req.id}}/">Accept Friend Request</a>
+                                            <a  class="p-2 flex-strech" mr-2 href="/deny_friend_request/{{friend_req.id}}/">Decline Friend Request</a>
+                                        </div>
+                                    {% endif %}
                                 {% endfor %}
                             {% else %}
                                 <p>No friend requests found. You are a lonely wumpus... :( </p>
