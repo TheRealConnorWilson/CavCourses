@@ -1,9 +1,24 @@
-from django.test import TestCase, Client
-from .models import Account, Course, Department, Instructor, Section
+from django.test import RequestFactory, TestCase, Client
+from .models import *
+from .views import *
+from .forms import *
 from django.utils import timezone
 from django.urls import reverse
 # from django.contrib.auth.models import User
 from . import views
+
+from django.contrib.sessions.middleware import SessionMiddleware
+from django.contrib.messages.middleware import MessageMiddleware
+
+"""
+citations:
+
+Testing URL's/Views: talked about it with Riley, our 3240 TA during office hours
+
+Title: django request factory test
+URL: https://gist.github.com/dkarchmer/99a35f00503458a4fa3088f5c8215381
+
+"""
 
 #Dummy test added.
 class DummyTestCase(TestCase):
@@ -140,3 +155,95 @@ class CourseTesting(TestCase):  # working
                     subject='CSS')
         c2.save()
         self.assertEqual(len(Course.objects.all()), 2)
+
+client = Client()
+class TestViews(TestCase):
+    
+    def setUp(self):
+        # Every test needs access to the request factory.
+        self.factory = RequestFactory()
+        self.u1 = User.objects.create_user(username='User1', email='user1@foo.com', password='pass')
+        self.a1 = Account(USERNAME_FIELD='User1', email='user1@foo.com', year=2, major='Drama')
+        # self.u1.is_active = True
+        # self.u1.is_staff = True
+        self.u1.save()
+        self.a1.save()
+        # self.u2 = User.objects.create_user(username='User2', email='user2@foo.com', password='pass')
+        # self.a2 = Account.objects.create_user(USERNAME_FIELD='User2', email='user2@foo.com', year=4, major='Computer Engineering')
+        # self.u2.is_active = True
+        # self.a2.save()
+        
+    def test_home(self):
+        request = self.factory.get('/home')
+        request.user = self.u1
+        response = view_home(request)
+        self.assertEqual(response.status_code, 200)
+    
+    def test_create_account(self):
+        request = self.factory.get('/create_account')
+        request.user = self.u1
+        response = view_home(request)
+        self.assertEqual(response.status_code, 200)
+    
+    def test_view_departments(self):
+        request = self.factory.get('/classlist/list')
+        request.user = self.u1
+        response = view_home(request)
+        self.assertEqual(response.status_code, 200)
+        
+    def test_view_account(self):
+        request = self.factory.get('/classlist/my_account')
+        request.user = self.u1
+        response = view_home(request)
+        self.assertEqual(response.status_code, 200)
+        
+    def test_view_CS_department(self):
+        request = self.factory.get('/list/CS')
+        request.user = self.u1
+        response = view_home(request)
+        self.assertEqual(response.status_code, 200)
+
+    # def tearDown(self):
+    #     Account.objects.all().delete()
+
+    # def setup_request(self, request):
+    #     request.user = self.u2
+
+    #     """Annotate a request object with a session"""
+    #     middleware = SessionMiddleware()
+    #     middleware.process_request(request)
+    #     request.session.save()
+
+    #     """Annotate a request object with a messages"""
+    #     middleware = MessageMiddleware()
+    #     middleware.process_request(request)
+    #     request.session.save()
+
+    #     request.session['some'] = 'some'
+    #     request.session.save()
+    
+    # def testGet(self):
+
+    #     url = reverse('some_view')
+    #     request = self.factory.get(url)
+    #     self.setup_request(request)
+
+    #     view = SomeCreateView.as_view()
+    #     response = view(request)
+    #     self.assertEqual(response.status_code, status.HTTP_200_OK)
+    #     self.assertEqual(response.template_name[0], 'some_template.html')
+        
+    # def testPost(self):
+    #     url = reverse('some_view')+'?arg={0}'.format(self.some.id)
+    #     form_data = {
+    #         'data1': '1',
+    #         'data2': 2
+    #     }
+
+    #     request = self.factory.post(url, data=form_data)
+    #     self.setup_request(request)
+
+    #     view = SomeCreateView.as_view()
+    #     response = view(request)
+    #     self.failUnlessEqual(response.status_code, status.HTTP_302_FOUND)
+    #     self.assertEqual(SomeModel.objects.count(), 0)  
