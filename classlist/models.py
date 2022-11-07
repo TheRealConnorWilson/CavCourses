@@ -134,6 +134,7 @@ class Department(models.Model):
     """
     Represents a department at UVA
     """
+    last_updated = models.DateTimeField('date updated', default=timezone.now)
     dept_abbr = models.CharField(max_length=4)
 
     @classmethod

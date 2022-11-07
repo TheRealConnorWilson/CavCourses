@@ -5,7 +5,6 @@ from django.urls import reverse
 from django.utils import timezone
 from django.forms import modelformset_factory
 from django.views.generic.edit import CreateView
-from urllib3 import HTTPResponse
 from .models import Meetings, Instructor, Account, Course, Department, Section, Schedule, Friend_Request
 from django.contrib.auth.decorators import login_required
 from django.contrib import auth
@@ -87,7 +86,6 @@ def view_name(request):
     context = get_user_info(request)
     
     return render(request, template_name, context)
-    # return HttpResponseRedirect("/accounts/google/login")
 
 def view_home(request):
     """
@@ -136,10 +134,7 @@ def get_depts(request):
     return render(request, 'classlist/class.html', {'form':form, "all_depts":all_depts})
 ###########
 
-
-def get_courses_by_dept(request, dept_abbr):
-    template_name = "classlist/classes_by_dept.html"
-    
+def update_courses_from_API(dept_abbr):
     #Access API
     api_url = "http://luthers-list.herokuapp.com/api/dept/" + dept_abbr + "/?format=json"
     dept_json = requests.get(api_url)
@@ -151,11 +146,7 @@ def get_courses_by_dept(request, dept_abbr):
         dept = Department(dept_abbr=dept_abbr)
         dept.save()
 
-    # return render(request, template_name, {"all_dept_classes":all_dept_classes})
-
-
     #Assign all fields
-    # if len(Course.objects.filter(subject = dept_abbr).order_by('department', 'catalog_number')) == 0:
     for course in all_dept_classes:
         
         instructor_name = course["instructor"]["name"]
@@ -252,25 +243,40 @@ def get_courses_by_dept(request, dept_abbr):
             
         
         course_obj.save()
-        # print(course_obj)
 
-    all_courses = Course.objects.filter(subject = dept_abbr).order_by('department', 'catalog_number')
-    
+def load_all_courses_from_API():
+    api_url = "http://luthers-list.herokuapp.com/api/deptlist?format=json"
+    depts_json = requests.get(api_url)
+    all_depts = depts_json.json()
+
+    for dept in all_depts:
+        update_courses_from_API(dept['subject'])
+
+def load_dept_courses_from_db(request, dept_abbr):
+    template_name = "classlist/classes_by_dept.html"
+
+    dept = Department.objects.get(dept_abbr = dept_abbr)
+    if (timezone.now() - dept.last_updated).days > 7:
+        update_courses_from_API(dept_abbr)
+
+
+    all_dept_courses = Course.objects.filter(subject = dept_abbr).order_by('department', 'catalog_number')
+
     if request.user.is_authenticated:
-        dept_context = {"dept" : dept,
-                    "dept_abbr" : dept.dept_abbr,
-                    "dept_courses" : all_courses,
-                    'user' : Account.objects.get(email=request.user.email),
-                    }
+        context = {
+            "dept": dept,
+            "dept_abbr": dept_abbr,
+            "dept_courses": all_dept_courses,
+            'user': Account.objects.get(email=request.user.email),
+        }
     else:
-        dept_context = {"dept" : dept,
-                        "dept_abbr" : dept.dept_abbr,
-                        "dept_courses" : all_courses,
-                        }
-        
-    
+        context = {
+            "dept": dept,
+            "dept_abbr": dept_abbr,
+            "dept_courses": all_dept_courses,
+        }
 
-    return render(request, template_name, context=dept_context)
+    return render(request, template_name, context)
 
 class CourseView(AuthenticatedListView):
     template_name = 'classlist/class.html'
@@ -402,7 +408,6 @@ def remove_friend(request, requestID):
 
     return redirect('/classlist/my_account/')
 
-
 def schedule_view(request):
     if request.method == 'POST':
         # s = Schedule() 
@@ -452,8 +457,6 @@ def schedule_view(request):
     added_courses = Schedule.objects.all()
     schedule_context = {'added_courses' : added_courses}
     return render(request, 'classlist/schedule.html', schedule_context)
-        # else:
-        #     return HttpResponseRedirect('/schedule/')
 
 def delete_course(request):
     if request.method == 'POST':
@@ -464,5 +467,3 @@ def delete_course(request):
         # Schedule.objects.all().save()
         # schedule_context = {'added_courses' : added_courses}
     return redirect('schedule')
-    # return render(request, 'classlist/schedule.html', schedule_context)
-
