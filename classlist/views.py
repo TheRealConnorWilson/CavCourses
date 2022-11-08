@@ -36,7 +36,6 @@ def get_user(request):
         """
         Title: django: Purpose of django.utils.functional.SimpleLazyObject?
         URL: https://stackoverflow.com/questions/10506766/django-purpose-of-django-utils-functional-simplelazyobject/10507200#10507200
-
         Use this in place of request.user, as that returns a lazy unactivated object
         """
         if not hasattr(request, '_cached_user'):
@@ -51,7 +50,6 @@ class AuthenticatedListView(generic.ListView):
         context = super().get_context_data(*args,**kwargs)
         context.update(get_user_info(self.request))
         return context
-    
 
 def index(request):
     return HttpResponseRedirect("/home")
@@ -244,6 +242,8 @@ def update_courses_from_API(dept_abbr):
         
         course_obj.save()
 
+    return dept
+
 def load_all_courses_from_API():
     api_url = "http://luthers-list.herokuapp.com/api/deptlist?format=json"
     depts_json = requests.get(api_url)
@@ -255,11 +255,14 @@ def load_all_courses_from_API():
 def load_dept_courses_from_db(request, dept_abbr):
     template_name = "classlist/classes_by_dept.html"
 
-    dept = Department.objects.get(dept_abbr = dept_abbr)
-    if (timezone.now() - dept.last_updated).days > 7:
-        update_courses_from_API(dept_abbr)
+    if Department.objects.filter(dept_abbr = dept_abbr).exists():
+        dept = Department.objects.get(dept_abbr = dept_abbr)
+        if (timezone.now() - dept.last_updated).days > 7:
+            dept = update_courses_from_API(dept_abbr)
+    else:
+        dept = update_courses_from_API(dept_abbr)
 
-
+    
     all_dept_courses = Course.objects.filter(subject = dept_abbr).order_by('department', 'catalog_number')
 
     if request.user.is_authenticated:
