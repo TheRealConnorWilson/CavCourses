@@ -9,6 +9,11 @@ from . import views
 
 from django.contrib.sessions.middleware import SessionMiddleware
 from django.contrib.messages.middleware import MessageMiddleware
+from selenium import webdriver
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.chrome.options import Options
 
 """
 citations:
@@ -56,6 +61,11 @@ def create_user(username, first_name, last_name, email):
 # https://docs.djangoproject.com/en/4.1/topics/testing/tools/
 # referenced this article when writing tests
 class GoogleLoginViewTests(TestCase):    # Still working on the google login testing
+    def initial(self):  # not for sure if this is the proper way to set up
+        self.factory = RequestFactory()
+        self.user = Account.objects.create_account(USERNAME_FIELD='user', email='email@gmail.com', password='pw')
+        self.account = Account.objects.create(email='email@gmial.com')
+
     def test_no_input(self):
         response = self.client.get(reverse('view_name'))
         self.assertEqual(response.status_code, 200)  # not for sure 200 is the right code
@@ -121,12 +131,28 @@ def new_course(semester_code, title, units, subject, cat_num):
 
 
 class CourseTesting(TestCase):  # working
-    def test_no_classes(self):
+    def test_home_page(self):
         response = self.client.get(reverse('list'))
         self.assertEqual(response.status_code, 200)
 
     def test_link(self):  # working
         response = self.client.get('/list/CS/')
+        self.assertEqual(response.status_code, 200)
+
+    def test_accounts(self):  # working
+        response = self.client.get('/list/accounts/')
+        self.assertEqual(response.status_code, 200)
+
+    def test_my_account(self):  # working
+        response = self.client.get('/list/my_account/')
+        self.assertEqual(response.status_code, 200)
+
+    def test_view_users(self):  # working
+        response = self.client.get('/list/view_users/')
+        self.assertEqual(response.status_code, 200)
+
+    def test_create_account(self):  # working
+        response = self.client.get('/create_account/')
         self.assertEqual(response.status_code, 200)
 
     def test_new_class(self):  # working
@@ -246,4 +272,104 @@ class TestViews(TestCase):
     #     view = SomeCreateView.as_view()
     #     response = view(request)
     #     self.failUnlessEqual(response.status_code, status.HTTP_302_FOUND)
-    #     self.assertEqual(SomeModel.objects.count(), 0)  
+    #     self.assertEqual(SomeModel.objects.count(), 0)
+
+# https://selenium-python.readthedocs.io/getting-started.html#using-selenium-to-write-tests
+# good testing link
+
+
+class SeleniumTests(TestCase):  # this could definitely cause problems for people
+    # must install selenium and download chrome driver from https://sites.google.com/chromium.org/driver/
+    # good video that I used for help https://www.youtube.com/watch?v=1KbJdhIpcGo
+    # main documentation for selenium https://selenium-python.readthedocs.io/index.html
+    # after installing the chrome webdriver, move it to the bin folder in your virtual environment folder
+    #drive = webdriver.Chrome(executable_path='../env/chromedriver')
+    #drive.get('https://a27-lous-list.herokuapp.com/list/')
+    #elem2 = drive.find_element(By.LINK_TEXT, "Continue")
+    #elem2.click()
+    #elem = drive.find_element(By.NAME, 'searched_dept')
+    #elem.send_keys('CS')
+    #elem.send_keys(Keys.RETURN)
+    #print(drive.page_source)
+    # elem = drive.find_element(By.LINK_TEXT, "View all ACCT classes")
+    # elem.click()
+    # print(elem.__class__)
+    def clicking_home_from_class(self):
+        driver1 = self.driver
+        driver1.get('https://a27-lous-list.herokuapp.com/list/')
+        elem3 = driver1.find_element(By.LINK_TEXT, "View all ACCT classes")
+        elem3.click()
+        elem1 = driver1.find_element(By.LINK_TEXT, "Home")
+        elem1.click()
+        self.assertIn("Departmentsssss", driver1.page_source)
+
+    def clicking_login(self):
+        self.driver = webdriver.Chrome(executable_path='../env/bin/chromedriver')
+        driver3 = self.driver
+        driver3.get('https://a27-lous-list.herokuapp.com/list/')
+        elem2 = driver3.find_element(By.LINK_TEXT, "Login")
+        elem2.click()
+        self.assertIn("Sign In Via Google", driver3.page_source)
+
+    def test_clicking_classes(self):  # verifies that clicking on a course card will take you to all the sections (good)
+        self.driver = webdriver.Chrome(executable_path='../env/bin/chromedriver')
+        driver3 = self.driver
+        driver3.get('https://a27-lous-list.herokuapp.com/list/')
+        self.assertIn('', driver3.title)
+        elem = driver3.find_element(By.LINK_TEXT, "View all ACCT classes")
+        elem.click()
+        self.assertIn("Section Information", driver3.page_source)
+        self.assertIn("ACCT Classes", driver3.page_source)
+        self.assertIn("ACCT 2010", driver3.page_source)
+
+    def test_search_class(self):
+        self.driver = webdriver.Chrome(executable_path='../env/bin/chromedriver')
+        driver3 = self.driver
+        driver3.get('https://a27-lous-list.herokuapp.com/list/')
+        self.assertIn('', driver3.title)
+        elem = driver3.find_element(By.NAME, 'searched_dept')
+        elem.send_keys('CS')
+        elem.send_keys(Keys.RETURN)
+        self.assertIn("View all CS classes", driver3.page_source)
+
+    def test_logging_in(self):  # verifies that clicking on a course card will take you to all the sections (good)
+        self.driver = webdriver.Chrome(executable_path='../env/bin/chromedriver')
+        driver3 = self.driver
+        driver3.get('https://a27-lous-list.herokuapp.com/list/')
+        elem = driver3.find_element(By.LINK_TEXT, "Login")
+        elem.click()
+        # elem2 = driver3.find_element(By.LINK_TEXT, "Continue")
+        # elem2.click()
+        self.assertIn("Sign In Via Google", driver3.page_source)
+
+    def test_cs_class(self):  # verifies that clicking on a course card will take you to all the sections (good)
+        self.driver = webdriver.Chrome(executable_path='../env/bin/chromedriver')
+        driver3 = self.driver
+        driver3.get('https://a27-lous-list.herokuapp.com/list/')
+        element = driver3.find_element(By.LINK_TEXT, "View all ACCT classes")
+        element.click()
+        #element2 = driver3.find_element(By.LINK_TEXT, "Section Information")
+        #element2.click()
+        #self.assertIn("Derrick Stone", driver3.page_source)
+
+
+    def search_class(self):
+        # self.driver = webdriver.Chrome(executable_path='../env/bin/chromedriver')
+        driver = self.driver
+        driver.get('https://a27-lous-list.herokuapp.com/list/')
+        elem = driver.find_element(By.NAME, 'searched_dept')
+        elem.send_keys('CS')
+        elem.send_keys(Keys.RETURN)
+        self.assertIn("View all CS classes", driver.page_source)
+
+    def test_schedule_builder(self):  # verifies that clicking on a course card will take you to all the sections (good)
+        self.driver = webdriver.Chrome(executable_path='../env/bin/chromedriver')
+        driver3 = self.driver
+        driver3.get('https://a27-lous-list.herokuapp.com/list/')
+        elem = driver3.find_element(By.LINK_TEXT, "View all ACCT classes")
+        elem.click()
+        self.assertIn("Section Information", driver3.page_source)
+        self.assertIn("ACCT Classes", driver3.page_source)
+        self.assertIn("ACCT 2010", driver3.page_source)
+    def tearDown(self):
+        self.driver.close()
