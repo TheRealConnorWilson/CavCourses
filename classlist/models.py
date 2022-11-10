@@ -187,7 +187,7 @@ class Section(models.Model):
     wait_cap = models.IntegerField(default=0) # 199,
     enrollment_total = models.IntegerField(default=0) # 72,
     enrollment_available = models.IntegerField(default=0) # 3
-    topic = models.CharField(max_length=200, blank=True) # optional description | This may belong in course
+    topic = models.CharField(max_length=200, blank=True)
     # meetings = []
 
     def __str__(self):

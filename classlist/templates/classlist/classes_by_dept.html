@@ -34,7 +34,12 @@
                                         <div class="card collapse" id="card{{c.id}}">
                                             <ul class="list-group list-group-flush">
                                                 <li class="list-group-item">
-                                                    <h6>{{section.section_number}} ({{section.component}})</h6>
+                                                    {% if section.topic == "" %}
+                                                        <h6>{{section.section_number}} ({{section.component}})</h6>
+                                                    {% else %}
+                                                        <h6>{{section.topic}}</h6>
+                                                        <p>{{section.section_number}} ({{section.component}})</p>
+                                                    {% endif %}
                                                     <p>{{section.instructor.name}} ({{section.instructor.email}})</p>
                                                     <p>{{section.enrollment_available}}/{{section.capacity}} seats open</p>
                                                     <p>{{section.wait_list}}/{{section.wait_cap}} seats open on the waitlist</p>
