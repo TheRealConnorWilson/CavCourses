@@ -117,7 +117,114 @@ def get_depts(request):
     api_url = "http://luthers-list.herokuapp.com/api/deptlist?format=json"
     depts_json = requests.get(api_url)
     all_depts = depts_json.json()
-    
+    all_depts_search = []
+
+    a_depts = []
+    for d in all_depts:
+        if d['subject'][0] == 'A':
+            a_depts.append(d['subject'])
+    b_depts = []
+    for d in all_depts:
+        if d['subject'][0] == 'B':
+            b_depts.append(d['subject'])
+    c_depts = []
+    for d in all_depts:
+        if d['subject'][0] == 'C':
+            c_depts.append(d['subject'])
+    d_depts = []
+    for d in all_depts:
+        if d['subject'][0] == 'D':
+            d_depts.append(d['subject'])
+    e_depts = []
+    for d in all_depts:
+        if d['subject'][0] == 'E':
+            e_depts.append(d['subject'])
+    f_depts = []
+    for d in all_depts:
+        if d['subject'][0] == 'F':
+            f_depts.append(d['subject'])
+    g_depts = []
+    for d in all_depts:
+        if d['subject'][0] == 'G':
+            g_depts.append(d['subject'])
+    h_depts = []
+    for d in all_depts:
+        if d['subject'][0] == 'H':
+            h_depts.append(d['subject'])
+    i_depts = []
+    for d in all_depts:
+        if d['subject'][0] == 'I':
+            i_depts.append(d['subject'])
+    j_depts = []
+    for d in all_depts:
+        if d['subject'][0] == 'J':
+            j_depts.append(d['subject'])
+    k_depts = []
+    for d in all_depts:
+        if d['subject'][0] == 'K':
+            k_depts.append(d['subject'])
+    l_depts = []
+    for d in all_depts:
+        if d['subject'][0] == 'L':
+            l_depts.append(d['subject'])
+    m_depts = []
+    for d in all_depts:
+        if d['subject'][0] == 'M':
+            m_depts.append(d['subject'])
+    n_depts = []
+    for d in all_depts:
+        if d['subject'][0] == 'N':
+            n_depts.append(d['subject'])
+    o_depts = []
+    for d in all_depts:
+        if d['subject'][0] == 'O':
+            o_depts.append(d['subject'])
+    p_depts = []
+    for d in all_depts:
+        if d['subject'][0] == 'P':
+            p_depts.append(d['subject'])
+    q_depts = []
+    for d in all_depts:
+        if d['subject'][0] == 'Q':
+            q_depts.append(d['subject'])
+    r_depts = []
+    for d in all_depts:
+        if d['subject'][0] == 'R':
+            r_depts.append(d['subject'])
+    s_depts = []
+    for d in all_depts:
+        if d['subject'][0] == 'S':
+            s_depts.append(d['subject'])
+    t_depts = []
+    for d in all_depts:
+        if d['subject'][0] == 'T':
+            t_depts.append(d['subject'])
+    u_depts = []
+    for d in all_depts:
+        if d['subject'][0] == 'U':
+            u_depts.append(d['subject'])
+    v_depts = []
+    for d in all_depts:
+        if d['subject'][0] == 'V':
+            v_depts.append(d['subject'])
+    w_depts = []
+    for d in all_depts:
+        if d['subject'][0] == 'W':
+            w_depts.append(d['subject'])
+    x_depts = []
+    for d in all_depts:
+        if d['subject'][0] == 'X':
+            x_depts.append(d['subject'])
+    y_depts = []
+    for d in all_depts:
+        if d['subject'][0] == 'Y':
+            y_depts.append(d['subject'])
+    z_depts = []
+    for d in all_depts:
+        if d['subject'][0] == 'Z':
+            z_depts.append(d['subject'])
+            
+
 
     if request.method == 'POST':
         form = SearchForm(request.POST)
@@ -129,11 +236,13 @@ def get_depts(request):
             if d['subject'] == form.cleaned_data.get('searched_dept'):
                 dept_dict = {}
                 dept_dict['subject'] = d['subject']
-                all_depts = []
-                all_depts.append(dept_dict)
+                # all_depts = []
+                # all_depts.append(dept_dict)
+                all_depts_search = []
+                all_depts_search.append(dept_dict)
                 break
 
-    return render(request, 'classlist/class.html', {'form':form, "all_depts":all_depts})
+    return render(request, 'classlist/class.html', {'form':form, "all_depts_search":all_depts_search, 'a_depts':a_depts, 'b_depts':b_depts, 'c_depts':c_depts, 'd_depts':d_depts, 'e_depts':e_depts, 'f_depts':f_depts, 'g_depts':g_depts, 'h_depts':h_depts, 'i_depts':i_depts, 'j_depts':j_depts, 'k_depts':k_depts, 'l_depts':l_depts, 'm_depts':m_depts, 'n_depts':n_depts, 'o_depts':o_depts, 'p_depts':p_depts, 'q_depts':q_depts, 'r_depts':r_depts, 's_depts':s_depts, 't_depts':t_depts, 'u_depts':u_depts, 'v_depts':v_depts, 'w_depts':w_depts, 'x_depts':x_depts, 'y_depts':y_depts, 'z_depts':z_depts})
 ###########
 
 
