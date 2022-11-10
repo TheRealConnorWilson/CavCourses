@@ -15,7 +15,7 @@
   <br>
 </div>
 
-{% if all_depts %}
+<!-- {% if all_depts %}
   <div class="text-center" style="color:black">
     <h2>Search for a department</h2>
     <form action="/list/" method="post">
@@ -39,7 +39,428 @@
               </div>     
           {% endfor %}
       </div>
+  {% endif %} -->
+
+
+  <div class="text-center" style="color:black">
+    <h2>Search for a department</h2>
+    <form action="/list/" method="post">
+      {% csrf_token %}
+      {{ form }}
+      <input type="submit" value="Search">
+    </form>
+    <br>
+  </div>
+
+  {% if all_depts_search %}
+    <div class = "row">
+      {% for d in all_depts_search %}
+          <div class = "col-sm-3">
+              <div class="card-deck">
+                  <div class="card mb-5" style="width:17rem">
+                      <h5 class="card-header">{{d.subject}}</h5>
+                      <a href="{{d.subject}}/" class="btn btn-primary" class = "card-footer">View all {{d.subject}} classes</a>
+                  </div>  
+              </div>
+          </div>     
+      {% endfor %}
+    </div>
+  {% else %}
+
+    {% if a_depts %}
+      <h1>A</h1>    
+        <div class = "row">
+            {% for d in a_depts %}
+                <div class = "col-sm-3">
+                    <div class="card-deck">
+                        <div class="card mb-5" style="width:17rem">
+                            <h5 class="card-header">{{d}}</h5>
+                            <a href="{{d}}/" class="btn btn-primary" class = "card-footer">View all {{d}} classes</a>
+                        </div>  
+                    </div>
+                </div>     
+            {% endfor %}
+        </div>
+    {% endif %}
+    {% if b_depts %}
+      <h1>B</h1>    
+        <div class = "row">
+            {% for d in b_depts %}
+                <div class = "col-sm-3">
+                    <div class="card-deck">
+                        <div class="card mb-5" style="width:17rem">
+                            <h5 class="card-header">{{d}}</h5>
+                            <a href="{{d}}/" class="btn btn-primary" class = "card-footer">View all {{d}} classes</a>
+                        </div>  
+                    </div>
+                </div>     
+            {% endfor %}
+        </div>
+    {% endif %}
+    {% if c_depts %}
+      <h1>C</h1>    
+        <div class = "row">
+            {% for d in c_depts %}
+                <div class = "col-sm-3">
+                    <div class="card-deck">
+                        <div class="card mb-5" style="width:17rem">
+                            <h5 class="card-header">{{d}}</h5>
+                            <a href="{{d}}/" class="btn btn-primary" class = "card-footer">View all {{d}} classes</a>
+                        </div>  
+                    </div>
+                </div>     
+            {% endfor %}
+        </div>
+    {% endif %}
+    {% if d_depts %}
+      <h1>D</h1>    
+        <div class = "row">
+            {% for d in d_depts %}
+                <div class = "col-sm-3">
+                    <div class="card-deck">
+                        <div class="card mb-5" style="width:17rem">
+                            <h5 class="card-header">{{d}}</h5>
+                            <a href="{{d}}/" class="btn btn-primary" class = "card-footer">View all {{d}} classes</a>
+                        </div>  
+                    </div>
+                </div>     
+            {% endfor %}
+        </div>
+    {% endif %}
+    {% if e_depts %}
+      <h1>E</h1>    
+        <div class = "row">
+            {% for d in e_depts %}
+                <div class = "col-sm-3">
+                    <div class="card-deck">
+                        <div class="card mb-5" style="width:17rem">
+                            <h5 class="card-header">{{d}}</h5>
+                            <a href="{{d}}/" class="btn btn-primary" class = "card-footer">View all {{d}} classes</a>
+                        </div>  
+                    </div>
+                </div>     
+            {% endfor %}
+        </div>
+    {% endif %}
+    {% if f_depts %}
+      <h1>F</h1>    
+        <div class = "row">
+            {% for d in f_depts %}
+                <div class = "col-sm-3">
+                    <div class="card-deck">
+                        <div class="card mb-5" style="width:17rem">
+                            <h5 class="card-header">{{d}}</h5>
+                            <a href="{{d}}/" class="btn btn-primary" class = "card-footer">View all {{d}} classes</a>
+                        </div>  
+                    </div>
+                </div>     
+            {% endfor %}
+        </div>
+    {% endif %}
+    {% if g_depts %}
+      <h1>G</h1>    
+        <div class = "row">
+            {% for d in g_depts %}
+                <div class = "col-sm-3">
+                    <div class="card-deck">
+                        <div class="card mb-5" style="width:17rem">
+                            <h5 class="card-header">{{d}}</h5>
+                            <a href="{{d}}/" class="btn btn-primary" class = "card-footer">View all {{d}} classes</a>
+                        </div>  
+                    </div>
+                </div>     
+            {% endfor %}
+        </div>
+    {% endif %}
+    {% if h_depts %}
+      <h1>H</h1>    
+        <div class = "row">
+            {% for d in h_depts %}
+                <div class = "col-sm-3">
+                    <div class="card-deck">
+                        <div class="card mb-5" style="width:17rem">
+                            <h5 class="card-header">{{d}}</h5>
+                            <a href="{{d}}/" class="btn btn-primary" class = "card-footer">View all {{d}} classes</a>
+                        </div>  
+                    </div>
+                </div>     
+            {% endfor %}
+        </div>
+    {% endif %}
+    {% if i_depts %}
+      <h1>I</h1>    
+        <div class = "row">
+            {% for d in i_depts %}
+                <div class = "col-sm-3">
+                    <div class="card-deck">
+                        <div class="card mb-5" style="width:17rem">
+                            <h5 class="card-header">{{d}}</h5>
+                            <a href="{{d}}/" class="btn btn-primary" class = "card-footer">View all {{d}} classes</a>
+                        </div>  
+                    </div>
+                </div>     
+            {% endfor %}
+        </div>
+    {% endif %}
+    {% if j_depts %}
+      <h1>J</h1>    
+        <div class = "row">
+            {% for d in j_depts %}
+                <div class = "col-sm-3">
+                    <div class="card-deck">
+                        <div class="card mb-5" style="width:17rem">
+                            <h5 class="card-header">{{d}}</h5>
+                            <a href="{{d}}/" class="btn btn-primary" class = "card-footer">View all {{d}} classes</a>
+                        </div>  
+                    </div>
+                </div>     
+            {% endfor %}
+        </div>
+    {% endif %}
+    {% if k_depts %}
+      <h1>K</h1>    
+        <div class = "row">
+            {% for d in k_depts %}
+                <div class = "col-sm-3">
+                    <div class="card-deck">
+                        <div class="card mb-5" style="width:17rem">
+                            <h5 class="card-header">{{d}}</h5>
+                            <a href="{{d}}/" class="btn btn-primary" class = "card-footer">View all {{d}} classes</a>
+                        </div>  
+                    </div>
+                </div>     
+            {% endfor %}
+        </div>
+    {% endif %}
+    {% if l_depts %}
+      <h1>L</h1>    
+        <div class = "row">
+            {% for d in l_depts %}
+                <div class = "col-sm-3">
+                    <div class="card-deck">
+                        <div class="card mb-5" style="width:17rem">
+                            <h5 class="card-header">{{d}}</h5>
+                            <a href="{{d}}/" class="btn btn-primary" class = "card-footer">View all {{d}} classes</a>
+                        </div>  
+                    </div>
+                </div>     
+            {% endfor %}
+        </div>
+    {% endif %}
+    {% if m_depts %}
+      <h1>M</h1>    
+        <div class = "row">
+            {% for d in m_depts %}
+                <div class = "col-sm-3">
+                    <div class="card-deck">
+                        <div class="card mb-5" style="width:17rem">
+                            <h5 class="card-header">{{d}}</h5>
+                            <a href="{{d}}/" class="btn btn-primary" class = "card-footer">View all {{d}} classes</a>
+                        </div>  
+                    </div>
+                </div>     
+            {% endfor %}
+        </div>
+    {% endif %}
+    {% if n_depts %}
+      <h1>N</h1>    
+        <div class = "row">
+            {% for d in n_depts %}
+                <div class = "col-sm-3">
+                    <div class="card-deck">
+                        <div class="card mb-5" style="width:17rem">
+                            <h5 class="card-header">{{d}}</h5>
+                            <a href="{{d}}/" class="btn btn-primary" class = "card-footer">View all {{d}} classes</a>
+                        </div>  
+                    </div>
+                </div>     
+            {% endfor %}
+        </div>
+    {% endif %}
+    {% if o_depts %}
+      <h1>O</h1>    
+        <div class = "row">
+            {% for d in o_depts %}
+                <div class = "col-sm-3">
+                    <div class="card-deck">
+                        <div class="card mb-5" style="width:17rem">
+                            <h5 class="card-header">{{d}}</h5>
+                            <a href="{{d}}/" class="btn btn-primary" class = "card-footer">View all {{d}} classes</a>
+                        </div>  
+                    </div>
+                </div>     
+            {% endfor %}
+        </div>
+    {% endif %}
+    {% if p_depts %}
+      <h1>P</h1>    
+        <div class = "row">
+            {% for d in p_depts %}
+                <div class = "col-sm-3">
+                    <div class="card-deck">
+                        <div class="card mb-5" style="width:17rem">
+                            <h5 class="card-header">{{d}}</h5>
+                            <a href="{{d}}/" class="btn btn-primary" class = "card-footer">View all {{d}} classes</a>
+                        </div>  
+                    </div>
+                </div>     
+            {% endfor %}
+        </div>
+    {% endif %}
+    {% if q_depts %}
+      <h1>Q</h1>    
+        <div class = "row">
+            {% for d in q_depts %}
+                <div class = "col-sm-3">
+                    <div class="card-deck">
+                        <div class="card mb-5" style="width:17rem">
+                            <h5 class="card-header">{{d}}</h5>
+                            <a href="{{d}}/" class="btn btn-primary" class = "card-footer">View all {{d}} classes</a>
+                        </div>  
+                    </div>
+                </div>     
+            {% endfor %}
+        </div>
+    {% endif %}
+    {% if r_depts %}
+      <h1>R</h1>    
+        <div class = "row">
+            {% for d in r_depts %}
+                <div class = "col-sm-3">
+                    <div class="card-deck">
+                        <div class="card mb-5" style="width:17rem">
+                            <h5 class="card-header">{{d}}</h5>
+                            <a href="{{d}}/" class="btn btn-primary" class = "card-footer">View all {{d}} classes</a>
+                        </div>  
+                    </div>
+                </div>     
+            {% endfor %}
+        </div>
+    {% endif %}
+    {% if s_depts %}
+      <h1>S</h1>    
+        <div class = "row">
+            {% for d in s_depts %}
+                <div class = "col-sm-3">
+                    <div class="card-deck">
+                        <div class="card mb-5" style="width:17rem">
+                            <h5 class="card-header">{{d}}</h5>
+                            <a href="{{d}}/" class="btn btn-primary" class = "card-footer">View all {{d}} classes</a>
+                        </div>  
+                    </div>
+                </div>     
+            {% endfor %}
+        </div>
+    {% endif %}
+    {% if t_depts %}
+      <h1>T</h1>    
+        <div class = "row">
+            {% for d in t_depts %}
+                <div class = "col-sm-3">
+                    <div class="card-deck">
+                        <div class="card mb-5" style="width:17rem">
+                            <h5 class="card-header">{{d}}</h5>
+                            <a href="{{d}}/" class="btn btn-primary" class = "card-footer">View all {{d}} classes</a>
+                        </div>  
+                    </div>
+                </div>     
+            {% endfor %}
+        </div>
+    {% endif %}
+    {% if u_depts %}
+      <h1>U</h1>    
+        <div class = "row">
+            {% for d in u_depts %}
+                <div class = "col-sm-3">
+                    <div class="card-deck">
+                        <div class="card mb-5" style="width:17rem">
+                            <h5 class="card-header">{{d}}</h5>
+                            <a href="{{d}}/" class="btn btn-primary" class = "card-footer">View all {{d}} classes</a>
+                        </div>  
+                    </div>
+                </div>     
+            {% endfor %}
+        </div>
+    {% endif %}
+    {% if v_depts %}
+      <h1>V</h1>    
+        <div class = "row">
+            {% for d in v_depts %}
+                <div class = "col-sm-3">
+                    <div class="card-deck">
+                        <div class="card mb-5" style="width:17rem">
+                            <h5 class="card-header">{{d}}</h5>
+                            <a href="{{d}}/" class="btn btn-primary" class = "card-footer">View all {{d}} classes</a>
+                        </div>  
+                    </div>
+                </div>     
+            {% endfor %}
+        </div>
+    {% endif %}
+    {% if w_depts %}
+      <h1>W</h1>    
+        <div class = "row">
+            {% for d in w_depts %}
+                <div class = "col-sm-3">
+                    <div class="card-deck">
+                        <div class="card mb-5" style="width:17rem">
+                            <h5 class="card-header">{{d}}</h5>
+                            <a href="{{d}}/" class="btn btn-primary" class = "card-footer">View all {{d}} classes</a>
+                        </div>  
+                    </div>
+                </div>     
+            {% endfor %}
+        </div>
+    {% endif %}
+    {% if x_depts %}
+      <h1>X</h1>    
+        <div class = "row">
+            {% for d in x_depts %}
+                <div class = "col-sm-3">
+                    <div class="card-deck">
+                        <div class="card mb-5" style="width:17rem">
+                            <h5 class="card-header">{{d}}</h5>
+                            <a href="{{d}}/" class="btn btn-primary" class = "card-footer">View all {{d}} classes</a>
+                        </div>  
+                    </div>
+                </div>     
+            {% endfor %}
+        </div>
+    {% endif %}
+    {% if y_depts %}
+      <h1>Y</h1>    
+        <div class = "row">
+            {% for d in y_depts %}
+                <div class = "col-sm-3">
+                    <div class="card-deck">
+                        <div class="card mb-5" style="width:17rem">
+                            <h5 class="card-header">{{d}}</h5>
+                            <a href="{{d}}/" class="btn btn-primary" class = "card-footer">View all {{d}} classes</a>
+                        </div>  
+                    </div>
+                </div>     
+            {% endfor %}
+        </div>
+    {% endif %}
+    {% if z_depts %}
+      <h1>Z</h1>    
+        <div class = "row">
+            {% for d in z_depts %}
+                <div class = "col-sm-3">
+                    <div class="card-deck">
+                        <div class="card mb-5" style="width:17rem">
+                            <h5 class="card-header">{{d}}</h5>
+                            <a href="{{d}}/" class="btn btn-primary" class = "card-footer">View all {{d}} classes</a>
+                        </div>  
+                    </div>
+                </div>     
+            {% endfor %}
+        </div>
+    {% endif %}
   {% endif %}
+
+
+
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ" crossorigin="anonymous"></script>
 </body>
