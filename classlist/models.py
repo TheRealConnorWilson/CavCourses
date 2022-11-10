@@ -24,9 +24,6 @@ Title: Step by Step guide to add friends with Django
 Sections: Friend Request Model
 URL: https://medium.com/analytics-vidhya/add-friends-with-689a2fa4e41d
 
-Title: Models Fields
-URL: https://docs.djangoproject.com/en/4.1/ref/models/fields/
-
 """
 
 class Account(models.Model): 
@@ -55,7 +52,6 @@ class Account(models.Model):
     # account info
     schedule = models.ManyToManyField("Section", blank=True)
     major = models.CharField(max_length=100, default=True)
-    # year = models.CharField(max_length=100, default=True)
     
     FIRST_YEAR = 1
     SECOND_YEAR = 2
@@ -84,7 +80,6 @@ class Account(models.Model):
     
     def __str__(self):
         return self.email
-
 class Friend_Request(models.Model):
     # call two user models
     from_user = models.ForeignKey(Account, related_name = 'from_user', on_delete=models.CASCADE)
@@ -94,8 +89,7 @@ class Friend_Request(models.Model):
     # to_user = models.IntegerField(default=0)
     
     def __str__(self):
-        return str("Request from " + str(self.from_user) + " to " + str(self.to_user))
-    
+        return str("Request from " + str(self.from_user) + " to " + str(self.to_user)) 
 class Schedule(models.Model):
     course_name = models.CharField(max_length=200, blank=True)
     mon = models.BooleanField()
@@ -134,8 +128,8 @@ class Department(models.Model):
     """
     Represents a department at UVA
     """
-    last_updated = models.DateTimeField('date updated', default=timezone.now)
     dept_abbr = models.CharField(max_length=4)
+    last_updated = models.DateTimeField("last updated", default=timezone.now)
 
     @classmethod
     def get_default_dept(self):
@@ -180,7 +174,7 @@ class Course(models.Model):
 class Section(models.Model):
     # additional model fields so that a section knows what course it belongs to
     course_dept = models.CharField(max_length = 4, blank=True)
-    course_num = models.IntegerField(default=0)
+    course_num = models.CharField(max_length = 5, blank=True)
 
     course = models.ForeignKey(Course, on_delete=models.CASCADE, default=None)
 
