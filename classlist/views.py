@@ -729,6 +729,18 @@ def advanced_search2(request):
                     all_courses = []
                     all_courses.append(course)
     
+    if form.is_valid():
+        title = form.cleaned_data.get('searched_title')
+        if title != None:
+            temp = []
+            for course in all_courses:
+                if title in (course.description).lower():
+                    temp.append(course)
+            if len(temp) >= 1:
+                all_courses = temp
+
+
+    
     if request.user.is_authenticated:
         dept_context = {"dept" : dept,
                     "dept_abbr" : dept.dept_abbr,
