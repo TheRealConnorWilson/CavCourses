@@ -366,10 +366,8 @@ class SeleniumTests(TestCase):  # this could definitely cause problems for peopl
         self.driver = webdriver.Chrome(executable_path='../env/bin/chromedriver')
         driver3 = self.driver
         driver3.get('https://a27-lous-list.herokuapp.com/list/')
-        elem = driver3.find_element(By.LINK_TEXT, "View all ACCT classes")
+        elem = driver3.find_element(By.LINK_TEXT, "Schedule Builder")
         elem.click()
-        self.assertIn("Section Information", driver3.page_source)
-        self.assertIn("ACCT Classes", driver3.page_source)
-        self.assertIn("ACCT 2010", driver3.page_source)
+        self.assertIn("My Schedule", driver3.page_source)
     def tearDown(self):
         self.driver.close()
