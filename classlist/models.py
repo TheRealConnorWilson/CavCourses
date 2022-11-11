@@ -193,7 +193,7 @@ class Section(models.Model):
     def __str__(self):
         return str(self.section_id) + ": " + str(self.section_number) + " - " + self.component
 class Meetings(models.Model):
-    days = models.CharField(max_length=10, blank=True) # MoWeFr
+    days = models.CharField(max_length=100, blank=True) # MoWeFr
     start_time = models.CharField(max_length=100, blank=True) # 17.00.00.000000-05:00
     end_time = models.CharField(max_length=100, blank=True) # 18.15.00.000000-05:00
     facility_description = models.CharField(max_length=200, blank=True) # Olsson Hall 009
