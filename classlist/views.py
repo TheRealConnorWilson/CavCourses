@@ -5,11 +5,12 @@ from django.urls import reverse
 from django.utils import timezone
 from django.forms import modelformset_factory
 from django.views.generic.edit import CreateView
+from urllib3 import HTTPResponse
 from .models import Meetings, Instructor, Account, Course, Department, Section, Schedule, Friend_Request
 from django.contrib.auth.decorators import login_required
 from django.contrib import auth
 from .forms import UserAccountForm
-from .forms import SearchForm
+from .forms import SearchForm, AdvancedSearchForm
 
 import requests
 
@@ -579,3 +580,82 @@ def delete_course(request):
         # Schedule.objects.all().save()
         # schedule_context = {'added_courses' : added_courses}
     return redirect('schedule')
+
+def advanced_search2(request):
+    if request.method == 'POST':
+        form = AdvancedSearchForm(request.POST)
+    else:
+        form = AdvancedSearchForm()
+    
+    dept_abbr = ""
+    dept = ""
+    all_dept_classes = []
+    all_courses = []
+    if form.is_valid():
+        dept_abbr = form.cleaned_data.get('searched_dept')
+        dept_abbr = dept_abbr.upper()
+    
+    # dept is always required
+    if(Department.objects.filter(dept_abbr=dept_abbr).exists()):
+        dept = Department.objects.get(dept_abbr=dept_abbr)
+    else:
+        dept = Department(dept_abbr=dept_abbr)
+    
+    
+    if form.is_valid():
+        for course in Course.objects.filter(department=dept):
+            all_dept_classes.append(course)
+    
+        catalog_list = []
+        title_list = []
+        
+        # searches for classes with matching catalog_num (if given)
+        catalog_num = form.cleaned_data.get('searched_catalog_num')
+        if catalog_num != "":
+            for course in Course.objects.filter(department=dept, catalog_number=catalog_num):
+                if course.catalog_number == catalog_num:
+                    catalog_list.append(course)
+        
+        # searches for classes with matching title (if given)
+        title = form.cleaned_data.get('searched_title')
+        if title != "":
+            for course in Course.objects.filter(department=dept):
+                if title in (course.description).lower():
+                    title_list.append(course)
+    
+        # generating classes to display
+        
+        # only dept name given
+        if catalog_num == "" and title == "": 
+            all_courses = all_dept_classes
+        
+        # for cases where dept, catalog num exist
+        elif catalog_num != "" and title == "": 
+            all_courses = catalog_list
+    
+        # for cases where dept, keyword exist
+        elif catalog_num == "" and title != "":
+            all_courses = title_list
+    
+        # for cases where dept, catalog_num, keyword exist
+        else:
+            # only want the courses that match catalog number and keyword
+            for each in catalog_list:
+                if title in (each.description).lower():
+                    all_courses.append(each)
+    
+    if request.user.is_authenticated:
+        dept_context = {"dept" : dept,
+                    "dept_abbr" : dept.dept_abbr,
+                    "dept_courses" : all_courses,
+                    'user' : Account.objects.get(email=request.user.email),
+                    "form" : form,
+                    }
+    else:
+        dept_context = {"dept" : dept,
+                        "dept_abbr" : dept.dept_abbr,
+                        "dept_courses" : all_courses,
+                        "form": form,
+                        }
+         
+    return render(request, "classlist/advanced_search.html", context=dept_context)
