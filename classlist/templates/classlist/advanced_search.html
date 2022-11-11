@@ -18,7 +18,12 @@
     <!-- <h2>Search for a department</h2> -->
     <form action="/advanced_search/" method="post">
       {% csrf_token %}
-      {{ form }}
+      <!-- {{ form }} -->
+      {% for field in form %}
+        {{field.label}}
+        {{field}}
+        <br>
+      {% endfor %}
       <input type="submit" value="Search">
     </form>
     <br>
