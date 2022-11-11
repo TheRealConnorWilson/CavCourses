@@ -5,11 +5,12 @@ from django.urls import reverse
 from django.utils import timezone
 from django.forms import modelformset_factory
 from django.views.generic.edit import CreateView
+from urllib3 import HTTPResponse
 from .models import Meetings, Instructor, Account, Course, Department, Section, Schedule, Friend_Request
 from django.contrib.auth.decorators import login_required
 from django.contrib import auth
 from .forms import UserAccountForm
-from .forms import SearchForm
+from .forms import SearchForm, AdvancedSearchForm
 
 import requests
 
@@ -36,6 +37,7 @@ def get_user(request):
         """
         Title: django: Purpose of django.utils.functional.SimpleLazyObject?
         URL: https://stackoverflow.com/questions/10506766/django-purpose-of-django-utils-functional-simplelazyobject/10507200#10507200
+
         Use this in place of request.user, as that returns a lazy unactivated object
         """
         if not hasattr(request, '_cached_user'):
@@ -50,6 +52,7 @@ class AuthenticatedListView(generic.ListView):
         context = super().get_context_data(*args,**kwargs)
         context.update(get_user_info(self.request))
         return context
+    
 
 def index(request):
     return HttpResponseRedirect("/home")
@@ -84,6 +87,7 @@ def view_name(request):
     context = get_user_info(request)
     
     return render(request, template_name, context)
+    # return HttpResponseRedirect("/accounts/google/login")
 
 def view_home(request):
     """
@@ -241,7 +245,10 @@ def get_depts(request):
     return render(request, 'classlist/class.html', {'form':form, "all_depts_search":all_depts_search, 'a_depts':a_depts, 'b_depts':b_depts, 'c_depts':c_depts, 'd_depts':d_depts, 'e_depts':e_depts, 'f_depts':f_depts, 'g_depts':g_depts, 'h_depts':h_depts, 'i_depts':i_depts, 'j_depts':j_depts, 'k_depts':k_depts, 'l_depts':l_depts, 'm_depts':m_depts, 'n_depts':n_depts, 'o_depts':o_depts, 'p_depts':p_depts, 'q_depts':q_depts, 'r_depts':r_depts, 's_depts':s_depts, 't_depts':t_depts, 'u_depts':u_depts, 'v_depts':v_depts, 'w_depts':w_depts, 'x_depts':x_depts, 'y_depts':y_depts, 'z_depts':z_depts})
 ###########
 
-def update_courses_from_API(dept_abbr):
+
+def get_courses_by_dept(request, dept_abbr):
+    template_name = "classlist/classes_by_dept.html"
+    
     #Access API
     api_url = "http://luthers-list.herokuapp.com/api/dept/" + dept_abbr + "/?format=json"
     dept_json = requests.get(api_url)
@@ -253,7 +260,11 @@ def update_courses_from_API(dept_abbr):
         dept = Department(dept_abbr=dept_abbr)
         dept.save()
 
+    # return render(request, template_name, {"all_dept_classes":all_dept_classes})
+
+
     #Assign all fields
+    # if len(Course.objects.filter(subject = dept_abbr).order_by('department', 'catalog_number')) == 0:
     for course in all_dept_classes:
         
         instructor_name = course["instructor"]["name"]
@@ -350,45 +361,25 @@ def update_courses_from_API(dept_abbr):
             
         
         course_obj.save()
+        # print(course_obj)
 
-    return dept
-
-def load_all_courses_from_API():
-    api_url = "http://luthers-list.herokuapp.com/api/deptlist?format=json"
-    depts_json = requests.get(api_url)
-    all_depts = depts_json.json()
-
-    for dept in all_depts:
-        update_courses_from_API(dept['subject'])
-
-def load_dept_courses_from_db(request, dept_abbr):
-    template_name = "classlist/classes_by_dept.html"
-
-    if Department.objects.filter(dept_abbr = dept_abbr).exists():
-        dept = Department.objects.get(dept_abbr = dept_abbr)
-        if (timezone.now() - dept.last_updated).days > 7:
-            dept = update_courses_from_API(dept_abbr)
-    else:
-        dept = update_courses_from_API(dept_abbr)
-
+    all_courses = Course.objects.filter(subject = dept_abbr).order_by('department', 'catalog_number')
     
-    all_dept_courses = Course.objects.filter(subject = dept_abbr).order_by('department', 'catalog_number')
-
     if request.user.is_authenticated:
-        context = {
-            "dept": dept,
-            "dept_abbr": dept_abbr,
-            "dept_courses": all_dept_courses,
-            'user': Account.objects.get(email=request.user.email),
-        }
+        dept_context = {"dept" : dept,
+                    "dept_abbr" : dept.dept_abbr,
+                    "dept_courses" : all_courses,
+                    'user' : Account.objects.get(email=request.user.email),
+                    }
     else:
-        context = {
-            "dept": dept,
-            "dept_abbr": dept_abbr,
-            "dept_courses": all_dept_courses,
-        }
+        dept_context = {"dept" : dept,
+                        "dept_abbr" : dept.dept_abbr,
+                        "dept_courses" : all_courses,
+                        }
+        
+    
 
-    return render(request, template_name, context)
+    return render(request, template_name, context=dept_context)
 
 class CourseView(AuthenticatedListView):
     template_name = 'classlist/class.html'
@@ -520,6 +511,7 @@ def remove_friend(request, requestID):
 
     return redirect('/classlist/my_account/')
 
+
 def schedule_view(request):
     if request.method == 'POST':
         # s = Schedule() 
@@ -569,6 +561,8 @@ def schedule_view(request):
     added_courses = Schedule.objects.all()
     schedule_context = {'added_courses' : added_courses}
     return render(request, 'classlist/schedule.html', schedule_context)
+        # else:
+        #     return HttpResponseRedirect('/schedule/')
 
 def delete_course(request):
     if request.method == 'POST':
@@ -579,3 +573,187 @@ def delete_course(request):
         # Schedule.objects.all().save()
         # schedule_context = {'added_courses' : added_courses}
     return redirect('schedule')
+    # return render(request, 'classlist/schedule.html', schedule_context)
+
+def advanced_search(request):
+    template_name = "classlist/advanced_search.html"     
+
+    depts = []
+    if request.method == 'POST':
+        form = AdvancedSearchForm(request.POST)
+    else:
+        form = AdvancedSearchForm()
+
+    if form.is_valid():
+        dept = form.cleaned_data.get('searched_dept')
+        api_url = "http://luthers-list.herokuapp.com/api/dept/" + dept + "/?format=json"
+        depts_json = requests.get(api_url)
+        depts = depts_json.json()
+
+        depts_search = []  
+        for d in depts:
+            if d['catalog_number'] not in depts_search:
+                depts_search.append(d)
+        depts = depts_search
+                
+    return render(request, "classlist/advanced_search.html" , {'form':form, "depts":depts})
+
+
+def advanced_search2(request):
+
+    if request.method == 'POST':
+        form = AdvancedSearchForm(request.POST)
+    else:
+        form = AdvancedSearchForm()
+    
+    dept_abbr = ""
+    all_dept_classes = []
+    if form.is_valid():
+        dept_abbr = form.cleaned_data.get('searched_dept')
+        dept_abbr = dept_abbr.upper()
+        api_url = "http://luthers-list.herokuapp.com/api/dept/" + dept_abbr + "/?format=json"
+        dept_json = requests.get(api_url)
+        all_dept_classes = dept_json.json()
+    
+    if(Department.objects.filter(dept_abbr=dept_abbr).exists()):
+        dept = Department.objects.get(dept_abbr=dept_abbr)
+    else:
+        dept = Department(dept_abbr=dept_abbr)
+        dept.save()
+
+    for course in all_dept_classes:
+        
+        instructor_name = course["instructor"]["name"]
+        instructor_email = course["instructor"]["email"]
+        
+        if(Instructor.objects.filter(name=instructor_name, email=instructor_email).exists()):
+            instructor_obj = Instructor.objects.get(name=instructor_name, email=instructor_email)
+        else:
+            instructor_obj = Instructor(name=instructor_name, email=instructor_email)
+            instructor_obj.save()
+
+        update_timestamp = timezone.now()
+        sem_code = course["semester_code"]
+        course_title = course["subject"] + " " + course["catalog_number"]
+        course_description = course["description"]
+        num_units = course["units"]
+        catalog_num = course['catalog_number']
+
+        if(Course.objects.filter(title=course_title).exists()):
+            course_obj = Course.objects.get(title=course_title)
+            course_obj.catalog_number = catalog_num
+            # course_obj.sections = []
+        else:
+            course_obj = Course(title=course_title,
+                                description=course_description,
+                                units=num_units,
+                                semester_code = sem_code,
+                                last_updated = update_timestamp,
+                                department = dept,
+                                subject = course["subject"],
+                                # sections = [],
+                                catalog_number = catalog_num
+                                )
+            course_obj.save()
+
+
+        section_id = course["course_number"]
+        section_num = course["course_section"]
+        course_component = course["component"]
+        section_capacity = course["class_capacity"]
+        section_wait_list = course["wait_list"]
+        section_wait_cap = course["wait_cap"]
+        section_enrollment = course["enrollment_total"]
+        section_available_enrollment = course["enrollment_available"]
+        section_topic = course["topic"]
+
+        section_dept = course["subject"]
+        section_course_num = course["catalog_number"]
+
+        # this was causing an issue with KINE 2000, where both meetings wouldn't show
+        # trying live loading for section as well 
+        
+        if(Section.objects.filter(section_id=section_id).exists()):
+            section = Section.objects.get(section_id=section_id)
+        else:
+            section = Section(
+                course_dept = section_dept,
+                course_num = section_course_num,
+                section_id = section_id,
+                section_number = section_num,
+                instructor = instructor_obj,
+                component = course_component,
+                capacity = section_capacity,
+                wait_list = section_wait_list,
+                wait_cap = section_wait_cap,
+                enrollment_total = section_enrollment,
+                enrollment_available = section_available_enrollment,
+                topic = section_topic, #This may belong in course
+                course = course_obj
+                )
+            section.save()
+
+        meetings = course["meetings"]
+        for meeting in meetings:
+            meeting_days = meeting["days"]
+            meeting_start_time = meeting["start_time"]
+            meeting_end_time = meeting["end_time"]
+            meeting_location = meeting["facility_description"]
+            meeting_section = section
+            if meeting_location == "-":
+                meeting_location = "TBA"
+            
+            # this was causing an issue with KINE 2000, where both meetings wouldn't show, made it so each meeting would pair with an individual section
+            if(Meetings.objects.filter(days=meeting_days, start_time=meeting_start_time, end_time=meeting_end_time, facility_description=meeting_location, section=section).exists()):
+                meetings_obj = Meetings.objects.get(days=meeting_days, start_time=meeting_start_time, end_time=meeting_end_time, facility_description=meeting_location, section=section)
+            else:
+                meetings_obj = Meetings(days=meeting_days,
+                                        start_time=meeting_start_time,  
+                                        end_time=meeting_end_time,
+                                        facility_description=meeting_location,
+                                        section = meeting_section
+                                        )
+            meetings_obj.save()
+            
+        
+        course_obj.save()
+        # print(course_obj)
+
+    all_courses = Course.objects.filter(subject = dept_abbr).order_by('department', 'catalog_number')
+
+    if form.is_valid():
+        catalog_num = form.cleaned_data.get('searched_catalog_num')
+        if catalog_num != None:
+            for course in all_courses:
+                if course.catalog_number == catalog_num:
+                    all_courses = []
+                    all_courses.append(course)
+    
+    if form.is_valid():
+        title = form.cleaned_data.get('searched_title')
+        if title != None:
+            temp = []
+            for course in all_courses:
+                if title in (course.description).lower():
+                    temp.append(course)
+            if len(temp) >= 1:
+                all_courses = temp
+
+
+    
+    if request.user.is_authenticated:
+        dept_context = {"dept" : dept,
+                    "dept_abbr" : dept.dept_abbr,
+                    "dept_courses" : all_courses,
+                    'user' : Account.objects.get(email=request.user.email),
+                    "form" : form,
+                    }
+    else:
+        dept_context = {"dept" : dept,
+                        "dept_abbr" : dept.dept_abbr,
+                        "dept_courses" : all_courses,
+                        "form": form,
+                        }
+         
+
+    return render(request, "classlist/advanced_search.html", context=dept_context)

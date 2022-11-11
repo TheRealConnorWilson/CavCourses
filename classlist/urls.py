@@ -9,7 +9,7 @@ urlpatterns = [
     path('accounts/', include('allauth.urls')),  # Includes all django-allauth URL's
     path('login/', views.view_name, name="view_name"),
     path('list/', views.get_depts, name='list'),
-    path('list/<str:dept_abbr>/', views.load_dept_courses_from_db, name='get_courses_by_dept'),
+    path('list/<str:dept_abbr>/', views.get_courses_by_dept, name='get_courses_by_dept'),
     path('view_users/', views.ViewUsers.as_view(), name='view_users'),
     path('view_users/send_friend_request/<int:userID>', views.send_friend_request, name='send friend request submit'),
     path('accept_friend_request/<int:requestID>/', views.accept_friend_request, name='accept friend request'),
@@ -19,4 +19,6 @@ urlpatterns = [
     path('create_account/', views.create_account, name='create account'),
     path('schedule/', views.schedule_view, name ='schedule'),
     path('delete_course/', views.delete_course, name='delete_course'),
+    path('advanced_search/', views.advanced_search2, name='advanced_search')
+    
 ]
