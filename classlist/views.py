@@ -10,7 +10,7 @@ from .models import Meetings, Instructor, Account, Course, Department, Section, 
 from django.contrib.auth.decorators import login_required
 from django.contrib import auth
 from .forms import UserAccountForm
-from .forms import SearchForm
+from .forms import SearchForm, AdvancedSearchForm
 
 import requests
 
@@ -37,7 +37,6 @@ def get_user(request):
         """
         Title: django: Purpose of django.utils.functional.SimpleLazyObject?
         URL: https://stackoverflow.com/questions/10506766/django-purpose-of-django-utils-functional-simplelazyobject/10507200#10507200
-
         Use this in place of request.user, as that returns a lazy unactivated object
         """
         if not hasattr(request, '_cached_user'):
@@ -52,7 +51,6 @@ class AuthenticatedListView(generic.ListView):
         context = super().get_context_data(*args,**kwargs)
         context.update(get_user_info(self.request))
         return context
-    
 
 def index(request):
     return HttpResponseRedirect("/home")
@@ -87,7 +85,6 @@ def view_name(request):
     context = get_user_info(request)
     
     return render(request, template_name, context)
-    # return HttpResponseRedirect("/accounts/google/login")
 
 def view_home(request):
     """
@@ -245,10 +242,7 @@ def get_depts(request):
     return render(request, 'classlist/class.html', {'form':form, "all_depts_search":all_depts_search, 'a_depts':a_depts, 'b_depts':b_depts, 'c_depts':c_depts, 'd_depts':d_depts, 'e_depts':e_depts, 'f_depts':f_depts, 'g_depts':g_depts, 'h_depts':h_depts, 'i_depts':i_depts, 'j_depts':j_depts, 'k_depts':k_depts, 'l_depts':l_depts, 'm_depts':m_depts, 'n_depts':n_depts, 'o_depts':o_depts, 'p_depts':p_depts, 'q_depts':q_depts, 'r_depts':r_depts, 's_depts':s_depts, 't_depts':t_depts, 'u_depts':u_depts, 'v_depts':v_depts, 'w_depts':w_depts, 'x_depts':x_depts, 'y_depts':y_depts, 'z_depts':z_depts})
 ###########
 
-
-def get_courses_by_dept(request, dept_abbr):
-    template_name = "classlist/classes_by_dept.html"
-    
+def update_courses_from_API(dept_abbr):
     #Access API
     api_url = "http://luthers-list.herokuapp.com/api/dept/" + dept_abbr + "/?format=json"
     dept_json = requests.get(api_url)
@@ -260,11 +254,7 @@ def get_courses_by_dept(request, dept_abbr):
         dept = Department(dept_abbr=dept_abbr)
         dept.save()
 
-    # return render(request, template_name, {"all_dept_classes":all_dept_classes})
-
-
     #Assign all fields
-    # if len(Course.objects.filter(subject = dept_abbr).order_by('department', 'catalog_number')) == 0:
     for course in all_dept_classes:
         
         instructor_name = course["instructor"]["name"]
@@ -361,25 +351,45 @@ def get_courses_by_dept(request, dept_abbr):
             
         
         course_obj.save()
-        # print(course_obj)
 
-    all_courses = Course.objects.filter(subject = dept_abbr).order_by('department', 'catalog_number')
-    
-    if request.user.is_authenticated:
-        dept_context = {"dept" : dept,
-                    "dept_abbr" : dept.dept_abbr,
-                    "dept_courses" : all_courses,
-                    'user' : Account.objects.get(email=request.user.email),
-                    }
+    return dept
+
+def load_all_courses_from_API():
+    api_url = "http://luthers-list.herokuapp.com/api/deptlist?format=json"
+    depts_json = requests.get(api_url)
+    all_depts = depts_json.json()
+
+    for dept in all_depts:
+        update_courses_from_API(dept['subject'])
+
+def load_dept_courses_from_db(request, dept_abbr):
+    template_name = "classlist/classes_by_dept.html"
+
+    if Department.objects.filter(dept_abbr = dept_abbr).exists():
+        dept = Department.objects.get(dept_abbr = dept_abbr)
+        if (timezone.now() - dept.last_updated).days > 7:
+            dept = update_courses_from_API(dept_abbr)
     else:
-        dept_context = {"dept" : dept,
-                        "dept_abbr" : dept.dept_abbr,
-                        "dept_courses" : all_courses,
-                        }
-        
-    
+        dept = update_courses_from_API(dept_abbr)
 
-    return render(request, template_name, context=dept_context)
+    
+    all_dept_courses = Course.objects.filter(subject = dept_abbr).order_by('department', 'catalog_number')
+
+    if request.user.is_authenticated:
+        context = {
+            "dept": dept,
+            "dept_abbr": dept_abbr,
+            "dept_courses": all_dept_courses,
+            'user': Account.objects.get(email=request.user.email),
+        }
+    else:
+        context = {
+            "dept": dept,
+            "dept_abbr": dept_abbr,
+            "dept_courses": all_dept_courses,
+        }
+
+    return render(request, template_name, context)
 
 class CourseView(AuthenticatedListView):
     template_name = 'classlist/class.html'
@@ -511,7 +521,6 @@ def remove_friend(request, requestID):
 
     return redirect('/classlist/my_account/')
 
-
 def schedule_view(request):
     if request.method == 'POST':
         # s = Schedule() 
@@ -561,8 +570,6 @@ def schedule_view(request):
     added_courses = Schedule.objects.all()
     schedule_context = {'added_courses' : added_courses}
     return render(request, 'classlist/schedule.html', schedule_context)
-        # else:
-        #     return HttpResponseRedirect('/schedule/')
 
 def delete_course(request):
     if request.method == 'POST':
@@ -573,5 +580,82 @@ def delete_course(request):
         # Schedule.objects.all().save()
         # schedule_context = {'added_courses' : added_courses}
     return redirect('schedule')
-    # return render(request, 'classlist/schedule.html', schedule_context)
 
+def advanced_search2(request):
+    if request.method == 'POST':
+        form = AdvancedSearchForm(request.POST)
+    else:
+        form = AdvancedSearchForm()
+    
+    dept_abbr = ""
+    dept = ""
+    all_dept_classes = []
+    all_courses = []
+    if form.is_valid():
+        dept_abbr = form.cleaned_data.get('searched_dept')
+        dept_abbr = dept_abbr.upper()
+    
+    # dept is always required
+    if(Department.objects.filter(dept_abbr=dept_abbr).exists()):
+        dept = Department.objects.get(dept_abbr=dept_abbr)
+    else:
+        dept = Department(dept_abbr=dept_abbr)
+    
+    
+    if form.is_valid():
+        for course in Course.objects.filter(department=dept):
+            all_dept_classes.append(course)
+    
+        catalog_list = []
+        title_list = []
+        
+        # searches for classes with matching catalog_num (if given)
+        catalog_num = form.cleaned_data.get('searched_catalog_num')
+        if catalog_num != "":
+            for course in Course.objects.filter(department=dept, catalog_number=catalog_num):
+                if course.catalog_number == catalog_num:
+                    catalog_list.append(course)
+        
+        # searches for classes with matching title (if given)
+        title = form.cleaned_data.get('searched_title')
+        if title != "":
+            for course in Course.objects.filter(department=dept):
+                if title in (course.description).lower():
+                    title_list.append(course)
+    
+        # generating classes to display
+        
+        # only dept name given
+        if catalog_num == "" and title == "": 
+            all_courses = all_dept_classes
+        
+        # for cases where dept, catalog num exist
+        elif catalog_num != "" and title == "": 
+            all_courses = catalog_list
+    
+        # for cases where dept, keyword exist
+        elif catalog_num == "" and title != "":
+            all_courses = title_list
+    
+        # for cases where dept, catalog_num, keyword exist
+        else:
+            # only want the courses that match catalog number and keyword
+            for each in catalog_list:
+                if title in (each.description).lower():
+                    all_courses.append(each)
+    
+    if request.user.is_authenticated:
+        dept_context = {"dept" : dept,
+                    "dept_abbr" : dept.dept_abbr,
+                    "dept_courses" : all_courses,
+                    'user' : Account.objects.get(email=request.user.email),
+                    "form" : form,
+                    }
+    else:
+        dept_context = {"dept" : dept,
+                        "dept_abbr" : dept.dept_abbr,
+                        "dept_courses" : all_courses,
+                        "form": form,
+                        }
+         
+    return render(request, "classlist/advanced_search.html", context=dept_context)
