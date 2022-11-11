@@ -76,3 +76,7 @@ class UserAccountForm(UserCreationForm):
 class SearchForm(forms.Form):
     searched_dept = forms.CharField(label='', max_length=4)
 
+class AdvancedSearchForm(forms.Form):
+    searched_dept = forms.CharField(label='Search for a department', max_length=4)
+    searched_catalog_num = forms.CharField(label='Search for a class by catalog number', max_length=4, required=False)
+

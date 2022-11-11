@@ -18,6 +18,7 @@ urlpatterns = [
     path('my_account/', views.ViewAccount.as_view(), name='my_account'),
     path('create_account/', views.create_account, name='create account'),
     path('schedule/', views.schedule_view, name ='schedule'),
-    path('delete_course/', views.delete_course, name='delete_course')
+    path('delete_course/', views.delete_course, name='delete_course'),
+    path('advanced_search/', views.advanced_search2, name='advanced_search')
     
 ]
