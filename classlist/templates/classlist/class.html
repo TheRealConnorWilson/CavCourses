@@ -43,7 +43,7 @@
   {% endif %} -->
 
 
-  <div class="text-center" style="color:black">
+  <!-- <div class="text-center" style="color:black">
     <h2>Search for a department</h2>
     <form action="/list/" method="post">
       {% csrf_token %}
@@ -51,9 +51,11 @@
       <input type="submit" value="Search">
     </form>
     <br>
-  </div>
+  </div> -->
 
-  {% if all_depts_search %}
+  
+
+  <!-- {% if all_depts_search %}
     <div class = "row">
       {% for d in all_depts_search %}
           <div class = "col-sm-3">
@@ -66,10 +68,17 @@
           </div>     
       {% endfor %}
     </div>
-  {% else %}
+  {% else %} -->
+
+    <div class = "nav">
+      <a href="#a" class = "btn">A</a>
+      <a href="#b" class = "btn">B</a>
+    </div>
+
 
     {% if a_depts %}
-      <h1>A</h1>    
+      <h1>A</h1> 
+        <div class = "section a" id="a">
         <div class = "row">
             {% for d in a_depts %}
                 <div class = "col-sm-3">
@@ -82,9 +91,12 @@
                 </div>     
             {% endfor %}
         </div>
+        </div>
     {% endif %}
     {% if b_depts %}
+    <div class = "section b" id="b">
       <h1>B</h1>    
+        
         <div class = "row">
             {% for d in b_depts %}
                 <div class = "col-sm-3">
@@ -97,6 +109,7 @@
                 </div>     
             {% endfor %}
         </div>
+    </div>
     {% endif %}
     {% if c_depts %}
       <h1>C</h1>    
@@ -458,7 +471,7 @@
             {% endfor %}
         </div>
     {% endif %}
-  {% endif %}
+  <!-- {% endif %} -->
 
 
 
