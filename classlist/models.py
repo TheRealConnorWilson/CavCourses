@@ -24,9 +24,6 @@ Title: Step by Step guide to add friends with Django
 Sections: Friend Request Model
 URL: https://medium.com/analytics-vidhya/add-friends-with-689a2fa4e41d
 
-Title: Models Fields
-URL: https://docs.djangoproject.com/en/4.1/ref/models/fields/
-
 """
 
 class Account(models.Model): 
@@ -55,7 +52,6 @@ class Account(models.Model):
     # account info
     schedule = models.ManyToManyField("Section", blank=True)
     major = models.CharField(max_length=100, default=True)
-    # year = models.CharField(max_length=100, default=True)
     
     FIRST_YEAR = 1
     SECOND_YEAR = 2
@@ -84,7 +80,6 @@ class Account(models.Model):
     
     def __str__(self):
         return self.email
-
 class Friend_Request(models.Model):
     # call two user models
     from_user = models.ForeignKey(Account, related_name = 'from_user', on_delete=models.CASCADE)
@@ -94,8 +89,7 @@ class Friend_Request(models.Model):
     # to_user = models.IntegerField(default=0)
     
     def __str__(self):
-        return str("Request from " + str(self.from_user) + " to " + str(self.to_user))
-    
+        return str("Request from " + str(self.from_user) + " to " + str(self.to_user)) 
 class Schedule(models.Model):
     course_name = models.CharField(max_length=200, blank=True)
     mon = models.BooleanField()
@@ -121,7 +115,7 @@ class Schedule(models.Model):
         return default_schedule.pk
 class Instructor(models.Model):
     name = models.CharField(max_length=200, blank=True)
-    email = models.CharField(max_length=25, blank=True)
+    email = models.CharField(max_length=100, blank=True)
 
     @classmethod
     def get_default_instructor(self):
@@ -134,7 +128,8 @@ class Department(models.Model):
     """
     Represents a department at UVA
     """
-    dept_abbr = models.CharField(max_length=4)
+    dept_abbr = models.CharField(max_length=100)
+    last_updated = models.DateTimeField("last updated", default=timezone.now)
 
     @classmethod
     def get_default_dept(self):
@@ -146,13 +141,13 @@ class Department(models.Model):
 class Course(models.Model):
     # refernce for how to add classes to sqlite with shell: https://docs.djangoproject.com/en/4.1/intro/tutorial02/
     last_updated = models.DateTimeField('date updated', default=timezone.now)
-    catalog_number = models.CharField(max_length=4)
+    catalog_number = models.CharField(max_length=100)
     semester_code = models.IntegerField(default=0) # ex. 1228
     title = models.CharField(max_length=200, blank=True)
     description = models.CharField(max_length=200, blank=True) # Introduction to Information Technology,
-    units = models.CharField(max_length=20, blank=True) # 3, number of credits
+    units = models.CharField(max_length=100, blank=True) # 3, number of credits
     department = models.ForeignKey(Department, on_delete=models.CASCADE, default=Department.get_default_dept)
-    subject = models.CharField(max_length = 4, blank=True)
+    subject = models.CharField(max_length = 100, blank=True)
     # sections = []
 
     # https://docs.djangoproject.com/en/dev/ref/models/options/#django.db.models.Options.ordering
@@ -178,27 +173,27 @@ class Course(models.Model):
         return self.title # + str(self.catalog_number)
 class Section(models.Model):
     # additional model fields so that a section knows what course it belongs to
-    course_dept = models.CharField(max_length = 4, blank=True)
-    course_num = models.IntegerField(default=0)
+    course_dept = models.CharField(max_length = 100, blank=True)
+    course_num = models.CharField(max_length = 100, blank=True)
 
     course = models.ForeignKey(Course, on_delete=models.CASCADE, default=None)
 
     section_id = models.IntegerField(default=0) # ex. 16351
-    section_number = models.CharField(max_length = 4, blank=True) # 001
+    section_number = models.CharField(max_length = 100, blank=True) # 001
     instructor = models.ForeignKey(Instructor, on_delete=models.CASCADE, default=Instructor.get_default_instructor)
-    component = models.CharField(max_length=20, blank=True) # LEC,
+    component = models.CharField(max_length=100, blank=True) # LEC,
     capacity = models.IntegerField(default=0) # 75,
     wait_list = models.IntegerField(default=0) # 0
     wait_cap = models.IntegerField(default=0) # 199,
     enrollment_total = models.IntegerField(default=0) # 72,
     enrollment_available = models.IntegerField(default=0) # 3
-    topic = models.CharField(max_length=200, blank=True) # optional description | This may belong in course
+    topic = models.CharField(max_length=200, blank=True)
     # meetings = []
 
     def __str__(self):
         return str(self.section_id) + ": " + str(self.section_number) + " - " + self.component
 class Meetings(models.Model):
-    days = models.CharField(max_length=10, blank=True) # MoWeFr
+    days = models.CharField(max_length=100, blank=True) # MoWeFr
     start_time = models.CharField(max_length=100, blank=True) # 17.00.00.000000-05:00
     end_time = models.CharField(max_length=100, blank=True) # 18.15.00.000000-05:00
     facility_description = models.CharField(max_length=200, blank=True) # Olsson Hall 009

@@ -1,0 +1,57 @@
+Resetting databases
+
+delete db.sqlite3/move it
+delete migrations folder
+
+python manage.py makemigrations
+python manage.py makemigrations classlist
+python manage.py migrate
+
+Steps to adjust local database:
+
+	python manage.py createsuperuser
+
+	python manage.py runserver
+
+	admin page info:
+		sites: http://127.0.0.1:8000	http://127.0.0.1:8000
+
+		social applications:
+		client id: 308518906155-baidoueo5jbjbb7m0sbg74ib013ik2b6.apps.googleusercontent.com
+		secret key: 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
+
+		add site to chosen sites
+		
+		
+	clear postgres databases
+		view project on heroku
+		resources > heroku postgres
+		settings > reset database
+
+commit to github (recommended: do a pull request that way it runs the GitHub Actions before merging)
+
+Steps to update postgres:
+
+	in heroku's console, bash:
+		python manage.py createsuperuser
+		supermegan
+		5FrEg7TZAQM$uhhJV$wK*UK4NXvP3Zpr
+
+
+	admin page info:
+		sites: a27-lous-list.herokuapp.com
+
+		social app:
+		308518906155-baidoueo5jbjbb7m0sbg74ib013ik2b6.apps.googleusercontent.com
+		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
+	
+to reload database info on both:
+	run in console: 
+	python manage.py load_all_courses
+
+
+
+	
+DEBUGGING STEPS
+python manage.py makemigrations classlist
+	run this all the time on heroku and local
