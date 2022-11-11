@@ -187,6 +187,7 @@ SOCIALACCOUNT_PROVIDERS = {
     }
 }
 
+SOCIALACCOUNT_LOGIN_ON_GET = True
 
 # AUTH_USER_MODEL = 'classlist.Account'
 
