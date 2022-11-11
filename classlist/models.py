@@ -115,7 +115,7 @@ class Schedule(models.Model):
         return default_schedule.pk
 class Instructor(models.Model):
     name = models.CharField(max_length=200, blank=True)
-    email = models.CharField(max_length=25, blank=True)
+    email = models.CharField(max_length=100, blank=True)
 
     @classmethod
     def get_default_instructor(self):
@@ -128,7 +128,7 @@ class Department(models.Model):
     """
     Represents a department at UVA
     """
-    dept_abbr = models.CharField(max_length=4)
+    dept_abbr = models.CharField(max_length=100)
     last_updated = models.DateTimeField("last updated", default=timezone.now)
 
     @classmethod
@@ -141,13 +141,13 @@ class Department(models.Model):
 class Course(models.Model):
     # refernce for how to add classes to sqlite with shell: https://docs.djangoproject.com/en/4.1/intro/tutorial02/
     last_updated = models.DateTimeField('date updated', default=timezone.now)
-    catalog_number = models.CharField(max_length=4)
+    catalog_number = models.CharField(max_length=100)
     semester_code = models.IntegerField(default=0) # ex. 1228
     title = models.CharField(max_length=200, blank=True)
     description = models.CharField(max_length=200, blank=True) # Introduction to Information Technology,
-    units = models.CharField(max_length=20, blank=True) # 3, number of credits
+    units = models.CharField(max_length=100, blank=True) # 3, number of credits
     department = models.ForeignKey(Department, on_delete=models.CASCADE, default=Department.get_default_dept)
-    subject = models.CharField(max_length = 4, blank=True)
+    subject = models.CharField(max_length = 100, blank=True)
     # sections = []
 
     # https://docs.djangoproject.com/en/dev/ref/models/options/#django.db.models.Options.ordering
@@ -173,15 +173,15 @@ class Course(models.Model):
         return self.title # + str(self.catalog_number)
 class Section(models.Model):
     # additional model fields so that a section knows what course it belongs to
-    course_dept = models.CharField(max_length = 4, blank=True)
-    course_num = models.CharField(max_length = 5, blank=True)
+    course_dept = models.CharField(max_length = 100, blank=True)
+    course_num = models.CharField(max_length = 100, blank=True)
 
     course = models.ForeignKey(Course, on_delete=models.CASCADE, default=None)
 
     section_id = models.IntegerField(default=0) # ex. 16351
-    section_number = models.CharField(max_length = 4, blank=True) # 001
+    section_number = models.CharField(max_length = 100, blank=True) # 001
     instructor = models.ForeignKey(Instructor, on_delete=models.CASCADE, default=Instructor.get_default_instructor)
-    component = models.CharField(max_length=20, blank=True) # LEC,
+    component = models.CharField(max_length=100, blank=True) # LEC,
     capacity = models.IntegerField(default=0) # 75,
     wait_list = models.IntegerField(default=0) # 0
     wait_cap = models.IntegerField(default=0) # 199,
