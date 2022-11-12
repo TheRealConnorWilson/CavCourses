@@ -8,6 +8,7 @@
 {% bootstrap_css %}
 {% bootstrap_javascript %}
 {% load socialaccount %}
+{% load class_extras %}
 
 <style>
   .btn-custom {
@@ -110,7 +111,6 @@
       <a href="#z" class = "btn btn-custom">Z</a>
     </div>
 
-
     {% if a_depts %}
     <div class = "section a" id="a"></div>
       <h1>A</h1> 
@@ -119,7 +119,7 @@
                 <div class = "col-sm-3">
                     <div class="card-deck">
                         <div class="card mb-5" style="width:17rem">
-                            <h5 class="card-header">{{d}}</h5>
+                            <h5 class="card-header">{{dept_names|get_item:d}}</h5>
                             <a href="{{d}}/" class="btn btn-primary" class = "card-footer">View all {{d}} classes</a>
                         </div>  
                     </div>
@@ -136,7 +136,7 @@
                 <div class = "col-sm-3">
                     <div class="card-deck">
                         <div class="card mb-5" style="width:17rem">
-                            <h5 class="card-header">{{d}}</h5>
+                            <h5 class="card-header">{{dept_names|get_item:d}}</h5>
                             <a href="{{d}}/" class="btn btn-primary" class = "card-footer">View all {{d}} classes</a>
                         </div>  
                     </div>
@@ -153,7 +153,7 @@
                 <div class = "col-sm-3">
                     <div class="card-deck">
                         <div class="card mb-5" style="width:17rem">
-                            <h5 class="card-header">{{d}}</h5>
+                            <h5 class="card-header">{{dept_names|get_item:d}}</h5>
                             <a href="{{d}}/" class="btn btn-primary" class = "card-footer">View all {{d}} classes</a>
                         </div>  
                     </div>
@@ -170,7 +170,7 @@
                 <div class = "col-sm-3">
                     <div class="card-deck">
                         <div class="card mb-5" style="width:17rem">
-                            <h5 class="card-header">{{d}}</h5>
+                            <h5 class="card-header">{{dept_names|get_item:d}}</h5>
                             <a href="{{d}}/" class="btn btn-primary" class = "card-footer">View all {{d}} classes</a>
                         </div>  
                     </div>
@@ -187,7 +187,7 @@
                 <div class = "col-sm-3">
                     <div class="card-deck">
                         <div class="card mb-5" style="width:17rem">
-                            <h5 class="card-header">{{d}}</h5>
+                            <h5 class="card-header">{{dept_names|get_item:d}}</h5>
                             <a href="{{d}}/" class="btn btn-primary" class = "card-footer">View all {{d}} classes</a>
                         </div>  
                     </div>
@@ -204,7 +204,7 @@
                 <div class = "col-sm-3">
                     <div class="card-deck">
                         <div class="card mb-5" style="width:17rem">
-                            <h5 class="card-header">{{d}}</h5>
+                            <h5 class="card-header">{{dept_names|get_item:d}}</h5>
                             <a href="{{d}}/" class="btn btn-primary" class = "card-footer">View all {{d}} classes</a>
                         </div>  
                     </div>
@@ -221,7 +221,7 @@
                 <div class = "col-sm-3">
                     <div class="card-deck">
                         <div class="card mb-5" style="width:17rem">
-                            <h5 class="card-header">{{d}}</h5>
+                            <h5 class="card-header">{{dept_names|get_item:d}}</h5>
                             <a href="{{d}}/" class="btn btn-primary" class = "card-footer">View all {{d}} classes</a>
                         </div>  
                     </div>
@@ -238,7 +238,7 @@
                 <div class = "col-sm-3">
                     <div class="card-deck">
                         <div class="card mb-5" style="width:17rem">
-                            <h5 class="card-header">{{d}}</h5>
+                            <h5 class="card-header">{{dept_names|get_item:d}}</h5>
                             <a href="{{d}}/" class="btn btn-primary" class = "card-footer">View all {{d}} classes</a>
                         </div>  
                     </div>
@@ -255,7 +255,7 @@
                 <div class = "col-sm-3">
                     <div class="card-deck">
                         <div class="card mb-5" style="width:17rem">
-                            <h5 class="card-header">{{d}}</h5>
+                            <h5 class="card-header">{{dept_names|get_item:d}}</h5>
                             <a href="{{d}}/" class="btn btn-primary" class = "card-footer">View all {{d}} classes</a>
                         </div>  
                     </div>
@@ -272,7 +272,7 @@
                 <div class = "col-sm-3">
                     <div class="card-deck">
                         <div class="card mb-5" style="width:17rem">
-                            <h5 class="card-header">{{d}}</h5>
+                            <h5 class="card-header">{{dept_names|get_item:d}}</h5>
                             <a href="{{d}}/" class="btn btn-primary" class = "card-footer">View all {{d}} classes</a>
                         </div>  
                     </div>
@@ -289,7 +289,7 @@
                 <div class = "col-sm-3">
                     <div class="card-deck">
                         <div class="card mb-5" style="width:17rem">
-                            <h5 class="card-header">{{d}}</h5>
+                            <h5 class="card-header">{{dept_names|get_item:d}}</h5>
                             <a href="{{d}}/" class="btn btn-primary" class = "card-footer">View all {{d}} classes</a>
                         </div>  
                     </div>
@@ -306,7 +306,7 @@
                 <div class = "col-sm-3">
                     <div class="card-deck">
                         <div class="card mb-5" style="width:17rem">
-                            <h5 class="card-header">{{d}}</h5>
+                            <h5 class="card-header">{{dept_names|get_item:d}}</h5>
                             <a href="{{d}}/" class="btn btn-primary" class = "card-footer">View all {{d}} classes</a>
                         </div>  
                     </div>
@@ -323,7 +323,7 @@
                 <div class = "col-sm-3">
                     <div class="card-deck">
                         <div class="card mb-5" style="width:17rem">
-                            <h5 class="card-header">{{d}}</h5>
+                            <h5 class="card-header">{{dept_names|get_item:d}}</h5>
                             <a href="{{d}}/" class="btn btn-primary" class = "card-footer">View all {{d}} classes</a>
                         </div>  
                     </div>
@@ -340,7 +340,7 @@
                 <div class = "col-sm-3">
                     <div class="card-deck">
                         <div class="card mb-5" style="width:17rem">
-                            <h5 class="card-header">{{d}}</h5>
+                            <h5 class="card-header">{{dept_names|get_item:d}}</h5>
                             <a href="{{d}}/" class="btn btn-primary" class = "card-footer">View all {{d}} classes</a>
                         </div>  
                     </div>
@@ -357,7 +357,7 @@
                 <div class = "col-sm-3">
                     <div class="card-deck">
                         <div class="card mb-5" style="width:17rem">
-                            <h5 class="card-header">{{d}}</h5>
+                            <h5 class="card-header">{{dept_names|get_item:d}}</h5>
                             <a href="{{d}}/" class="btn btn-primary" class = "card-footer">View all {{d}} classes</a>
                         </div>  
                     </div>
@@ -374,7 +374,7 @@
                 <div class = "col-sm-3">
                     <div class="card-deck">
                         <div class="card mb-5" style="width:17rem">
-                            <h5 class="card-header">{{d}}</h5>
+                            <h5 class="card-header">{{dept_names|get_item:d}}</h5>
                             <a href="{{d}}/" class="btn btn-primary" class = "card-footer">View all {{d}} classes</a>
                         </div>  
                     </div>
@@ -391,7 +391,7 @@
                 <div class = "col-sm-3">
                     <div class="card-deck">
                         <div class="card mb-5" style="width:17rem">
-                            <h5 class="card-header">{{d}}</h5>
+                            <h5 class="card-header">{{dept_names|get_item:d}}</h5>
                             <a href="{{d}}/" class="btn btn-primary" class = "card-footer">View all {{d}} classes</a>
                         </div>  
                     </div>
@@ -408,7 +408,7 @@
                 <div class = "col-sm-3">
                     <div class="card-deck">
                         <div class="card mb-5" style="width:17rem">
-                            <h5 class="card-header">{{d}}</h5>
+                            <h5 class="card-header">{{dept_names|get_item:d}}</h5>
                             <a href="{{d}}/" class="btn btn-primary" class = "card-footer">View all {{d}} classes</a>
                         </div>  
                     </div>
@@ -425,7 +425,7 @@
                 <div class = "col-sm-3">
                     <div class="card-deck">
                         <div class="card mb-5" style="width:17rem">
-                            <h5 class="card-header">{{d}}</h5>
+                            <h5 class="card-header">{{dept_names|get_item:d}}</h5>
                             <a href="{{d}}/" class="btn btn-primary" class = "card-footer">View all {{d}} classes</a>
                         </div>  
                     </div>
@@ -442,7 +442,7 @@
                 <div class = "col-sm-3">
                     <div class="card-deck">
                         <div class="card mb-5" style="width:17rem">
-                            <h5 class="card-header">{{d}}</h5>
+                            <h5 class="card-header">{{dept_names|get_item:d}}</h5>
                             <a href="{{d}}/" class="btn btn-primary" class = "card-footer">View all {{d}} classes</a>
                         </div>  
                     </div>
@@ -459,7 +459,7 @@
                 <div class = "col-sm-3">
                     <div class="card-deck">
                         <div class="card mb-5" style="width:17rem">
-                            <h5 class="card-header">{{d}}</h5>
+                            <h5 class="card-header">{{dept_names|get_item:d}}</h5>
                             <a href="{{d}}/" class="btn btn-primary" class = "card-footer">View all {{d}} classes</a>
                         </div>  
                     </div>
@@ -476,7 +476,7 @@
                 <div class = "col-sm-3">
                     <div class="card-deck">
                         <div class="card mb-5" style="width:17rem">
-                            <h5 class="card-header">{{d}}</h5>
+                            <h5 class="card-header">{{dept_names|get_item:d}}</h5>
                             <a href="{{d}}/" class="btn btn-primary" class = "card-footer">View all {{d}} classes</a>
                         </div>  
                     </div>
@@ -493,7 +493,7 @@
                 <div class = "col-sm-3">
                     <div class="card-deck">
                         <div class="card mb-5" style="width:17rem">
-                            <h5 class="card-header">{{d}}</h5>
+                            <h5 class="card-header">{{dept_names|get_item:d}}</h5>
                             <a href="{{d}}/" class="btn btn-primary" class = "card-footer">View all {{d}} classes</a>
                         </div>  
                     </div>
@@ -510,7 +510,7 @@
                 <div class = "col-sm-3">
                     <div class="card-deck">
                         <div class="card mb-5" style="width:17rem">
-                            <h5 class="card-header">{{d}}</h5>
+                            <h5 class="card-header">{{dept_names|get_item:d}}</h5>
                             <a href="{{d}}/" class="btn btn-primary" class = "card-footer">View all {{d}} classes</a>
                         </div>  
                     </div>
@@ -527,7 +527,7 @@
                 <div class = "col-sm-3">
                     <div class="card-deck">
                         <div class="card mb-5" style="width:17rem">
-                            <h5 class="card-header">{{d}}</h5>
+                            <h5 class="card-header">{{dept_names|get_item:d}}</h5>
                             <a href="{{d}}/" class="btn btn-primary" class = "card-footer">View all {{d}} classes</a>
                         </div>  
                     </div>
@@ -544,7 +544,7 @@
                 <div class = "col-sm-3">
                     <div class="card-deck">
                         <div class="card mb-5" style="width:17rem">
-                            <h5 class="card-header">{{d}}</h5>
+                            <h5 class="card-header">{{dept_names|get_item:d}}</h5>
                             <a href="{{d}}/" class="btn btn-primary" class = "card-footer">View all {{d}} classes</a>
                         </div>  
                     </div>
