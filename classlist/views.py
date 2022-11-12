@@ -566,9 +566,11 @@ def schedule_view(request):
             # print(schedule_obj)
             
             meetings_list = []
-            
-            for each in schedule_obj.classRoster.all():
-                meetings_list.append(Meetings.objects.get(section=each))
+
+            for section in schedule_obj.classRoster.all():
+                meetings_for_section = Meetings.objects.filter(section=section)
+                for meeting in meetings_for_section:
+                    meetings_list.append(meeting)
                 
             print(meetings_list)
             # print(schedule_obj)
@@ -593,7 +595,6 @@ def schedule_view(request):
 
 # this method adds to the schedule
 def schedule_add(request, section_id):
-    print("I AM RUNNING", section_id)
     # if request.method == 'POST':
         # s = Schedule() 
         # s.save()         
@@ -603,20 +604,15 @@ def schedule_add(request, section_id):
         # if our post data is valid
         # if c != None:
     if section_id:
-        print("a")
 
         # getting our user
         theUser = Account.objects.filter(USERNAME_FIELD = request.user.username)
         if theUser:
             theUser = theUser[0]
-        print(theUser)
         
         
         sectionToAdd = Section.objects.get(section_id=section_id)
-        meetingToAdd = Meetings.objects.get(section_id=section_id)
-        
-        print(sectionToAdd)
-        print(meetingToAdd)
+        meetingsToAdd = Meetings.objects.filter(section_id=section_id)
 
         # if schedule exists, add the class and re-render
         if Schedule.objects.filter(scheduleUser=theUser).exists():
@@ -637,40 +633,41 @@ def schedule_add(request, section_id):
                 
                 # for each class in our schedule, if one isn't compatible, we don't add the class
                 for s in schedule_obj.classRoster.all():
-                    print(s)
-                    # for m in c.:
+                    
 
                     # need to find associated meeting object with section object
-                    m = Meetings.objects.get(section_id=s.section_id)
+                    meetings = Meetings.objects.filter(section_id=s.section_id)
                     
                     # print(m)
                     
                     # shortcut to check timedate validity - see Activity Scheduling from DSA2
                     # https://stackoverflow.com/questions/325933/determine-whether-two-date-ranges-overlap
-                    if (meetingToAdd.start_time <= m.end_time) and (m.start_time <= meetingToAdd.end_time):
-                        time_overlap = True
-                    
-                    elif (m.start_time <= meetingToAdd.end_time) and (meetingToAdd.start_time <= m.end_time):
-                        time_overlap = True
-                        
-                    #check days overlap as well?
-                    
-                    if time_overlap: # only need to check if days overlap if time overlaps
-                        if m.monday and m.monday == meetingToAdd.monday:
-                            conflict = True
-                        if m.tuesday and m.tuesday == meetingToAdd.tuesday:
-                            conflict = True
-                        if m.wednesday and m.wednesday == meetingToAdd.wednesday:
-                            conflict = True
-                        if m.thursday and m.thursday == meetingToAdd.thursday:
-                            conflict = True
-                        if m.friday and m.friday == meetingToAdd.friday:
-                            conflict = True
-                    
+                    for meetingToAdd in meetingsToAdd:
+                        for m in meetings:
+                            if (meetingToAdd.start_time <= m.end_time) and (m.start_time <= meetingToAdd.end_time):
+                                time_overlap = True
+                            
+                            elif (m.start_time <= meetingToAdd.end_time) and (meetingToAdd.start_time <= m.end_time):
+                                time_overlap = True
+                                
+                            #check days overlap as well?
+                            
+                            if time_overlap: # only need to check if days overlap if time overlaps
+                                if m.monday and m.monday == meetingToAdd.monday:
+                                    conflict = True
+                                if m.tuesday and m.tuesday == meetingToAdd.tuesday:
+                                    conflict = True
+                                if m.wednesday and m.wednesday == meetingToAdd.wednesday:
+                                    conflict = True
+                                if m.thursday and m.thursday == meetingToAdd.thursday:
+                                    conflict = True
+                                if m.friday and m.friday == meetingToAdd.friday:
+                                    conflict = True
+                            
 
-                    if conflict:
-                        valid = False
-                        break
+                            if conflict:
+                                valid = False
+                                break
 
                 # if we can't add class, don't, otherwise do add it
                 if valid == False:     
