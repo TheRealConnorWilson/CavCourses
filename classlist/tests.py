@@ -155,6 +155,10 @@ class CourseTesting(TestCase):  # working
         response = self.client.get('/create_account/')
         self.assertEqual(response.status_code, 200)
 
+    def advanced_search(self):  # working
+        response = self.client.get('/advanced_search/')
+        self.assertEqual(response.status_code, 200)
+
     def test_new_class(self):  # working
         response = self.client.get(reverse('list'))
         course = Course()
@@ -283,8 +287,10 @@ class SeleniumTests(TestCase):  # this could definitely cause problems for peopl
     # good video that I used for help https://www.youtube.com/watch?v=1KbJdhIpcGo
     # main documentation for selenium https://selenium-python.readthedocs.io/index.html
     # after installing the chrome webdriver, move it to the bin folder in your virtual environment folder
-    #drive = webdriver.Chrome(executable_path='../env/chromedriver')
-    #drive.get('https://a27-lous-list.herokuapp.com/list/')
+    # drive = webdriver.Chrome(executable_path='../env/chromedriver')
+    # drive.get('https://a27-lous-list.herokuapp.com/list/')
+    # element = drive.find_element(By.LINK_TEXT, "View all ACCT classes")
+    # element.click()
     #elem2 = drive.find_element(By.LINK_TEXT, "Continue")
     #elem2.click()
     #elem = drive.find_element(By.NAME, 'searched_dept')
@@ -335,22 +341,23 @@ class SeleniumTests(TestCase):  # this could definitely cause problems for peopl
     def test_logging_in(self):  # verifies that clicking on a course card will take you to all the sections (good)
         self.driver = webdriver.Chrome(executable_path='../env/bin/chromedriver')
         driver3 = self.driver
-        driver3.get('https://a27-lous-list.herokuapp.com/list/')
+        driver3.get('https://a27-lous-list.herokuapp.com/')
         elem = driver3.find_element(By.LINK_TEXT, "Login")
         elem.click()
         # elem2 = driver3.find_element(By.LINK_TEXT, "Continue")
         # elem2.click()
-        self.assertIn("Sign In Via Google", driver3.page_source)
+        # self.assertIn("Sign In Via Google", driver3.page_source)
 
-    def test_cs_class(self):  # verifies that clicking on a course card will take you to all the sections (good)
+    def test_apma_class(self):  # verifies that clicking on a course card will take you to all the sections (good)
         self.driver = webdriver.Chrome(executable_path='../env/bin/chromedriver')
         driver3 = self.driver
         driver3.get('https://a27-lous-list.herokuapp.com/list/')
-        element = driver3.find_element(By.LINK_TEXT, "View all ACCT classes")
+        element = driver3.find_element(By.LINK_TEXT, "View all APMA classes")
         element.click()
-        #element2 = driver3.find_element(By.LINK_TEXT, "Section Information")
-        #element2.click()
-        #self.assertIn("Derrick Stone", driver3.page_source)
+        element2 = driver3.find_element(By.LINK_TEXT, "Departments")
+        element2.click()
+        #element3 = driver3.find_element(By.__class__, "btn btn-secondary collapsed")
+        #self.assertIn("Search for a department", driver3.page_source)
 
 
     def search_class(self):
@@ -369,5 +376,32 @@ class SeleniumTests(TestCase):  # this could definitely cause problems for peopl
         elem = driver3.find_element(By.LINK_TEXT, "Schedule Builder")
         elem.click()
         self.assertIn("My Schedule", driver3.page_source)
+
+    def test_advanced_search(self):
+        self.driver = webdriver.Chrome(executable_path='../env/bin/chromedriver')
+        driver3 = self.driver
+        driver3.get('https://a27-lous-list.herokuapp.com/classlist/advanced_search/')
+        elem = driver3.find_element(By.NAME, "searched_dept")
+        elem.send_keys('CS')
+        elem2 = driver3.find_element(By.NAME, "searched_catalog_num")
+        elem2.send_keys('4414')
+        elem2.send_keys(Keys.RETURN)
+        self.assertIn("Operating Systems", driver3.page_source)
+
+    def test_advanced_search2(self):
+        self.driver = webdriver.Chrome(executable_path='../env/bin/chromedriver')
+        driver3 = self.driver
+        driver3.get('https://a27-lous-list.herokuapp.com/classlist/advanced_search/')
+        elem = driver3.find_element(By.NAME, "searched_dept")
+        elem.send_keys('ece')
+        elem2 = driver3.find_element(By.NAME, "searched_title")
+        elem2.send_keys('fundamentals')
+        elem2.send_keys(Keys.RETURN)
+        self.assertIn("ECE Fundamentals I", driver3.page_source)
+
     def tearDown(self):
         self.driver.close()
+
+
+#class ScheduleBuilderTests(TestCase):
+    #def first_schedule(self):
