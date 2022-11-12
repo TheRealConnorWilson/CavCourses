@@ -347,10 +347,34 @@ def update_courses_from_API(dept_abbr):
                                         facility_description=meeting_location,
                                         section = meeting_section
                                         )
+            
+            print(course_obj)
+            # setting boolean fields for meetings
+            if meetings_obj.days.find("Mo") != -1:
+                meetings_obj.monday = True
+                print("Monday")
+            if meetings_obj.days.find("Tu") != -1:
+                meetings_obj.tuesday = True
+                print("Tuesday")
+            if meetings_obj.days.find("We") != -1:
+                meetings_obj.wednesday = True
+                print("Wednesday")
+            if meetings_obj.days.find("Th") != -1:
+                meetings_obj.thursday = True
+                print("Thursday")
+            if meetings_obj.days.find("Fr") != -1:
+                meetings_obj.friday = True
+                print("Friday")
+                
+            # in cases where there are no meetings, none of these will be true (ex. CS 3240's lab section)
+            
+            
+            
             meetings_obj.save()
             
         
         course_obj.save()
+        # print(course_obj)
 
     return dept
 
@@ -521,65 +545,199 @@ def remove_friend(request, requestID):
 
     return redirect('/classlist/my_account/')
 
+# this method just displays schedule
 def schedule_view(request):
-    if request.method == 'POST':
+    
+    # ISSUE WITH THIS: returning 2 users??
+    # find our user
+    # theUser = Account.objects.get(USERNAME_FIELD = request.user.username)
+    # if theUser:
+        # theUser = theUser[0]
+    if Account.objects.filter(USERNAME_FIELD = request.user.username):
+        theUser = Account.objects.get(USERNAME_FIELD = request.user.username)
+
+        # mnow atch our user to the schedule's owner (foreign key!)
+
+        # if sched exists, pass its context onto schedule template to see it
+        if Schedule.objects.filter(scheduleUser=theUser).exists():
+
+            schedule_obj = Schedule.objects.get(scheduleUser=theUser)
+            schedule_context = {'the_schedule' : schedule_obj}
+            # print(schedule_obj)
+            
+            meetings_list = []
+            
+            for each in schedule_obj.classRoster.all():
+                meetings_list.append(Meetings.objects.get(section=each))
+                
+            print(meetings_list)
+            # print(schedule_obj)
+            
+            schedule_context['meetings_list'] = meetings_list
+            
+            return render(request, 'classlist/schedule.html', schedule_context)
+
+        # else:
+        #     return render(request, 'classlist/schedule.html', {})
+
+        # if sched doesn't exist, create it and pass its context onto schedule template
+        else:
+            schedule_obj = Schedule(scheduleUser=theUser)
+            schedule_obj.save()
+
+            schedule_context = {'the_schedule' : schedule_obj}
+            
+            return render(request, 'classlist/schedule.html', schedule_context)
+    else:
+        return render(request, 'classlist/schedule.html', {})
+
+# this method adds to the schedule
+def schedule_add(request, section_id):
+    print("I AM RUNNING", section_id)
+    # if request.method == 'POST':
         # s = Schedule() 
         # s.save()         
         # c = request.POST['schedule-button']
-        c = request.POST.get('schedule-button')
-        if c != None:
+        # c = request.POST.get('schedule-button')
+
+        # if our post data is valid
+        # if c != None:
+    if section_id:
+        print("a")
+
+        # getting our user
+        theUser = Account.objects.filter(USERNAME_FIELD = request.user.username)
+        if theUser:
+            theUser = theUser[0]
+        print(theUser)
+        
+        
+        sectionToAdd = Section.objects.get(section_id=section_id)
+        meetingToAdd = Meetings.objects.get(section_id=section_id)
+        
+        print(sectionToAdd)
+        print(meetingToAdd)
+
+        # if schedule exists, add the class and re-render
+        if Schedule.objects.filter(scheduleUser=theUser).exists():
+            print("c")
+
+            schedule_obj = Schedule.objects.get(scheduleUser=theUser)
+
+            valid = True
+
+            # courseToAdd = c["section"].course
             
-            mo = False
-            if c.find("Mo") != -1:
-                mo = True
-            
-            tu = False
-            if c.find("Tu") != -1:
-                tu = True
 
-            we = False
-            if c.find("We") != -1:
-                we = True
-            
-            th = False
-            if c.find("Th") != -1:
-                th = True
+            # if classroster has at least a class in it
+            if schedule_obj.classRoster:
+                
+                time_overlap = False
+                conflict = False
+                
+                # for each class in our schedule, if one isn't compatible, we don't add the class
+                for s in schedule_obj.classRoster.all():
+                    print(s)
+                    # for m in c.:
 
-            fr = False
-            if c.find("Fr") != -1:
-                fr = True
+                    # need to find associated meeting object with section object
+                    m = Meetings.objects.get(section_id=s.section_id)
+                    
+                    # print(m)
+                    
+                    # shortcut to check timedate validity - see Activity Scheduling from DSA2
+                    # https://stackoverflow.com/questions/325933/determine-whether-two-date-ranges-overlap
+                    if (meetingToAdd.start_time <= m.end_time) and (m.start_time <= meetingToAdd.end_time):
+                        time_overlap = True
+                    
+                    elif (m.start_time <= meetingToAdd.end_time) and (meetingToAdd.start_time <= m.end_time):
+                        time_overlap = True
+                        
+                    #check days overlap as well?
+                    
+                    if time_overlap: # only need to check if days overlap if time overlaps
+                        if m.monday and m.monday == meetingToAdd.monday:
+                            conflict = True
+                        if m.tuesday and m.tuesday == meetingToAdd.tuesday:
+                            conflict = True
+                        if m.wednesday and m.wednesday == meetingToAdd.wednesday:
+                            conflict = True
+                        if m.thursday and m.thursday == meetingToAdd.thursday:
+                            conflict = True
+                        if m.friday and m.friday == meetingToAdd.friday:
+                            conflict = True
+                    
 
-            sa = False
-            if c.find("Sa") != -1:
-                sa = True
+                    if conflict:
+                        valid = False
+                        break
 
-            su = False
-            if c.find("Su") != -1:
-                su = True
+                # if we can't add class, don't, otherwise do add it
+                if valid == False:     
+                    print("Cannot add course due to time bounds")       
+                else:
+                    schedule_obj.classRoster.add(sectionToAdd)
+                    print(sectionToAdd)
+                    schedule_obj.save()
 
-            schedule_obj = Schedule(course_name = c,
-                                    mon = mo,
-                                    tue = tu,
-                                    wed = we,
-                                    thu = th,
-                                    fri = fr,
-                                    sat = sa,
-                                    sun = su
-                                    )
+            # if classroster is empty, we can literally just add the class to schedule
+            else:
+                schedule_obj.classRoster.add(sectionToAdd)
+                schedule_obj.save()
+
+            schedule_context = {'the_schedule' : schedule_obj}
+    
+            # return render(request, 'classlist/schedule.html', schedule_context)
+            return redirect('/schedule')
+        
+        #if schedule does not exists, make one and add the selected course section
+        else:
+            print("making new schedule")
+
+            schedule_obj = Schedule.objects.create(scheduleUser=theUser)
+
+            schedule_obj.classRoster.add(sectionToAdd)
             schedule_obj.save()
-    added_courses = Schedule.objects.all()
-    schedule_context = {'added_courses' : added_courses}
-    return render(request, 'classlist/schedule.html', schedule_context)
 
-def delete_course(request):
+            schedule_context = {'the_schedule' : schedule_obj}
+            print(schedule_obj)
+    
+            return render(request, 'classlist/schedule.html', schedule_context)
+
+    # if we didn't add anything, go home
+    else:
+        return HttpResponseRedirect('/home/')
+
+def delete_course(request, section_id):
+    # print(section_id)
     if request.method == 'POST':
         # course_id = request.POST['delete-button']
-        course_id = int(request.POST.get('delete-button'))
-        course = Schedule.objects.get(pk=course_id)
-        course.delete()
-        # Schedule.objects.all().save()
-        # schedule_context = {'added_courses' : added_courses}
-    return redirect('schedule')
+
+        theUser = Account.objects.filter(USERNAME_FIELD = request.user.username)
+        if theUser:
+            theUser = theUser[0]
+
+        # sec_id = int(request.POST.get('delete-button'))
+        sec_id = section_id
+        course = Section.objects.get(section_id=sec_id)
+
+        schedule_obj = Schedule(scheduleUser=theUser)
+        schedule_obj.classRoster.remove(course)
+        
+        # print(schedule_obj.classRoster.all)
+        counter = 0
+        for each in schedule_obj.classRoster.all():
+            print("wow")
+            counter += 1
+        if counter == 0:
+            schedule_obj.delete()
+        else:
+            schedule_obj.save()
+
+        schedule_context = {'sched' : schedule_obj}
+
+        # return render(request, 'classlist/schedule.html', schedule_context)
+        return redirect('/classlist/schedule/')
 
 def advanced_search2(request):
     if request.method == 'POST':
