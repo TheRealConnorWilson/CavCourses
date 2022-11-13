@@ -164,14 +164,22 @@ class TestViews(TestCase):
         self.factory = RequestFactory()
         self.u1 = User.objects.create_user(username='User1', email='user1@foo.com', password='pass')
         self.a1 = Account(USERNAME_FIELD='User1', email='user1@foo.com', year=2, major='Drama')
+        self.s1 = Schedule(scheduleUser=self.a1)
         # self.u1.is_active = True
         # self.u1.is_staff = True
         self.u1.save()
         self.a1.save()
-        # self.u2 = User.objects.create_user(username='User2', email='user2@foo.com', password='pass')
-        # self.a2 = Account.objects.create_user(USERNAME_FIELD='User2', email='user2@foo.com', year=4, major='Computer Engineering')
-        # self.u2.is_active = True
-        # self.a2.save()
+        self.s1.save()
+        
+        
+        self.u2 = User.objects.create_user(username='User2', email='user2@foo.com', password='pass')
+        self.a2 = Account(USERNAME_FIELD='User2', email='user2@foo.com', year=1, major='Undeclared')
+        self.s2 = Schedule(scheduleUser=self.a2)
+        # self.u1.is_active = True
+        # self.u1.is_staff = True
+        self.u2.save()
+        self.a2.save()
+        self.s2.save()
         
     def test_home(self):
         request = self.factory.get('/home')
@@ -182,25 +190,49 @@ class TestViews(TestCase):
     def test_create_account(self):
         request = self.factory.get('/create_account')
         request.user = self.u1
-        response = view_home(request)
+        response = create_account(request)
         self.assertEqual(response.status_code, 200)
     
     def test_view_departments(self):
         request = self.factory.get('/classlist/list')
         request.user = self.u1
-        response = view_home(request)
+        response = get_depts(request)
         self.assertEqual(response.status_code, 200)
         
     def test_view_account(self):
         request = self.factory.get('/classlist/my_account')
         request.user = self.u1
-        response = view_home(request)
+        response = ViewAccount.as_view()(request)
         self.assertEqual(response.status_code, 200)
         
     def test_view_CS_department(self):
         request = self.factory.get('/list/CS')
         request.user = self.u1
-        response = view_home(request)
+        response = load_dept_courses_from_db(request, 'CS')
+        self.assertEqual(response.status_code, 200)
+        
+    def test_view_my_schedule(self):
+        request = self.factory.get('/classlist/schedule/')
+        request.user = self.u1
+        response = schedule_view(request)
+        self.assertEqual(response.status_code, 200)
+        
+    def test_view_users(self):
+        request = self.factory.get('/classlist/account/view_users')
+        request.user = self.u1
+        response = ViewUsers.as_view()(request)
+        self.assertEqual(response.status_code, 200)
+        
+    def test_view_other_schedule(self):
+        request = self.factory.get('/classlist/schedule/' + self.u2.email)
+        request.user = self.u1
+        response = schedule_view(request, self.u2.email)
+        self.assertEqual(response.status_code, 200)
+        
+    def test_add_comment(self):
+        request = self.factory.get('/classlist/schedule/' + self.u2.email +'/add_comment')
+        request.user = self.u1
+        response = add_comment(request, self.u2.email)
         self.assertEqual(response.status_code, 200)
 
     # def tearDown(self):
