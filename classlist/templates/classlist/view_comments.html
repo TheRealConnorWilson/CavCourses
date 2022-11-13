@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+<!-- 
+Citations:
+https://www.bootdey.com/snippets/view/Card-user-transfer-list#html 
+-->
+
+<html>
+    {% load socialaccount %}
+    <title>View Comments</title>
+
+    {% block body %}
+        <body>
+                {% if comments_list %}
+                    <div class="justify-content-center">
+                        <div class="row">
+                            <div class="col-md-5">
+                                <div class="card ccard radius-t-0 h-100">
+
+                                    <div class="card-header pb-3 brc-secondary-l3">
+                                        <h5 class="card-title mb-2 mb-md-0 text-dark-m3 text-center">
+                                            Comments for {{user.USERNAME_FIELD}}'s schedule:
+                                        </h5>
+                                    </div>
+                                    <div class="card-body pt-2 pb-1">
+                                        {% for c in comments_list %}
+                                            {% comment %} {% if c.schedule == my_schedule %} {% endcomment %}
+                                                {% comment %} <div role="button" class="d-flex flex-wrap align-items-center my-2 bgc-secondary-l4 bgc-h-secondary-l3 radius-1 p-25 d-style">
+                                                    <span class="mr-25 w-4 h-4 overflow-hidden text-center border-1 brc-secondary-m2 radius-round shadow-sm d-zoom-2">
+                                                        <img src="{{c.from_user.avatar}}" class="h-4 w-4" style="width: 80px;"/>
+                                                    </span>
+                                                    <span class="text-default-d3 text-90 text-600 text-left">
+                                                        {{c.from_user.USERNAME_FIELD}}: {{c.text}}
+                                                    </span>
+                                                    <span>
+                                                        &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp
+                                                    </span>
+                                                </div> {% endcomment %}
+                                            {% comment %} {% endif %} {% endcomment %}
+
+                                            <div class="card mb-3" width="width:17rem">
+                                                <div class="card-header"> 
+                                                    <div class="col float-start">
+                                                        <img src="{{c.from_user.avatar}}" class="rounded-circle" height="30" width="30">
+                                                    </div>
+                                                    <div class="row row-cols-2">
+                                                        <div class="col"> {{c.from_user.USERNAME_FIELD}}:</div>
+                                                    </div> 
+                                                    
+                                                </div>
+                                                <div class="card-body"> {{c.text}} </div>
+                                            </div>
+
+
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% else %}
+                    <p> No comments exist for this user's schedule. </p>
+                {% endif %}
+
+                <p>
+                <a href='../add_comment'>
+                add comment
+                </a></p> 
+                
+                
+                
+                <!-- {% if all_accounts %}
+                    {% for other_user in all_accounts %}
+                    {% comment %} {% if user not in request.user.friends.all and user != request.user %} {% endcomment %}
+                        {% if other_user.email != user.email %}
+                            <h6> {{other_user.USERNAME_FIELD}} 
+                                {% if other_user in account.friends.all %}
+                                    <p> already friends </p>
+                                    <p> friends: {{ account.friends.all }} </p>
+                                {% else %}
+                                    {% comment %} Friending others is a work in progress {% endcomment %}
+                                    <a href="send_friend_request/{{other_user.pk}}">Send friend request</a>
+                                {% endif %}
+                            </h6>
+                        {% endif %}
+                    {% endfor %}
+                {% else %}
+                <p> No accounts exist right now. There is an error. </p>
+                {% endif %} -->
+            <!-- </ul>
+            {% comment %} <ul class="all_users">
+                {% for friend_request in all_friend_requests %}
+                <h1> {{friend_request.from_user}} 
+                    <a href="/accept_friend_request/{{friend_request.id}}">accept friend request</a></h1>
+                {% endfor %}
+            </ul> {% endcomment %} -->
+        </body>
+    {% endblock %}
+</html>

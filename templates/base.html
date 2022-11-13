@@ -54,7 +54,7 @@ https://stackoverflow.com/questions/30810028/how-to-display-image-from-google-ac
                         <button class="btn me-2 btn-primary" type="button" role="button">
                             <a href="/classlist/accounts/logout" style="color:inherit"> Logout </a>
                         </button>
-                        <img src="{{user.socialaccount_set.all.0.get_avatar_url}}" class="rounded-circle" height="30" width="30">
+                        <img src="{{avatar}}" class="rounded-circle" height="30" width="30">
                 {% else %}
                         <button class="btn me-2 btn-primary" type="" color="#fff" role="button">
                             <a href="/classlist/accounts/google/login/?process=login" style="color:inherit"> Login </a>

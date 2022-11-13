@@ -2,7 +2,6 @@ from email.policy import default
 from unittest.util import _MAX_LENGTH
 from xmlrpc.client import DateTime
 from django.db import models
-
 from django.utils import timezone
 from django.contrib import admin
 from django.contrib.auth.models import User
@@ -35,13 +34,14 @@ class Account(models.Model):
     USERNAME_FIELD = models.CharField(max_length=150, default="User") # something was demanding this be USERNAME_FIELD instead of username
     first_name = models.CharField(max_length=150, blank=True, default="User") # blank=True means that it is optional
     last_name = models.CharField(max_length=150, blank=True, default="Name")
-    email = models.EmailField(max_length=150, default="none@gmail.com")
+    email = models.EmailField(max_length=150, default="none@gmail.com", primary_key=True)
     # password = models.CharField(max_length=150) # not sure if we need to store this?
     last_login = models.DateTimeField('last date logged in', default=timezone.now)
     date_joined = models.DateTimeField('date joined', default=timezone.now)
     is_authenticated = models.BooleanField(default=True)
     is_anonymous = models.BooleanField(default=False)
     
+    avatar = models.URLField(default='/static/classlist/default_account_image.png')
     account_created = models.BooleanField(default=False) # currently not used
     
     # friends fields
@@ -50,7 +50,7 @@ class Account(models.Model):
     # received_friend_requests = models.ManyToManyField("Account", related_name = 'to_user', blank=True)
     
     # account info
-    schedule = models.ManyToManyField("Section", blank=True)
+    #schedule = models.ManyToManyField("Section", blank=True)
     major = models.CharField(max_length=100, default=True)
     
     FIRST_YEAR = 1
@@ -90,29 +90,7 @@ class Friend_Request(models.Model):
     
     def __str__(self):
         return str("Request from " + str(self.from_user) + " to " + str(self.to_user)) 
-class Schedule(models.Model):
-    course_name = models.CharField(max_length=200, blank=True)
-    mon = models.BooleanField()
-    tue = models.BooleanField()
-    wed = models.BooleanField()
-    thu = models.BooleanField()
-    fri = models.BooleanField()
-    sat = models.BooleanField()
-    sun = models.BooleanField()
-    
-    @classmethod
-    def get_default_schedule(self):
-        default_schedule = Schedule.objects.get_or_create(
-            course_name = "NA",
-            mon = False,
-            tue = False,
-            wed = False,
-            thu = False,
-            fri = False,
-            sat = False,
-            sun = False,
-            )[0]
-        return default_schedule.pk
+
 class Instructor(models.Model):
     name = models.CharField(max_length=200, blank=True)
     email = models.CharField(max_length=100, blank=True)
@@ -178,7 +156,7 @@ class Section(models.Model):
 
     course = models.ForeignKey(Course, on_delete=models.CASCADE, default=None)
 
-    section_id = models.IntegerField(default=0) # ex. 16351
+    section_id = models.IntegerField(default=0, primary_key=True) # ex. 16351
     section_number = models.CharField(max_length = 100, blank=True) # 001
     instructor = models.ForeignKey(Instructor, on_delete=models.CASCADE, default=Instructor.get_default_instructor)
     component = models.CharField(max_length=100, blank=True) # LEC,
@@ -193,11 +171,20 @@ class Section(models.Model):
     def __str__(self):
         return str(self.section_id) + ": " + str(self.section_number) + " - " + self.component
 class Meetings(models.Model):
-    days = models.CharField(max_length=100, blank=True) # MoWeFr
+    days = models.CharField(max_length=100, blank=True) # MoWeFr, -
     start_time = models.CharField(max_length=100, blank=True) # 17.00.00.000000-05:00
     end_time = models.CharField(max_length=100, blank=True) # 18.15.00.000000-05:00
     facility_description = models.CharField(max_length=200, blank=True) # Olsson Hall 009
     section = models.ForeignKey(Section, on_delete=models.CASCADE, blank=True)
+    
+    # fields for storing which days the class meets on -- assuming no classes meet on sat/sun?
+    # use days field to fill them out in view
+    monday = models.BooleanField(blank=True, default=False)
+    tuesday = models.BooleanField(blank=True, default=False)
+    wednesday = models.BooleanField(blank=True, default=False)
+    thursday = models.BooleanField(blank=True, default=False)
+    friday = models.BooleanField(blank=True, default=False)
+    
 
     # @classmethod
     # def get_default_meeting():
@@ -217,3 +204,41 @@ class Meetings(models.Model):
 
     def __str__(self):
         return self.days + ": " + self.start_time + "-" + self.end_time + " @ " + self.facility_description
+
+    ordering = ['start_time',]
+    
+# class Friend_Request(models.Model):
+#     # call two user models
+#     # from_user = models.ForeignKey(User, related_name = 'from_user', on_delete=models.CASCADE)
+#     # to_user = models.ForeignKey(User, related_name = 'to_user', on_delete=models.CASCADE)
+    
+#     from_user = models.IntegerField(default=0)
+#     to_user = models.IntegerField(default=0)
+    
+#     def __str__(self):
+#         return str("Request from " + str(self.from_user) + " to " + str(self.to_user))
+
+class Schedule(models.Model):
+
+    # who owns the schedule?
+    #scheduleUser = models.ForeignKey(Account, related_name = 'user_schedule', on_delete=models.CASCADE)
+    scheduleUser = models.OneToOneField(Account, on_delete=models.CASCADE, primary_key=True, default=None)
+
+    # many-to-many field relating to a specific section of a course - allows for multiple classes
+    classRoster = models.ManyToManyField("Section", related_name='user_course', blank=True, default=None)
+
+    def __str__(self):
+        return str(self.scheduleUser)
+
+    def __unicode__(self):
+        return str(self.scheduleUser)
+
+
+class Comment(models.Model):
+    from_user = models.ForeignKey(Account, related_name="my_comments", on_delete=models.CASCADE, blank=True)
+    to_user = models.ForeignKey(Account, related_name="schedule_comments", on_delete=models.CASCADE, blank=True)
+    # schedule = models.ForeignKey(Schedule, on_delete=models.CASCADE, blank=True)
+    text = models.CharField(max_length=250)
+    
+    def __str__(self) -> str:
+        return self.text
