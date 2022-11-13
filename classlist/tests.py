@@ -5,15 +5,15 @@ from .forms import *
 from django.utils import timezone
 from django.urls import reverse
 # from django.contrib.auth.models import User
-from . import views
-
-from django.contrib.sessions.middleware import SessionMiddleware
-from django.contrib.messages.middleware import MessageMiddleware
-from selenium import webdriver
-from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.common.by import By
-from selenium.webdriver.chrome.service import Service
-from selenium.webdriver.chrome.options import Options
+# from . import views
+#
+# from django.contrib.sessions.middleware import SessionMiddleware
+# from django.contrib.messages.middleware import MessageMiddleware
+# from selenium import webdriver
+# from selenium.webdriver.common.keys import Keys
+# from selenium.webdriver.common.by import By
+# from selenium.webdriver.chrome.service import Service
+# from selenium.webdriver.chrome.options import Options
 
 """
 citations:
@@ -551,3 +551,4 @@ class AdvancedSearchTesting(TestCase):
         response = self.client.get(reverse('advanced_search'))
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed('classlist/advanced_search.html')
+
