@@ -9,6 +9,11 @@ from . import views
 
 from django.contrib.sessions.middleware import SessionMiddleware
 from django.contrib.messages.middleware import MessageMiddleware
+from selenium import webdriver
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.chrome.options import Options
 
 """
 citations:
@@ -56,6 +61,11 @@ def create_user(username, first_name, last_name, email):
 # https://docs.djangoproject.com/en/4.1/topics/testing/tools/
 # referenced this article when writing tests
 class GoogleLoginViewTests(TestCase):    # Still working on the google login testing
+    def initial(self):  # not for sure if this is the proper way to set up
+        self.factory = RequestFactory()
+        self.user = Account.objects.create_account(USERNAME_FIELD='user', email='email@gmail.com', password='pw')
+        self.account = Account.objects.create(email='email@gmial.com')
+
     def test_no_input(self):
         response = self.client.get(reverse('view_name'))
         self.assertEqual(response.status_code, 200)  # not for sure 200 is the right code
@@ -121,12 +131,36 @@ def new_course(semester_code, title, units, subject, cat_num):
 
 
 class CourseTesting(TestCase):  # working
-    def test_no_classes(self):
+    def test_home_page(self):
         response = self.client.get(reverse('list'))
         self.assertEqual(response.status_code, 200)
 
     def test_link(self):  # working
         response = self.client.get('/list/CS/')
+        self.assertEqual(response.status_code, 200)
+
+    def test_accounts(self):  # working
+        response = self.client.get('/list/accounts/')
+        self.assertEqual(response.status_code, 200)
+
+    def test_my_account(self):  # working
+        response = self.client.get('/list/my_account/')
+        self.assertEqual(response.status_code, 200)
+
+    def test_view_users(self):  # working
+        response = self.client.get('/list/view_users/')
+        self.assertEqual(response.status_code, 200)
+
+    def test_create_account(self):  # working
+        response = self.client.get('/create_account/')
+        self.assertEqual(response.status_code, 200)
+
+    def advanced_search(self):  # working
+        response = self.client.get('/advanced_search/')
+        self.assertEqual(response.status_code, 200)
+
+    def my_account_link(self):  # working
+        response = self.client.get('/my_account/')
         self.assertEqual(response.status_code, 200)
 
     def test_new_class(self):  # working
@@ -155,6 +189,7 @@ class CourseTesting(TestCase):  # working
                     subject='CSS')
         c2.save()
         self.assertEqual(len(Course.objects.all()), 2)
+
 
 client = Client()
 class TestViews(TestCase):
@@ -278,4 +313,241 @@ class TestViews(TestCase):
     #     view = SomeCreateView.as_view()
     #     response = view(request)
     #     self.failUnlessEqual(response.status_code, status.HTTP_302_FOUND)
-    #     self.assertEqual(SomeModel.objects.count(), 0)  
+    #     self.assertEqual(SomeModel.objects.count(), 0)
+
+# https://selenium-python.readthedocs.io/getting-started.html#using-selenium-to-write-tests
+# good testing link
+
+
+# class SeleniumTests(TestCase):  # this could definitely cause problems for people
+#     # must install selenium and download chrome driver from https://sites.google.com/chromium.org/driver/
+#     # good video that I used for help https://www.youtube.com/watch?v=1KbJdhIpcGo
+#     # main documentation for selenium https://selenium-python.readthedocs.io/index.html
+#     # after installing the chrome webdriver, move it to the bin folder in your virtual environment folder
+#     #drive = webdriver.Chrome(executable_path='../env/chromedriver')
+#     #drive.get('https://a27-lous-list.herokuapp.com/view_users/')
+#     # elem1 = drive.find_element(By.LINK_TEXT, "Login")
+#     # elem1.click()
+#     # elem3 = drive.find_element(By.ID, "identifierId")
+#     # elem3.send_keys('nth5pdk@virginia.edu')
+#     # elem3.send_keys(Keys.RETURN)
+#     # elem4 = drive.find_element(By.ID, 'certLogin')
+#     # elem4.click()
+#     # elem5 = drive.find_element(By.LINK_TEXT, 'OK')
+#     # elem5.click()
+#     # elem = drive.find_element(By.LINK_TEXT, "My_Account")
+#     # elem.click()
+#     # elem2 = drive.find_element(By.LINK_TEXT, "Find Friends")
+#     # elem2.click()
+#     # element = drive.find_element(By.LINK_TEXT, "View all ACCT classes")
+#     # element.click()
+#     #elem2 = drive.find_element(By.LINK_TEXT, "Continue")
+#     #elem2.click()
+#     #elem = drive.find_element(By.NAME, 'searched_dept')
+#     #elem.send_keys('CS')
+#     #elem.send_keys(Keys.RETURN)
+#     #print(drive.page_source)
+#     # elem = drive.find_element(By.LINK_TEXT, "View all ACCT classes")
+#     # elem.click()
+#     # print(elem.__class__)
+#     def clicking_home_from_class(self):
+#         driver1 = self.driver
+#         driver1.get('https://a27-lous-list.herokuapp.com/list/')
+#         elem3 = driver1.find_element(By.LINK_TEXT, "View all ACCT classes")
+#         elem3.click()
+#         elem1 = driver1.find_element(By.LINK_TEXT, "Home")
+#         elem1.click()
+#         self.assertIn("Departmentsssss", driver1.page_source)
+#
+#     def clicking_login(self):
+#         self.driver = webdriver.Chrome(executable_path='../env/bin/chromedriver')
+#         driver3 = self.driver
+#         driver3.get('https://a27-lous-list.herokuapp.com/list/')
+#         elem2 = driver3.find_element(By.LINK_TEXT, "Login")
+#         elem2.click()
+#         self.assertIn("Sign In Via Google", driver3.page_source)
+#
+#     def test_clicking_classes(self):  # verifies that clicking on a course card will take you to all the sections (good)
+#         self.driver = webdriver.Chrome(executable_path='../env/bin/chromedriver')
+#         driver3 = self.driver
+#         driver3.get('https://a27-lous-list.herokuapp.com/list/')
+#         self.assertIn('', driver3.title)
+#         elem = driver3.find_element(By.LINK_TEXT, "View all ACCT classes")
+#         elem.click()
+#         #self.assertIn("Section Information", driver3.page_source)
+#         #self.assertIn("ACCT Classes", driver3.page_source)
+#         #self.assertIn("ACCT 2010", driver3.page_source)
+#
+#     def test_search_class(self):
+#         self.driver = webdriver.Chrome(executable_path='../env/bin/chromedriver')
+#         driver3 = self.driver
+#         driver3.get('https://a27-lous-list.herokuapp.com/advanced_search/')
+#         self.assertIn('', driver3.title)
+#         elem = driver3.find_element(By.NAME, 'searched_dept')
+#         elem.send_keys('CS')
+#         elem.send_keys(Keys.RETURN)
+#         self.assertIn("Introduction to Programming", driver3.page_source)
+#
+#     def test_logging_in(self):  # verifies that clicking on a course card will take you to all the sections (good)
+#         self.driver = webdriver.Chrome(executable_path='../env/bin/chromedriver')
+#         driver3 = self.driver
+#         driver3.get('https://a27-lous-list.herokuapp.com/')
+#         elem = driver3.find_element(By.LINK_TEXT, "Login")
+#         elem.click()
+#         # elem2 = driver3.find_element(By.LINK_TEXT, "Continue")
+#         # elem2.click()
+#         # self.assertIn("Sign In Via Google", driver3.page_source)
+#
+#     def test_apma_class(self):  # verifies that clicking on a course card will take you to all the sections (good)
+#         self.driver = webdriver.Chrome(executable_path='../env/bin/chromedriver')
+#         driver3 = self.driver
+#         driver3.get('https://a27-lous-list.herokuapp.com/list/')
+#         element = driver3.find_element(By.LINK_TEXT, "View all APMA classes")
+#         element.click()
+#         #element2 = driver3.find_element(By.LINK_TEXT, "Departments")
+#         #element2.click()
+#         #element3 = driver3.find_element(By.__class__, "btn btn-secondary collapsed")
+#         #self.assertIn("Search for a department", driver3.page_source)
+#
+#     def search_class(self):
+#         # self.driver = webdriver.Chrome(executable_path='../env/bin/chromedriver')
+#         driver = self.driver
+#         driver.get('https://a27-lous-list.herokuapp.com/advanced_search/')
+#         elem = driver.find_element(By.NAME, 'searched_dept')
+#         elem.send_keys('cs')
+#         elem.send_keys(Keys.RETURN)
+#         self.assertIn("Introduction to Programming", driver.page_source)
+#
+#     # def test_schedule_builder(self):  # verifies that clicking on a course card will take you to all the sections (good)
+#     #     self.driver = webdriver.Chrome(executable_path='../env/bin/chromedriver')
+#     #     driver3 = self.driver
+#     #     driver3.get('https://a27-lous-list.herokuapp.com/list/')
+#     #     elem = driver3.find_element(By.LINK_TEXT, "Schedule Builder")
+#     #     elem.click()
+#     #     self.assertIn("My Schedule", driver3.page_source)
+#
+#     def test_advanced_search(self):
+#         self.driver = webdriver.Chrome(executable_path='../env/bin/chromedriver')
+#         driver3 = self.driver
+#         driver3.get('https://a27-lous-list.herokuapp.com/classlist/advanced_search/')
+#         elem = driver3.find_element(By.NAME, "searched_dept")
+#         elem.send_keys('CS')
+#         elem2 = driver3.find_element(By.NAME, "searched_catalog_num")
+#         elem2.send_keys('4414')
+#         elem2.send_keys(Keys.RETURN)
+#         self.assertIn("Operating Systems", driver3.page_source)
+#
+#     def test_advanced_search2(self):
+#         self.driver = webdriver.Chrome(executable_path='../env/bin/chromedriver')
+#         driver3 = self.driver
+#         driver3.get('https://a27-lous-list.herokuapp.com/classlist/advanced_search/')
+#         elem = driver3.find_element(By.NAME, "searched_dept")
+#         elem.send_keys('ece')
+#         elem2 = driver3.find_element(By.NAME, "searched_title")
+#         elem2.send_keys('fundamentals')
+#         elem2.send_keys(Keys.RETURN)
+#         self.assertIn("ECE Fundamentals I", driver3.page_source)
+#
+#     # def test_my_account(self):
+#     #     self.driver = webdriver.Chrome(executable_path='../env/bin/chromedriver')
+#     #     driver3 = self.driver
+#     #     driver3.get('https://a27-lous-list.herokuapp.com/classlist/list/')
+#     #     elem1 = driver3.find_element(By.LINK_TEXT, "Login")
+#     #     elem1.click()
+#     #     elem3 = driver3.find_element(By.ID, "identifierId")
+#     #     elem3.send_keys('nth5pdk@virginia.edu')
+#     #     elem3.send_keys(Keys.RETURN)
+#     #     elem = driver3.find_element(By.LINK_TEXT, "My_Account")
+#     #     elem.click()
+#     #     elem2 = driver3.find_element(By.LINK_TEXT, "Find Friends")
+#     #     elem2.click()
+#     #     elem4 = driver3.find_element(By.ID, 'certLogin')
+#     #     elem4.click()
+#     #     elem5 = driver3.find_element(By.LINK_TEXT, 'OK')
+#     #     elem5.click()
+#     #     elem = driver3.find_element(By.LINK_TEXT, "My_Account")
+#     #     elem.click()
+#     #     elem2 = driver3.find_element(By.LINK_TEXT, "Find Friends")
+#     #     elem2.click()
+#     #     self.assertIn("Other Users", driver3.page_source)
+#
+#     def test_other_users(self):
+#         self.driver = webdriver.Chrome(executable_path='../env/bin/chromedriver')
+#         driver3 = self.driver
+#         driver3.get('https://a27-lous-list.herokuapp.com/view_users/')
+#         self.assertIn("Send friend request", driver3.page_source)
+#
+#
+#     def tearDown(self):
+#         self.driver.close()
+
+class FriendsFeaturesTesting(TestCase):
+    def test_friends(self):
+        response = self.client.get(reverse('my_account'))
+        account = Account(USERNAME_FIELD='account', email='account@email.com')
+        account.save()
+        account2 = Account(USERNAME_FIELD='account2', email='account2@email.com')
+        account2.save()
+        self.assertEqual(len(Account.objects.all()), 2)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'classlist/view_account.html')
+
+        #req = Friend_Request(from_user=account)
+        # rec = Friend_Request(to_user=account2)
+        # account.friends.add(rec)
+
+
+class TestSchedule(TestCase):  # Johnny's Tests
+
+    def setUp(self):
+        # Every test needs access to the request factory.
+        self.factory = RequestFactory()
+        self.u1 = User.objects.create_user(username='User1', email='user1@foo.com', password='pass')
+        self.a1 = Account(USERNAME_FIELD='User1', email='user1@foo.com', year=2, major='Drama')
+        # self.s1 = Schedule(scheduleUser=self.a1)
+        # self.u1.is_active = True
+        # self.u1.is_staff = True
+        self.u1.save()
+        self.a1.save()
+        # self.s1.save()
+
+    # if we have no schedule, create one - now test it
+    def test_no_schedule(self):
+        request = self.factory.get('/classlist/schedule/')
+        request.user = self.u1
+        response = schedule_view(request)
+        self.assertEqual(len(Schedule.objects.all()), 0)
+
+    def test_create_schedule(self):
+        schedule_obj = Schedule(scheduleUser=self.a1)
+        schedule_obj.save()
+        self.assertEqual(len(Schedule.objects.all()), 1)
+
+
+
+class FriendsFeaturesTesting(TestCase):
+    def test_friends(self):
+        response = self.client.get(reverse('my_account'))
+        account = Account(USERNAME_FIELD='account', email='account@email.com')
+        account.save()
+        account2 = Account(USERNAME_FIELD='account2', email='account2@email.com')
+        account2.save()
+        self.assertEqual(len(Account.objects.all()), 2)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'classlist/view_account.html')
+
+        #req = Friend_Request(from_user=account)
+        # rec = Friend_Request(to_user=account2)
+        # account.friends.add(rec)
+
+    def test_users(self):
+        response = self.client.get(reverse('view_users'))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'classlist/view_users.html')
+
+
+class AdvancedSearchTesting(TestCase):
+    def test_search(self):
+        response = self.client.get(reverse('advanced_search'))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed('classlist/advanced_search.html')
