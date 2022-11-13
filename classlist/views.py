@@ -66,8 +66,10 @@ def get_user_info(request):
     """
     if request.user.is_authenticated:
         account = Account.objects.get(email=request.user.email)
+        
         context = {
             'user' : account,
+            'avatar' : account.avatar,
         }
         return context
     else:
@@ -445,6 +447,12 @@ def create_account(request):
     """
     # print(request.user.username, request.user.email)
     if request.method == 'POST':
+        
+        if request.user.socialaccount_set.count() == 0:
+            avatar = '/static/classlist/default_account_image.png'
+        else:
+            avatar = request.user.socialaccount_set.all()[0].get_avatar_url()
+            
         new_account = Account(USERNAME_FIELD=request.POST['username'], 
                             email=request.user.email, 
                             first_name=request.user.first_name,
@@ -452,8 +460,10 @@ def create_account(request):
                             date_joined=timezone.now(),
                             is_authenticated=True,
                             major=request.POST['major'],
-                            year=request.POST['year']
+                            year=request.POST['year'],
+                            avatar=avatar
                             )
+        
         new_account.save()
         return HttpResponseRedirect('/home')
         

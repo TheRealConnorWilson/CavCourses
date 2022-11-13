@@ -157,6 +157,26 @@
                 </tbody>
             {% endfor %}
         </table>
+        <div class="container">
+            <div class="card-deck">
+                
+                <!-- 
+                    For comment in the_scedule.comments:
+                        create a card with the username, profile pic, and comment
+                 -->
+                <div class="card" width="width:17rem">
+                    <div class="card-header"> 
+                        <div class="row row-cols-2">
+                            <div class="col"> Example Card 1</div>
+                        </div> 
+                        <div class="col float-end">
+                            <img src="{{avatar}}" class="rounded-circle" height="30" width="30">
+                        </div>
+                    </div>
+                    <div class="card-body"> Comment here </div>
+                </div>
+            </div>
+        </div>
     {% else %}
         <h1>No classes to see here!</h1>
     {% endif %}
