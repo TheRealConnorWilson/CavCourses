@@ -547,7 +547,7 @@ def deny_friend_request(request, requestID):
     # template_name = 'classlist/view_account.html'
     # context = {"all_friend_requests": Friend_Request.objects.all()}
 
-    friend_request = Friend_Request.objects.get(email=requestID)
+    friend_request = Friend_Request.objects.get(id=requestID)
     friend_request.delete()
 
     # return render(request, template_name, context)
@@ -846,13 +846,13 @@ def view_comments(request, userID):
     if userID:
         account = Account.objects.get(email=userID) # whose account the schedule belongs to
         print(account)
-        comments_list = Comment.objects.filter(account=account)
+        comments_list = Comment.objects.filter(to_user=account)
         print(comments_list)
         
-        my_schedule = Schedule.objects.filter(scheduleUser=account)
+        # my_schedule = Schedule.objects.filter(scheduleUser=account)
     
         context = get_user_info(request)
-        context['my_schedule'] = my_schedule
+        # context['my_schedule'] = my_schedule
         context['comments_list'] = comments_list
         
         return render(request, 'classlist/view_comments.html', context)
@@ -867,24 +867,25 @@ def add_comment(request, userID):
     else:
         form = CommentForm()
     
-    commenter = Account.objects.get(email=request.user.email)
-    schedule_owner = Account.objects.get(email=userID)
-    schedule = Schedule.objects.get(scheduleUser=schedule_owner)
+    from_user = Account.objects.get(email=request.user.email)
+    to_user = Account.objects.get(email=userID)
+    # schedule = Schedule.objects.get(scheduleUser=schedule_owner)
     
     if form.is_valid():
         
         comment_text = form.cleaned_data.get('comment_text')
         if comment_text != "":
-            comment = Comment(account=commenter, schedule=schedule, text=comment_text)
+            comment = Comment(from_user=from_user, to_user=to_user, text=comment_text)
             comment.save()
             print(comment_text)
 
     context = get_user_info(request)
-    context['schedule'] = schedule
+    # context['schedule'] = schedule
     context['form'] = form
     
     if request.method == 'POST':
-        return render(request, "classlist/schedule.html", context=context)
+        # return render(request, "classlist/schedule.html", context=context)
+        return redirect('/classlist/schedule/' + to_user.email + '/comments/')
     else:
         return render(request, "classlist/add_comment.html", context=context)
 

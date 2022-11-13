@@ -13,13 +13,14 @@ https://www.bootdey.com/snippets/view/Card-user-transfer-list#html
                 <div class="card" width="width:17rem">
                     <div class="card-header"> 
                         <div class="row row-cols-2">
-                            <div class="col"> Example Card 1</div>
+                            <div class="col"> Add a comment on {{user.USERNAME_FIELD}}'s schedule </div>
+                            
                         </div> 
                         <div class="col float-end">
                             <img src="{{avatar}}" class="rounded-circle" height="30" width="30">
                         </div>
                     </div>
-                    <div class="card-body"> Comment here </div>
+                    {% comment %} <div class="card-body"> Comment here </div> {% endcomment %}
                     <form action="/schedule/{{user.email}}/add_comment/" method="post">
                         {% csrf_token %}
                         <!-- {{ form }} -->
@@ -28,8 +29,13 @@ https://www.bootdey.com/snippets/view/Card-user-transfer-list#html
                           {{field}}
                           <br>
                         {% endfor %}
-                        <input type="submit" value="Search">
+                        <input type="submit" value="Submit">
                       </form>
+                </div>
+                <div class="col"> 
+                    <p><a href="../comments">
+                        Return to all comments for {{user.USERNAME_FIELD}}
+                    </a></p>
                 </div>
         </body>
     {% endblock %}

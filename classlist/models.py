@@ -235,8 +235,9 @@ class Schedule(models.Model):
 
 
 class Comment(models.Model):
-    account = models.ForeignKey(Account, on_delete=models.CASCADE, blank=True)
-    schedule = models.ForeignKey(Schedule, on_delete=models.CASCADE, blank=True)
+    from_user = models.ForeignKey(Account, related_name="my_comments", on_delete=models.CASCADE, blank=True)
+    to_user = models.ForeignKey(Account, related_name="schedule_comments", on_delete=models.CASCADE, blank=True)
+    # schedule = models.ForeignKey(Schedule, on_delete=models.CASCADE, blank=True)
     text = models.CharField(max_length=250)
     
     def __str__(self) -> str:

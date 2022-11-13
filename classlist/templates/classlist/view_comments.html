@@ -18,24 +18,39 @@ https://www.bootdey.com/snippets/view/Card-user-transfer-list#html
 
                                     <div class="card-header pb-3 brc-secondary-l3">
                                         <h5 class="card-title mb-2 mb-md-0 text-dark-m3 text-center">
-                                            Comments for {{account}}'s schedule:
+                                            Comments for {{user.USERNAME_FIELD}}'s schedule:
                                         </h5>
                                     </div>
                                     <div class="card-body pt-2 pb-1">
                                         {% for c in comments_list %}
-                                            {% if c.schedule == my_schedule %}
-                                                <div role="button" class="d-flex flex-wrap align-items-center my-2 bgc-secondary-l4 bgc-h-secondary-l3 radius-1 p-25 d-style">
+                                            {% comment %} {% if c.schedule == my_schedule %} {% endcomment %}
+                                                {% comment %} <div role="button" class="d-flex flex-wrap align-items-center my-2 bgc-secondary-l4 bgc-h-secondary-l3 radius-1 p-25 d-style">
                                                     <span class="mr-25 w-4 h-4 overflow-hidden text-center border-1 brc-secondary-m2 radius-round shadow-sm d-zoom-2">
-                                                        <img src="{{other_user.avatar}}" class="h-4 w-4" style="width: 80px;"/>
+                                                        <img src="{{c.from_user.avatar}}" class="h-4 w-4" style="width: 80px;"/>
                                                     </span>
                                                     <span class="text-default-d3 text-90 text-600 text-left">
-                                                        {{c.account.USERNAME_FIELD}} ({{c.text}})
+                                                        {{c.from_user.USERNAME_FIELD}}: {{c.text}}
                                                     </span>
                                                     <span>
                                                         &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp
                                                     </span>
+                                                </div> {% endcomment %}
+                                            {% comment %} {% endif %} {% endcomment %}
+
+                                            <div class="card mb-3" width="width:17rem">
+                                                <div class="card-header"> 
+                                                    <div class="col float-start">
+                                                        <img src="{{c.from_user.avatar}}" class="rounded-circle" height="30" width="30">
+                                                    </div>
+                                                    <div class="row row-cols-2">
+                                                        <div class="col"> {{c.from_user.USERNAME_FIELD}}:</div>
+                                                    </div> 
+                                                    
                                                 </div>
-                                            {% endif %}
+                                                <div class="card-body"> {{c.text}} </div>
+                                            </div>
+
+
                                         {% endfor %}
                                     </div>
                                 </div>
@@ -45,6 +60,11 @@ https://www.bootdey.com/snippets/view/Card-user-transfer-list#html
                 {% else %}
                     <p> No comments exist for this user's schedule. </p>
                 {% endif %}
+
+                <p>
+                <a href='../add_comment'>
+                add comment
+                </a></p> 
                 
                 
                 
