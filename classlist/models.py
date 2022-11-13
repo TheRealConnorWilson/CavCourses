@@ -241,25 +241,3 @@ class Comment(models.Model):
     
     def __str__(self) -> str:
         return self.text
-#     from_user = models.IntegerField(default=0)
-#     to_user = models.IntegerField(default=0)
-    
-#     def __str__(self):
-#         return str("Request from " + str(self.from_user) + " to " + str(self.to_user))
-
-class Schedule(models.Model):
-
-    # who owns the schedule?
-    #scheduleUser = models.ForeignKey(Account, related_name = 'user_schedule', on_delete=models.CASCADE)
-    scheduleUser = models.OneToOneField(Account, on_delete=models.CASCADE, primary_key=True, default=None)
-
-    # many-to-many field relating to a specific section of a course - allows for multiple classes
-    classRoster = models.ManyToManyField("Section", related_name='user_course', blank=True, default=None)
-    
-    
-
-    def __str__(self):
-        return str(self.scheduleUser)
-
-    def __unicode__(self):
-        return str(self.scheduleUser)
