@@ -20,6 +20,7 @@ urlpatterns = [
     path('create_account/', views.create_account, name='create account'),
     
     path('schedule/', views.schedule_view, name ='schedule'),
+    path('schedule/<str:userID>/', views.schedule_view, name ='schedule'),
     path('schedule/add/<str:section_id>/', views.schedule_add, name='schedule_add'),
     path('schedule/delete/<str:section_id>/', views.delete_course, name='delete_course'),
     path('advanced_search/', views.advanced_search2, name='advanced_search'),

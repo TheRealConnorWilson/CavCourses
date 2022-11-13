@@ -486,8 +486,14 @@ def create_account(request):
                             year=request.POST['year'],
                             avatar=avatar
                             )
-        
         new_account.save()
+        
+        
+        schedule_obj = Schedule(scheduleUser=new_account)
+        schedule_obj.save()
+        
+        
+        
         return HttpResponseRedirect('/home')
         
     else:     
@@ -565,7 +571,7 @@ def remove_friend(request, requestID):
     return redirect('/classlist/my_account/')
 
 # this method just displays schedule
-def schedule_view(request):
+def schedule_view(request, userID=None):
     
     # ISSUE WITH THIS: returning 2 users??
     # find our user
@@ -573,9 +579,12 @@ def schedule_view(request):
     # if theUser:
         # theUser = theUser[0]
         
+    if userID is None:
+        userID = request.user.email
+        
     # TODO change to use parameter user instead to make generic
-    if Account.objects.filter(USERNAME_FIELD = request.user.username):
-        theUser = Account.objects.get(USERNAME_FIELD = request.user.username)
+    if Account.objects.filter(email=userID):
+        theUser = Account.objects.get(email=userID)
 
         # mnow atch our user to the schedule's owner (foreign key!)
 
@@ -597,6 +606,12 @@ def schedule_view(request):
             # print(schedule_obj)
             
             schedule_context['meetings_list'] = meetings_list
+            comments_list = Comment.objects.filter(to_user=theUser)
+            print(comments_list)
+        
+            
+            schedule_context['comments_list'] = comments_list
+            schedule_context['user'] = theUser
             
             return render(request, 'classlist/schedule.html', schedule_context)
 
@@ -604,13 +619,13 @@ def schedule_view(request):
         #     return render(request, 'classlist/schedule.html', {})
 
         # if sched doesn't exist, create it and pass its context onto schedule template
-        else:
-            schedule_obj = Schedule(scheduleUser=theUser)
-            schedule_obj.save()
+        # else:
+        #     schedule_obj = Schedule(scheduleUser=theUser)
+        #     schedule_obj.save()
 
-            schedule_context = {'the_schedule' : schedule_obj}
+        #     schedule_context = {'the_schedule' : schedule_obj}
             
-            return render(request, 'classlist/schedule.html', schedule_context)
+        #     return render(request, 'classlist/schedule.html', schedule_context)
     else:
         return render(request, 'classlist/schedule.html', {})
 
@@ -880,12 +895,14 @@ def add_comment(request, userID):
             print(comment_text)
 
     context = get_user_info(request)
+    context['from_user'] = from_user
+    context['to_user'] = to_user
     # context['schedule'] = schedule
     context['form'] = form
     
     if request.method == 'POST':
         # return render(request, "classlist/schedule.html", context=context)
-        return redirect('/classlist/schedule/' + to_user.email + '/comments/')
+        return redirect('/classlist/schedule/' + to_user.email + '/')
     else:
         return render(request, "classlist/add_comment.html", context=context)
 

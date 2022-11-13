@@ -65,8 +65,8 @@ URL: https://mdbootstrap.com/docs/standard/extended/profiles/
                                             <td>{{other_user.USERNAME_FIELD}}</td>
                                             <td>{{other_user.major}}</td>
                                             <td>{{other_user.year}}</td>
-                                            <td><a href="#">{{other_user.USERNAME_FIELD}}'s schedule</a></td>
-                                            <td><a href="/classlist/schedule/{{other_user.email}}/comments">(comments)</a></td>
+                                            <td><a href="/classlist/schedule/{{other_user.email}}/">{{other_user.USERNAME_FIELD}}'s schedule</a></td>
+                                            {% comment %} <td><a href="/classlist/schedule/{{other_user.email}}/comments">(comments)</a></td> {% endcomment %}
                                             <td><a href="/remove_friend/{{other_user.email}}/">Remove Friend</a></td>
                                         </tr>
                                     {% endfor %}
