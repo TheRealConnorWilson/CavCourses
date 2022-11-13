@@ -70,6 +70,7 @@ def get_user_info(request):
         context = {
             'user' : account,
             'avatar' : account.avatar,
+            # 'avatar' : account.avatar,
         }
         return context
     else:
@@ -358,22 +359,28 @@ def update_courses_from_API(dept_abbr):
                                         )
             
             print(course_obj)
+            # print(course_obj)
             # setting boolean fields for meetings
             if meetings_obj.days.find("Mo") != -1:
                 meetings_obj.monday = True
                 print("Monday")
+                # print("Monday")
             if meetings_obj.days.find("Tu") != -1:
                 meetings_obj.tuesday = True
                 print("Tuesday")
+                # print("Tuesday")
             if meetings_obj.days.find("We") != -1:
                 meetings_obj.wednesday = True
                 print("Wednesday")
+                # print("Wednesday")
             if meetings_obj.days.find("Th") != -1:
                 meetings_obj.thursday = True
                 print("Thursday")
+                # print("Thursday")
             if meetings_obj.days.find("Fr") != -1:
                 meetings_obj.friday = True
                 print("Friday")
+                # print("Friday")
                 
             # in cases where there are no meetings, none of these will be true (ex. CS 3240's lab section)
             
@@ -603,11 +610,13 @@ def schedule_view(request, userID=None):
                     meetings_list.append(meeting)
                 
             print(meetings_list)
+            # print(meetings_list)
             # print(schedule_obj)
             
             schedule_context['meetings_list'] = meetings_list
             comments_list = Comment.objects.filter(to_user=theUser)
             print(comments_list)
+            # print(comments_list)
         
             
             schedule_context['comments_list'] = comments_list
@@ -711,6 +720,7 @@ def schedule_add(request, section_id):
                 else:
                     schedule_obj.classRoster.add(sectionToAdd)
                     print(sectionToAdd)
+                    # print(sectionToAdd)
                     schedule_obj.save()
 
             # if classroster is empty, we can literally just add the class to schedule
@@ -726,6 +736,7 @@ def schedule_add(request, section_id):
         #if schedule does not exists, make one and add the selected course section
         else:
             print("making new schedule")
+            # print("making new schedule")
 
             schedule_obj = Schedule.objects.create(scheduleUser=theUser)
 
@@ -734,6 +745,7 @@ def schedule_add(request, section_id):
 
             schedule_context = {'the_schedule' : schedule_obj}
             print(schedule_obj)
+            # print(schedule_obj)
     
             return render(request, 'classlist/schedule.html', schedule_context)
 
