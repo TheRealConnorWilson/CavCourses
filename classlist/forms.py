@@ -77,9 +77,10 @@ class SearchForm(forms.Form):
     searched_dept = forms.CharField(label='', max_length=4)
 
 class AdvancedSearchForm(forms.Form):
-    searched_dept = forms.CharField(label='Search for a department', max_length=4)
-    searched_catalog_num = forms.CharField(label='Search for a class by catalog number', max_length=4, required=False)
-    searched_title = forms.CharField(label='Search for a class title or keyword', required=False)
-    
+    searched_dept = forms.CharField(label='Search for a department:', max_length=4, widget=forms.TextInput(attrs={'placeholder': 'ex. CS'}))
+    searched_catalog_num = forms.CharField(label='Search for a class by catalog number:', max_length=4, required=False, widget=forms.TextInput(attrs={'placeholder': 'ex. 1110'}))
+    searched_title = forms.CharField(label='Search for a class title or keyword:', required=False, widget=forms.TextInput(attrs={'placeholder': 'ex. intro'}))
+
 class CommentForm(forms.Form):
     comment_text = forms.CharField(label='Leave a comment', max_length=250, required=True)
+    

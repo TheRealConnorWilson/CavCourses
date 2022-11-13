@@ -70,6 +70,7 @@ def get_user_info(request):
         context = {
             'user' : account,
             'avatar' : account.avatar,
+            # 'avatar' : account.avatar,
         }
         return context
     else:
@@ -122,6 +123,33 @@ def get_depts(request):
     depts_json = requests.get(api_url)
     all_depts = depts_json.json()
     all_depts_search = []
+
+    dept_names = {'ACCT': 'Accounting', 'AIRS': 'Air Science', 'ALAR': 'Architecture and Landscape Architecture', 'AM': 'Applied Mechanics', 'AMST': 'American Studies', 'ANTH': 'Anthropology', 'APMA': 'Applied Mathematics', 
+    'ARAB': 'Arabic', 'ARAD': 'Arts Administration', 'ARAH': 'History of Art and Architecture', 'ARCH': 'Architecture', 'ARCY': 'Archaeology', 'ARH': 'Architectural History', 'ARTH': 'History of Art', 'ARTR': 'Arabic in Translation', 'ARTS': 'Studio Art', 
+    'ASL': 'American Sign Language', 'ASTR': 'Astronomy', 'BIMS': 'Biomedical Sciences', 'BIOC': 'Biochemistry', 'BIOL': 'Biology', 'BIOP': 'Biophysics', 'BME': 'Biomedical Engineering', 'BUS': 'Business', 'CASS': 'College Art Scholars Seminar', 'CE': 'Civil Engineering', 
+    'CELL': 'Cell Biology', 'CHE': 'Chemical Engineering', 'CHEM': 'Chemistry', 'CHIN': 'Chinese', 'CHTR': 'Chinese in Translation', 'CLAS': 'Classics', 'COGS': 'Cognitive Science', 'COLA': 'College Advising Seminar', 'COMM': 'Commerce', 'CONC': 'Concentrations', 'CPE': 'Computer Engineering', 'CREO': 'Creole', 
+    'CS': 'Computer Science', 'DANC': 'Dance', 'DEM': 'Democracy', 'DH': 'Digital Humanities', 'DRAM': 'Drama', 'DS': 'Data Science', 'EALC': 'East Asian Languages, Literatures, and Cultures', 'EAST': 'East Asian Studies', 'ECE': 'Electrical and Computer Engineering', 
+    'ECON': 'Economics', 'EDHS': 'Education-Human Services', 'EDIS': 'Education-Curriculum, Instruction, & Special Ed', 'EDLF': 'Education-Leadership, Foundations, and Policy', 'EDNC': 'Education Non-Credit', 'EGMT': 'Engagement', 'ELA': 'Engaging the Liberal Arts', 
+    'ENCW': 'Creative Writing', 'ENGL': 'English-Literature', 'ENGR': 'Engineering', 'ENTP': 'Entrepreneurship', 'ENWR': 'Writing and Rhetoric', 'ESL': 'English as a Second Language', 'ETP': 'Enviromental Thought and Practice', 'EURS': 'European Studies', 
+    'EVAT': 'Environmental Sciences-Atmospheric Sciences', 'EVEC': 'Environmental Sciences-Ecology', 'EVGE': 'Environmental Sciences-Geosciences', 'EVHY': 'Environmental Sciences-Hydrology', 'EVSC': 'Environmental Sciences', 'FREN': 'French', 'GBAC': 'Grad Business Analytics Comm.', 
+    'GBUS': 'Graduate Business', 'GCCS': 'Global Commerce in Culture and Society', 'GCNL': 'Clinical Nurse Leader', 'GCOM': 'Graduate Commerce', 'GDS': 'Global Development Studies', 'GERM': 'German', 'GETR': 'German in Translation', 'GHSS': 'Grad Humanities & Social Sci', 'GNUR': 'Graduate Nursing', 
+    'GREE': 'Greek', 'GSAS': 'Graduate Arts & Sciences', 'GSCI': '', 'GSGS': 'Global Studies-Global Studies', 'GSMS': 'GS-Middle East and South Asia', 'GSSJ': 'Global Studies-Security and Justice', 'GSVS': 'Global Studies-Environments and Sustainability', 'HBIO': 'Human Biology', 'HEBR': 
+    'Hebrew', 'HHE': '', 'HIAF': 'History-African History', 'HIEA': 'History-East Asian History', 'HIEU': 'History-European History', 'HILA': 'History-Latin American History', 'HIME': 'History-Middle Eastern History', 'HIND': 'Hindi', 'HISA': 'History-South Asian History', 
+    'HIST': 'History-General History', 'HIUS': 'History-United States History', 'HR': 'Human Resources', 'HSCI': 'College Science Scholars Seminar', 'IMP': 'Interdisciplinary Thesis', 'INST': 'Interdisciplinary Studies', 'ISBU': 'Interdisciplinary Studies-Business', 
+    'ISHU': 'Interdisiplinary Studies-Humanities', 'ISIN': 'Interdisciplinary Studies-Individualized Other', 'ISLS': 'Interdisciplinary Studies-Liberal Studies Seminar', 'ISSS': 'Interdisciplinary Studies-Social Sciences', 'IT': 'Informational Technology', 
+    'ITAL': 'Italian', 'ITTR': 'Italian in Translation', 'JAPN': 'Japanese', 'JPTR': 'Japanese in Translation', 'KICH': "Maya K'iche", 'KINE': 'Kinesiology', 'KLPA': 'Lifetime Physical Activity', 'KOR': 'Korean', 'LAR': 'Landscape Architecture', 
+    'LASE': 'Liberal Arts Seminar', 'LAST': 'Latin American Studies', 'LATI': 'Latin', 'LAW': 'Law', 'LING': 'Linguistics', 'LNGS': 'General Linguistics', 'LPPA': 'Leadership and Public Policy - Evaluation and Analysis', 'LPPL': 'Leadership and Public Policy - Leadership', 
+    'LPPP': 'Leadership and Public Policy - Policy', 'LPPS': 'Leadership and Public Policy - Substantive', 'MAE': 'Mechanical & Aerospace Engineering', 'MATH': 'Mathematics', 'MDST': 'Media Studies', 'MED': 'Medicine', 
+    'MESA': 'Middle Eastern & South Asian Languages & Cultures', 'MICR': 'Microbiology', 'MISC': 'Military Science', 'MSE': 'Materials Science and Engineering', 'MSP': 'Medieval Studies', 'MUBD': 'Music-Marching Band', 'MUEN': 'Music-Ensembles', 
+    'MUPF': 'Music-Private Performance Instruction', 'MUSI': 'Music', 'NASC': 'Naval Science', 'NCPR': 'Non-Credit Professional Review', 'NESC': 'Neuroscience', 'NUCO': 'Nursing Core', 'NUIP': 'Nursing Interprofessional', 'NURS': 'Nursing', 'PATH': 'Pathology', 
+    'PC': 'Procurement and Contracts Management', 'PERS': 'Persian', 'PETR': 'Persian in Translation', 'PHAR': 'Pharmacology', 'PHIL': 'Philosophy', 'PHS': 'Public Health Sciences', 'PHY': 'Physiology', 'PHYS': 'Physics', 'PLAC': 'Planning Application', 
+    'PLAD': 'Politics-Departmental Seminar', 'PLAN': 'Urban and Environmental Planning', 'PLAP': 'Politics-American Politics', 'PLCP': 'Politics-Comparative Politics', 'PLIR': 'Politics-International Relations', 'PLPT': 'Politics-Political Theory', 
+    'POL': 'Polish', 'PORT': 'Portuguese', 'POTR': 'Portugese in Translation', 'PPL': 'Political Philosophy, Policy, and Law', 'PSHM': 'PS-Health Sciences Management', 'PSLP': 'PS-Leadership Program', 'PSPA': 'Professional Studies-Public Administration', 
+    'PSPM': 'Professional Studies-Project Management', 'PSPS': '', 'PST': 'Political and Social Thought', 'PSYC': 'Psychology', 'RELA': 'Religion-African Religions', 'RELB': 'Religion-Buddhism', 'RELC': 'Religion-Christianity', 'RELG': 'Religion-General Religion', 
+    'RELH': 'Religion-Hinduism', 'RELI': 'Religion-Islam', 'RELJ': 'Religion-Judaism', 'RELS': 'Religion-Special Topic', 'RUSS': 'Russian', 'RUTR': 'Russian in Translation', 'SANS': 'Sanskrit', 'SARC': 'Architecture School', 'SAST': 'South Asian Studies', 
+    'SATR': 'South Asian Literature in Translation', 'SEC': 'Cyber Security Analysis', 'SLAV': 'Slavic', 'SLTR': 'Slavic in Translation', 'SOC': 'Sociology', 'SPAN': 'Spanish', 'STAT': 'Statistics', 'STS': 'Science, Technology, and Society', 'SWAH': 'Swahili', 
+    'SYS': 'Systems & Information Engineering', 'TURK': 'Turkish', 'UD': '', 'UNST': 'University Studies', 'URDU': 'Urdu', 'USEM': 'University Seminar', 'WGS': 'Women and Gender Studies'}
+
 
     a_depts = []
     for d in all_depts:
@@ -245,8 +273,13 @@ def get_depts(request):
                 all_depts_search = []
                 all_depts_search.append(dept_dict)
                 break
+            
+    context = {'form':form, "all_depts_search":all_depts_search, 'dept_names':dept_names, 'a_depts':a_depts, 'b_depts':b_depts, 'c_depts':c_depts, 'd_depts':d_depts, 'e_depts':e_depts, 'f_depts':f_depts, 'g_depts':g_depts, 'h_depts':h_depts, 'i_depts':i_depts, 'j_depts':j_depts, 'k_depts':k_depts, 'l_depts':l_depts, 'm_depts':m_depts, 'n_depts':n_depts, 'o_depts':o_depts, 'p_depts':p_depts, 'q_depts':q_depts, 'r_depts':r_depts, 's_depts':s_depts, 't_depts':t_depts, 'u_depts':u_depts, 'v_depts':v_depts, 'w_depts':w_depts, 'x_depts':x_depts, 'y_depts':y_depts, 'z_depts':z_depts}
+    
+    if request.user.is_authenticated:
+        context['user'] = Account.objects.get(email=request.user.email)
 
-    return render(request, 'classlist/class.html', {'form':form, "all_depts_search":all_depts_search, 'a_depts':a_depts, 'b_depts':b_depts, 'c_depts':c_depts, 'd_depts':d_depts, 'e_depts':e_depts, 'f_depts':f_depts, 'g_depts':g_depts, 'h_depts':h_depts, 'i_depts':i_depts, 'j_depts':j_depts, 'k_depts':k_depts, 'l_depts':l_depts, 'm_depts':m_depts, 'n_depts':n_depts, 'o_depts':o_depts, 'p_depts':p_depts, 'q_depts':q_depts, 'r_depts':r_depts, 's_depts':s_depts, 't_depts':t_depts, 'u_depts':u_depts, 'v_depts':v_depts, 'w_depts':w_depts, 'x_depts':x_depts, 'y_depts':y_depts, 'z_depts':z_depts})
+    return render(request, 'classlist/class.html', context)
 ###########
 
 @transaction.atomic
@@ -357,23 +390,29 @@ def update_courses_from_API(dept_abbr):
                                         section = meeting_section
                                         )
             
-            print(course_obj)
+            # print(course_obj)
+            # print(course_obj)
             # setting boolean fields for meetings
             if meetings_obj.days.find("Mo") != -1:
                 meetings_obj.monday = True
-                print("Monday")
+                # print("Monday")
+                # print("Monday")
             if meetings_obj.days.find("Tu") != -1:
                 meetings_obj.tuesday = True
-                print("Tuesday")
+                # print("Tuesday")
+                # print("Tuesday")
             if meetings_obj.days.find("We") != -1:
                 meetings_obj.wednesday = True
-                print("Wednesday")
+                # print("Wednesday")
+                # print("Wednesday")
             if meetings_obj.days.find("Th") != -1:
                 meetings_obj.thursday = True
-                print("Thursday")
+                # print("Thursday")
+                # print("Thursday")
             if meetings_obj.days.find("Fr") != -1:
                 meetings_obj.friday = True
-                print("Friday")
+                # print("Friday")
+                # print("Friday")
                 
             # in cases where there are no meetings, none of these will be true (ex. CS 3240's lab section)
             
@@ -602,12 +641,14 @@ def schedule_view(request, userID=None):
                 for meeting in meetings_for_section:
                     meetings_list.append(meeting)
                 
-            print(meetings_list)
+            # print(meetings_list)
+            # print(meetings_list)
             # print(schedule_obj)
             
             schedule_context['meetings_list'] = meetings_list
             comments_list = Comment.objects.filter(to_user=theUser)
-            print(comments_list)
+            # print(comments_list)
+            # print(comments_list)
         
             
             schedule_context['comments_list'] = comments_list
@@ -711,6 +752,7 @@ def schedule_add(request, section_id):
                 else:
                     schedule_obj.classRoster.add(sectionToAdd)
                     print(sectionToAdd)
+                    # print(sectionToAdd)
                     schedule_obj.save()
 
             # if classroster is empty, we can literally just add the class to schedule
@@ -726,6 +768,7 @@ def schedule_add(request, section_id):
         #if schedule does not exists, make one and add the selected course section
         else:
             print("making new schedule")
+            # print("making new schedule")
 
             schedule_obj = Schedule.objects.create(scheduleUser=theUser)
 
@@ -734,6 +777,7 @@ def schedule_add(request, section_id):
 
             schedule_context = {'the_schedule' : schedule_obj}
             print(schedule_obj)
+            # print(schedule_obj)
     
             return render(request, 'classlist/schedule.html', schedule_context)
 
@@ -762,10 +806,10 @@ def delete_course(request, section_id):
         for each in schedule_obj.classRoster.all():
             print("wow")
             counter += 1
-        if counter == 0:
-            schedule_obj.delete()
-        else:
-            schedule_obj.save()
+        # if counter == 0:
+        #     schedule_obj.delete()
+        # else:
+        schedule_obj.save()
 
         schedule_context = {'sched' : schedule_obj}
 

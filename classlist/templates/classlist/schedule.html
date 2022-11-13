@@ -15,7 +15,7 @@
 </head>
 
 {% block body %}
-<body style="background-color: rgb(28, 148, 148);">
+<!-- <body style="background-color: rgb(28, 148, 148);"> -->
     
     <div class="text-center" style="color:white">
         {% if user.email == request.user.email %}
@@ -55,10 +55,13 @@
                                                         {{m.facility_description}}
                                                     </div>
                                                     <div class="card-footer text-center">
+                                                        {% if user.email == request.user.email %}
                                                         <form action="delete/{{c.section_id}}/" method="post">
                                                             {% csrf_token %}
+                                                            
                                                             <button type = 'submit' button name = 'delete-button' value = "{{c.section_id}}" class = 'btn btn-danger'>Remove Class</button>
                                                         </form>
+                                                        {% endif %}
                                                     </div>
                                                 </div>
                                             {% endif %}
@@ -79,10 +82,12 @@
                                                         {{m.facility_description}}
                                                     </div>
                                                     <div class="card-footer text-center">
+                                                        {% if user.email == request.user.email %}
                                                         <form action="delete/{{c.section_id}}/" method="post">
                                                             {% csrf_token %}
                                                             <button type = 'submit' button name = 'delete-button' value = "{{c.section_id}}" class = 'btn btn-danger'>Remove Class</button>
                                                         </form>
+                                                        {% endif %}
                                                     </div>
                                                 </div>
                                             {% endif %}
@@ -103,10 +108,12 @@
                                                         {{m.facility_description}}
                                                     </div>
                                                     <div class="card-footer text-center">
+                                                        {% if user.email == request.user.email %}
                                                         <form action="delete/{{c.section_id}}/" method="post">
                                                             {% csrf_token %}
                                                             <button type = 'submit' button name = 'delete-button' value = "{{c.section_id}}" class = 'btn btn-danger'>Remove Class</button>
                                                         </form>
+                                                        {% endif %}
                                                     </div>
                                                 </div>
                                             {% endif %}
@@ -127,10 +134,12 @@
                                                         {{m.facility_description}}
                                                     </div>
                                                     <div class="card-footer text-center">
+                                                        {% if user.email == request.user.email %}
                                                         <form action="delete/{{c.section_id}}/" method="post">
                                                             {% csrf_token %}
                                                             <button type = 'submit' button name = 'delete-button' value = "{{c.section_id}}" class = 'btn btn-danger'>Remove Class</button>
                                                         </form>
+                                                        {% endif %}
                                                     </div>
                                                 </div>
                                             {% endif %}
@@ -150,10 +159,12 @@
                                                             {{m.facility_description}}
                                                         </div>
                                                         <div class="card-footer text-center">
+                                                            {% if user.email == request.user.email %}
                                                             <form action="delete/{{c.section_id}}/" method="post">
                                                                 {% csrf_token %}
                                                                 <button type = 'submit' button name = 'delete-button' value = "{{c.section_id}}" class = 'btn btn-danger'>Remove Class</button>
                                                             </form>
+                                                            {% endif %}
                                                         </div>
                                                     </div>
                                                 {% endif %}

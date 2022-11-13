@@ -7,7 +7,7 @@
 </head>
 
 {% block body %}
-<body style="background-color: rgb(28, 148, 148);">
+<!-- <body style="background-color: rgb(28, 148, 148);"> -->
     
 <div class="text-center" style="color:white">
   <h1>Advanced Search</h1>
@@ -20,11 +20,11 @@
       {% csrf_token %}
       <!-- {{ form }} -->
       {% for field in form %}
-        {{field.label}}
-        {{field}}
-        <br>
+        <h5>{{field.label}} {{field}}</h5>
+        <!-- <h5>{{field}}</h5> -->
       {% endfor %}
       <input type="submit" value="Search">
+      <input type="reset" value="Clear">
     </form>
     <br>
 </div>
@@ -58,9 +58,9 @@
                                                             <p>{{meeting.days}}</p>
                                                             <p>{{meeting.start_time_as_date_time}} - {{meeting.end_time_as_date_time}}</p>
                                                             <p>{{meeting.facility_description}}</p>
-                                                            <form action="/schedule/" method="post">
+                                                            <form method="post">
                                                                 {% csrf_token %}
-                                                                <button type = 'submit' button name = 'schedule-button' value = "{{c}} {{section}} {{meeting.days}}" class = 'btn btn-success'>Add to Schedule</button>
+                                                                <a type = 'submit' button name = 'schedule-button' value = "{{c}} {{section}} {{meeting.days}}" href="/schedule/add/{{section.pk}}/" class = 'btn btn-success'>Add to Schedule</a>
                                                             </form>
                                                         {% endfor %}
                                                     {% else %}

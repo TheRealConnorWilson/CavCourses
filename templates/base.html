@@ -28,7 +28,7 @@ https://stackoverflow.com/questions/30810028/how-to-display-image-from-google-ac
 
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
             <div class="container-fluid">
-              <a class="navbar-brand" href="#">New Lou's List / CavCourses</a>
+              <a class="navbar-brand" href="#">CavCourses</a>
               <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
               </button>
@@ -54,7 +54,7 @@ https://stackoverflow.com/questions/30810028/how-to-display-image-from-google-ac
                         <button class="btn me-2 btn-primary" type="button" role="button">
                             <a href="/classlist/accounts/logout" style="color:inherit"> Logout </a>
                         </button>
-                        <img src="{{avatar}}" class="rounded-circle" height="30" width="30">
+                        <img src="{{user.avatar}}" class="rounded-circle" height="30" width="30">
                 {% else %}
                         <button class="btn me-2 btn-primary" type="" color="#fff" role="button">
                             <a href="/classlist/accounts/google/login/?process=login" style="color:inherit"> Login </a>
@@ -68,6 +68,10 @@ https://stackoverflow.com/questions/30810028/how-to-display-image-from-google-ac
 
     {% block body %}
     {% endblock%}
+
+
+    <body style="background-color: cornflowerblue"></body>
+
 
     <footer class="bg-dark text-center text-white">
         <!-- Grid container -->
