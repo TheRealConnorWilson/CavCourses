@@ -806,10 +806,10 @@ def delete_course(request, section_id):
         for each in schedule_obj.classRoster.all():
             print("wow")
             counter += 1
-        if counter == 0:
-            schedule_obj.delete()
-        else:
-            schedule_obj.save()
+        # if counter == 0:
+        #     schedule_obj.delete()
+        # else:
+        schedule_obj.save()
 
         schedule_context = {'sched' : schedule_obj}
 
