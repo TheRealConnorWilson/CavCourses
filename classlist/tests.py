@@ -324,8 +324,8 @@ class TestViews(TestCase):
 #     # good video that I used for help https://www.youtube.com/watch?v=1KbJdhIpcGo
 #     # main documentation for selenium https://selenium-python.readthedocs.io/index.html
 #     # after installing the chrome webdriver, move it to the bin folder in your virtual environment folder
-#     # drive = webdriver.Chrome(executable_path='../env/chromedriver')
-#     # drive.get('https://a27-lous-list.herokuapp.com/classlist/list/')
+#     #drive = webdriver.Chrome(executable_path='../env/chromedriver')
+#     #drive.get('https://a27-lous-list.herokuapp.com/view_users/')
 #     # elem1 = drive.find_element(By.LINK_TEXT, "Login")
 #     # elem1.click()
 #     # elem3 = drive.find_element(By.ID, "identifierId")
@@ -471,8 +471,58 @@ class TestViews(TestCase):
 #     #     elem2.click()
 #     #     self.assertIn("Other Users", driver3.page_source)
 #
+#     def test_other_users(self):
+#         self.driver = webdriver.Chrome(executable_path='../env/bin/chromedriver')
+#         driver3 = self.driver
+#         driver3.get('https://a27-lous-list.herokuapp.com/view_users/')
+#         self.assertIn("Send friend request", driver3.page_source)
+#
+#
 #     def tearDown(self):
 #         self.driver.close()
+
+class FriendsFeaturesTesting(TestCase):
+    def test_friends(self):
+        response = self.client.get(reverse('my_account'))
+        account = Account(USERNAME_FIELD='account', email='account@email.com')
+        account.save()
+        account2 = Account(USERNAME_FIELD='account2', email='account2@email.com')
+        account2.save()
+        self.assertEqual(len(Account.objects.all()), 2)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'classlist/view_account.html')
+
+        #req = Friend_Request(from_user=account)
+        # rec = Friend_Request(to_user=account2)
+        # account.friends.add(rec)
+
+
+class TestSchedule(TestCase):  # Johnny's Tests
+
+    def setUp(self):
+        # Every test needs access to the request factory.
+        self.factory = RequestFactory()
+        self.u1 = User.objects.create_user(username='User1', email='user1@foo.com', password='pass')
+        self.a1 = Account(USERNAME_FIELD='User1', email='user1@foo.com', year=2, major='Drama')
+        # self.s1 = Schedule(scheduleUser=self.a1)
+        # self.u1.is_active = True
+        # self.u1.is_staff = True
+        self.u1.save()
+        self.a1.save()
+        # self.s1.save()
+
+    # if we have no schedule, create one - now test it
+    def test_no_schedule(self):
+        request = self.factory.get('/classlist/schedule/')
+        request.user = self.u1
+        response = schedule_view(request)
+        self.assertEqual(len(Schedule.objects.all()), 0)
+
+    def test_create_schedule(self):
+        schedule_obj = Schedule(scheduleUser=self.a1)
+        schedule_obj.save()
+        self.assertEqual(len(Schedule.objects.all()), 1)
+
 
 
 class FriendsFeaturesTesting(TestCase):
@@ -489,6 +539,11 @@ class FriendsFeaturesTesting(TestCase):
         #req = Friend_Request(from_user=account)
         # rec = Friend_Request(to_user=account2)
         # account.friends.add(rec)
+
+    def test_users(self):
+        response = self.client.get(reverse('view_users'))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'classlist/view_users.html')
 
 
 class AdvancedSearchTesting(TestCase):
