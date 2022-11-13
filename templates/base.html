@@ -43,9 +43,11 @@ https://stackoverflow.com/questions/30810028/how-to-display-image-from-google-ac
                   <li class="nav-item">
                     <a class="nav-link active" href="{% url 'advanced_search' %}">Advanced Search</a>
                   </li>
+                  {% if user.is_authenticated %}
                   <li class="nav-item">
                     <a class="nav-link active" href="{% url 'schedule' %}">Schedule Builder</a>
                   </li>
+                  {% endif %}
                 </ul>
                 {% if user.is_authenticated %}
                         <button class="btn me-2 btn-primary" type="button" role="button">
