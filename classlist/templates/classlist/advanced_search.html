@@ -7,7 +7,7 @@
 </head>
 
 {% block body %}
-<body style="background-color: rgb(28, 148, 148);">
+<!-- <body style="background-color: rgb(28, 148, 148);"> -->
     
 <div class="text-center" style="color:white">
   <h1>Advanced Search</h1>
@@ -20,11 +20,11 @@
       {% csrf_token %}
       <!-- {{ form }} -->
       {% for field in form %}
-        {{field.label}}
-        {{field}}
-        <br>
+        <h5>{{field.label}} {{field}}</h5>
+        <!-- <h5>{{field}}</h5> -->
       {% endfor %}
       <input type="submit" value="Search">
+      <input type="reset" value="Clear">
     </form>
     <br>
 </div>
