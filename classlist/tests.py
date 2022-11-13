@@ -551,3 +551,4 @@ class AdvancedSearchTesting(TestCase):
         response = self.client.get(reverse('advanced_search'))
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed('classlist/advanced_search.html')
+
