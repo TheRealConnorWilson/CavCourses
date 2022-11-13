@@ -20,7 +20,7 @@ URL: https://mdbootstrap.com/docs/standard/extended/profiles/
             <div class="card mb-3" style="border-radius: .5rem;">
                 <div class="row g-0">
                     <div class="col-md-4 gradient-custom text-center text-white" style="border-top-left-radius: .5rem; border-bottom-left-radius: .5rem;">
-                        <img src="{{user.socialaccount_set.all.0.get_avatar_url}}" class="img-fluid my-5" style="width: 80px;" />
+                        <img src="{{avatar}}" class="img-fluid my-5" style="width: 80px;" />
                         <h5 class="text-dark">{{user.first_name}} {{user.last_name}}</h5>
                         <p class="text-dark">Username: {{user.USERNAME_FIELD}}</p>
                         <i class="far fa-edit mb-5"></i>
