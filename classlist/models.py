@@ -217,3 +217,11 @@ class Meetings(models.Model):
 
     def __str__(self):
         return self.days + ": " + self.start_time + "-" + self.end_time + " @ " + self.facility_description
+
+class Comment(models.Model):
+    account = models.ForeignKey(Account, on_delete=models.CASCADE, blank=True)
+    schedule = models.ForeignKey(Schedule, on_delete=models.CASCADE, blank=True)
+    text = models.CharField(max_length=250)
+    
+    def __str__(self) -> str:
+        return self.text

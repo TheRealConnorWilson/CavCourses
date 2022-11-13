@@ -11,6 +11,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import auth
 from .forms import UserAccountForm
 from .forms import SearchForm, AdvancedSearchForm
+from django.db import transaction
 
 import requests
 
@@ -31,6 +32,10 @@ URL: https://www.geeksforgeeks.org/how-to-pass-additional-context-into-a-class-b
 
 Title: django: Purpose of django.utils.functional.SimpleLazyObject?
 URL: https://stackoverflow.com/questions/10506766/django-purpose-of-django-utils-functional-simplelazyobject/10507200#10507200
+
+Title: Aggregating save()s in Django?
+URL: https://stackoverflow.com/questions/3395236/aggregating-saves-in-django
+
 """
 
 def get_user(request):
@@ -242,7 +247,9 @@ def get_depts(request):
     return render(request, 'classlist/class.html', {'form':form, "all_depts_search":all_depts_search, 'a_depts':a_depts, 'b_depts':b_depts, 'c_depts':c_depts, 'd_depts':d_depts, 'e_depts':e_depts, 'f_depts':f_depts, 'g_depts':g_depts, 'h_depts':h_depts, 'i_depts':i_depts, 'j_depts':j_depts, 'k_depts':k_depts, 'l_depts':l_depts, 'm_depts':m_depts, 'n_depts':n_depts, 'o_depts':o_depts, 'p_depts':p_depts, 'q_depts':q_depts, 'r_depts':r_depts, 's_depts':s_depts, 't_depts':t_depts, 'u_depts':u_depts, 'v_depts':v_depts, 'w_depts':w_depts, 'x_depts':x_depts, 'y_depts':y_depts, 'z_depts':z_depts})
 ###########
 
+@transaction.atomic
 def update_courses_from_API(dept_abbr):
+    
     #Access API
     api_url = "http://luthers-list.herokuapp.com/api/dept/" + dept_abbr + "/?format=json"
     dept_json = requests.get(api_url)
@@ -351,6 +358,9 @@ def update_courses_from_API(dept_abbr):
             
         
         course_obj.save()
+        # print(course_obj)
+
+
 
     return dept
 
@@ -659,3 +669,25 @@ def advanced_search2(request):
                         }
          
     return render(request, "classlist/advanced_search.html", context=dept_context)
+
+def add_comment(request, userID):
+    if request.method == 'POST':
+        print("hi")
+        # Create a form instance and populate it with data from the request (binding):
+        form = CommentForm(request.POST)
+        # print("AHH")
+        # # Check if the form is valid:
+        if form.is_valid():
+            # print("YAY")
+            form.save() # save to database
+        context = {
+            'form': form,
+        }
+        
+        return redirect('schedule/')
+        
+    else:     
+        # If this is a GET (or any other method) create the default form.
+        form = CommentForm()
+        
+    return render(request, 'polls/deep_thought_submit.html', {'form': form})
