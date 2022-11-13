@@ -231,3 +231,12 @@ class Schedule(models.Model):
 
     def __unicode__(self):
         return str(self.scheduleUser)
+
+
+class Comment(models.Model):
+    account = models.ForeignKey(Account, on_delete=models.CASCADE, blank=True)
+    schedule = models.ForeignKey(Schedule, on_delete=models.CASCADE, blank=True)
+    text = models.CharField(max_length=250)
+    
+    def __str__(self) -> str:
+        return self.text

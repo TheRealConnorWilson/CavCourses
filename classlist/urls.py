@@ -19,4 +19,7 @@ urlpatterns = [
     path('schedule/add/<str:section_id>/', views.schedule_add, name='schedule_add'),
     path('schedule/delete/<str:section_id>/', views.delete_course, name='delete_course'),
     path('advanced_search/', views.advanced_search2, name='advanced_search'),
+    path('schedule/<int:userID>/add_comment/', views.add_comment, name='add_comment'),
+    # path('schedule/<int:userID>/add_comment/', views.add_comment, name='add_comment'),
+    
 ]
