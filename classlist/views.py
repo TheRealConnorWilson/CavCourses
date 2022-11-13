@@ -6,11 +6,11 @@ from django.utils import timezone
 from django.forms import modelformset_factory
 from django.views.generic.edit import CreateView
 from urllib3 import HTTPResponse
-from .models import Meetings, Instructor, Account, Course, Department, Section, Schedule, Friend_Request
+from .models import Meetings, Instructor, Account, Course, Department, Section, Schedule, Friend_Request, Comment
 from django.contrib.auth.decorators import login_required
 from django.contrib import auth
 from .forms import UserAccountForm
-from .forms import SearchForm, AdvancedSearchForm
+from .forms import SearchForm, AdvancedSearchForm, CommentForm
 from django.db import transaction
 
 import requests
@@ -507,7 +507,7 @@ def send_friend_request(request, userID):
     user_email = get_user(request).email
 
     from_user = Account.objects.get(email=user_email)
-    to_user = Account.objects.get(id=userID)
+    to_user = Account.objects.get(email=userID)
     friend_request = Friend_Request(
         from_user = from_user,
         to_user = to_user,
@@ -547,7 +547,7 @@ def deny_friend_request(request, requestID):
     # template_name = 'classlist/view_account.html'
     # context = {"all_friend_requests": Friend_Request.objects.all()}
 
-    friend_request = Friend_Request.objects.get(id=requestID)
+    friend_request = Friend_Request.objects.get(email=requestID)
     friend_request.delete()
 
     # return render(request, template_name, context)
@@ -558,7 +558,7 @@ def remove_friend(request, requestID):
     
     current_user_email = get_user(request).email
     current_account = Account.objects.filter(email = current_user_email)[0]
-    user_friend = Account.objects.get(id=requestID)
+    user_friend = Account.objects.get(email=requestID)
     current_account.friends.remove(user_friend)
     user_friend.friends.remove(current_account)
 
@@ -572,6 +572,8 @@ def schedule_view(request):
     # theUser = Account.objects.get(USERNAME_FIELD = request.user.username)
     # if theUser:
         # theUser = theUser[0]
+        
+    # TODO change to use parameter user instead to make generic
     if Account.objects.filter(USERNAME_FIELD = request.user.username):
         theUser = Account.objects.get(USERNAME_FIELD = request.user.username)
 
@@ -834,24 +836,56 @@ def advanced_search2(request):
          
     return render(request, "classlist/advanced_search.html", context=dept_context)
 
+
+
+def view_comments(request, userID):
+    """
+    userID: the user who owns the schedule where comments are posted
+    """
+    
+    if userID:
+        account = Account.objects.get(email=userID) # whose account the schedule belongs to
+        print(account)
+        comments_list = Comment.objects.filter(account=account)
+        print(comments_list)
+        
+        my_schedule = Schedule.objects.filter(scheduleUser=account)
+    
+        context = get_user_info(request)
+        context['my_schedule'] = my_schedule
+        context['comments_list'] = comments_list
+        
+        return render(request, 'classlist/view_comments.html', context)
+    else:
+        return HTTPResponse("No matching user found")
+    
+    
+
 def add_comment(request, userID):
     if request.method == 'POST':
-        print("hi")
-        # Create a form instance and populate it with data from the request (binding):
         form = CommentForm(request.POST)
-        # print("AHH")
-        # # Check if the form is valid:
-        if form.is_valid():
-            # print("YAY")
-            form.save() # save to database
-        context = {
-            'form': form,
-        }
-        
-        return redirect('schedule/')
-        
-    else:     
-        # If this is a GET (or any other method) create the default form.
+    else:
         form = CommentForm()
+    
+    commenter = Account.objects.get(email=request.user.email)
+    schedule_owner = Account.objects.get(email=userID)
+    schedule = Schedule.objects.get(scheduleUser=schedule_owner)
+    
+    if form.is_valid():
         
-    return render(request, 'polls/deep_thought_submit.html', {'form': form})
+        comment_text = form.cleaned_data.get('comment_text')
+        if comment_text != "":
+            comment = Comment(account=commenter, schedule=schedule, text=comment_text)
+            comment.save()
+            print(comment_text)
+
+    context = get_user_info(request)
+    context['schedule'] = schedule
+    context['form'] = form
+    
+    if request.method == 'POST':
+        return render(request, "classlist/schedule.html", context=context)
+    else:
+        return render(request, "classlist/add_comment.html", context=context)
+
+

@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+<!-- 
+Citations:
+https://www.bootdey.com/snippets/view/Card-user-transfer-list#html 
+-->
+
+<html>
+    {% load socialaccount %}
+    <title>View Comments</title>
+
+    {% block body %}
+        <body>
+                <div class="card" width="width:17rem">
+                    <div class="card-header"> 
+                        <div class="row row-cols-2">
+                            <div class="col"> Example Card 1</div>
+                        </div> 
+                        <div class="col float-end">
+                            <img src="{{avatar}}" class="rounded-circle" height="30" width="30">
+                        </div>
+                    </div>
+                    <div class="card-body"> Comment here </div>
+                    <form action="/schedule/{{user.email}}/add_comment/" method="post">
+                        {% csrf_token %}
+                        <!-- {{ form }} -->
+                        {% for field in form %}
+                          {{field.label}}
+                          {{field}}
+                          <br>
+                        {% endfor %}
+                        <input type="submit" value="Search">
+                      </form>
+                </div>
+        </body>
+    {% endblock %}
+</html>
