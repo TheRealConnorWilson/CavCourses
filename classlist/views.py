@@ -6,11 +6,12 @@ from django.utils import timezone
 from django.forms import modelformset_factory
 from django.views.generic.edit import CreateView
 from urllib3 import HTTPResponse
-from .models import Meetings, Instructor, Account, Course, Department, Section, Schedule, Friend_Request
+from .models import Meetings, Instructor, Account, Course, Department, Section, Schedule, Friend_Request, Comment
 from django.contrib.auth.decorators import login_required
 from django.contrib import auth
 from .forms import UserAccountForm
-from .forms import SearchForm, AdvancedSearchForm
+from .forms import SearchForm, AdvancedSearchForm, CommentForm
+from django.db import transaction
 
 import requests
 
@@ -31,6 +32,10 @@ URL: https://www.geeksforgeeks.org/how-to-pass-additional-context-into-a-class-b
 
 Title: django: Purpose of django.utils.functional.SimpleLazyObject?
 URL: https://stackoverflow.com/questions/10506766/django-purpose-of-django-utils-functional-simplelazyobject/10507200#10507200
+
+Title: Aggregating save()s in Django?
+URL: https://stackoverflow.com/questions/3395236/aggregating-saves-in-django
+
 """
 
 def get_user(request):
@@ -61,8 +66,10 @@ def get_user_info(request):
     """
     if request.user.is_authenticated:
         account = Account.objects.get(email=request.user.email)
+        
         context = {
             'user' : account,
+            'avatar' : account.avatar,
         }
         return context
     else:
@@ -242,7 +249,9 @@ def get_depts(request):
     return render(request, 'classlist/class.html', {'form':form, "all_depts_search":all_depts_search, 'a_depts':a_depts, 'b_depts':b_depts, 'c_depts':c_depts, 'd_depts':d_depts, 'e_depts':e_depts, 'f_depts':f_depts, 'g_depts':g_depts, 'h_depts':h_depts, 'i_depts':i_depts, 'j_depts':j_depts, 'k_depts':k_depts, 'l_depts':l_depts, 'm_depts':m_depts, 'n_depts':n_depts, 'o_depts':o_depts, 'p_depts':p_depts, 'q_depts':q_depts, 'r_depts':r_depts, 's_depts':s_depts, 't_depts':t_depts, 'u_depts':u_depts, 'v_depts':v_depts, 'w_depts':w_depts, 'x_depts':x_depts, 'y_depts':y_depts, 'z_depts':z_depts})
 ###########
 
+@transaction.atomic
 def update_courses_from_API(dept_abbr):
+    
     #Access API
     api_url = "http://luthers-list.herokuapp.com/api/dept/" + dept_abbr + "/?format=json"
     dept_json = requests.get(api_url)
@@ -376,6 +385,8 @@ def update_courses_from_API(dept_abbr):
         course_obj.save()
         # print(course_obj)
 
+
+
     return dept
 
 def load_all_courses_from_API():
@@ -459,6 +470,12 @@ def create_account(request):
     """
     # print(request.user.username, request.user.email)
     if request.method == 'POST':
+        
+        if request.user.socialaccount_set.count() == 0:
+            avatar = '/static/classlist/default_account_image.png'
+        else:
+            avatar = request.user.socialaccount_set.all()[0].get_avatar_url()
+            
         new_account = Account(USERNAME_FIELD=request.POST['username'], 
                             email=request.user.email, 
                             first_name=request.user.first_name,
@@ -466,9 +483,17 @@ def create_account(request):
                             date_joined=timezone.now(),
                             is_authenticated=True,
                             major=request.POST['major'],
-                            year=request.POST['year']
+                            year=request.POST['year'],
+                            avatar=avatar
                             )
         new_account.save()
+        
+        
+        schedule_obj = Schedule(scheduleUser=new_account)
+        schedule_obj.save()
+        
+        
+        
         return HttpResponseRedirect('/home')
         
     else:     
@@ -488,7 +513,7 @@ def send_friend_request(request, userID):
     user_email = get_user(request).email
 
     from_user = Account.objects.get(email=user_email)
-    to_user = Account.objects.get(id=userID)
+    to_user = Account.objects.get(email=userID)
     friend_request = Friend_Request(
         from_user = from_user,
         to_user = to_user,
@@ -539,22 +564,27 @@ def remove_friend(request, requestID):
     
     current_user_email = get_user(request).email
     current_account = Account.objects.filter(email = current_user_email)[0]
-    user_friend = Account.objects.get(id=requestID)
+    user_friend = Account.objects.get(email=requestID)
     current_account.friends.remove(user_friend)
     user_friend.friends.remove(current_account)
 
     return redirect('/classlist/my_account/')
 
 # this method just displays schedule
-def schedule_view(request):
+def schedule_view(request, userID=None):
     
     # ISSUE WITH THIS: returning 2 users??
     # find our user
     # theUser = Account.objects.get(USERNAME_FIELD = request.user.username)
     # if theUser:
         # theUser = theUser[0]
-    if Account.objects.filter(USERNAME_FIELD = request.user.username):
-        theUser = Account.objects.get(USERNAME_FIELD = request.user.username)
+        
+    if userID is None:
+        userID = request.user.email
+        
+    # TODO change to use parameter user instead to make generic
+    if Account.objects.filter(email=userID):
+        theUser = Account.objects.get(email=userID)
 
         # mnow atch our user to the schedule's owner (foreign key!)
 
@@ -566,14 +596,22 @@ def schedule_view(request):
             # print(schedule_obj)
             
             meetings_list = []
-            
-            for each in schedule_obj.classRoster.all():
-                meetings_list.append(Meetings.objects.get(section=each))
+
+            for section in schedule_obj.classRoster.all():
+                meetings_for_section = Meetings.objects.filter(section=section)
+                for meeting in meetings_for_section:
+                    meetings_list.append(meeting)
                 
             print(meetings_list)
             # print(schedule_obj)
             
             schedule_context['meetings_list'] = meetings_list
+            comments_list = Comment.objects.filter(to_user=theUser)
+            print(comments_list)
+        
+            
+            schedule_context['comments_list'] = comments_list
+            schedule_context['user'] = theUser
             
             return render(request, 'classlist/schedule.html', schedule_context)
 
@@ -581,19 +619,18 @@ def schedule_view(request):
         #     return render(request, 'classlist/schedule.html', {})
 
         # if sched doesn't exist, create it and pass its context onto schedule template
-        else:
-            schedule_obj = Schedule(scheduleUser=theUser)
-            schedule_obj.save()
+        # else:
+        #     schedule_obj = Schedule(scheduleUser=theUser)
+        #     schedule_obj.save()
 
-            schedule_context = {'the_schedule' : schedule_obj}
+        #     schedule_context = {'the_schedule' : schedule_obj}
             
-            return render(request, 'classlist/schedule.html', schedule_context)
+        #     return render(request, 'classlist/schedule.html', schedule_context)
     else:
         return render(request, 'classlist/schedule.html', {})
 
 # this method adds to the schedule
 def schedule_add(request, section_id):
-    print("I AM RUNNING", section_id)
     # if request.method == 'POST':
         # s = Schedule() 
         # s.save()         
@@ -603,20 +640,15 @@ def schedule_add(request, section_id):
         # if our post data is valid
         # if c != None:
     if section_id:
-        print("a")
 
         # getting our user
         theUser = Account.objects.filter(USERNAME_FIELD = request.user.username)
         if theUser:
             theUser = theUser[0]
-        print(theUser)
         
         
         sectionToAdd = Section.objects.get(section_id=section_id)
-        meetingToAdd = Meetings.objects.get(section_id=section_id)
-        
-        print(sectionToAdd)
-        print(meetingToAdd)
+        meetingsToAdd = Meetings.objects.filter(section_id=section_id)
 
         # if schedule exists, add the class and re-render
         if Schedule.objects.filter(scheduleUser=theUser).exists():
@@ -637,40 +669,41 @@ def schedule_add(request, section_id):
                 
                 # for each class in our schedule, if one isn't compatible, we don't add the class
                 for s in schedule_obj.classRoster.all():
-                    print(s)
-                    # for m in c.:
+                    
 
                     # need to find associated meeting object with section object
-                    m = Meetings.objects.get(section_id=s.section_id)
+                    meetings = Meetings.objects.filter(section_id=s.section_id)
                     
                     # print(m)
                     
                     # shortcut to check timedate validity - see Activity Scheduling from DSA2
                     # https://stackoverflow.com/questions/325933/determine-whether-two-date-ranges-overlap
-                    if (meetingToAdd.start_time <= m.end_time) and (m.start_time <= meetingToAdd.end_time):
-                        time_overlap = True
-                    
-                    elif (m.start_time <= meetingToAdd.end_time) and (meetingToAdd.start_time <= m.end_time):
-                        time_overlap = True
-                        
-                    #check days overlap as well?
-                    
-                    if time_overlap: # only need to check if days overlap if time overlaps
-                        if m.monday and m.monday == meetingToAdd.monday:
-                            conflict = True
-                        if m.tuesday and m.tuesday == meetingToAdd.tuesday:
-                            conflict = True
-                        if m.wednesday and m.wednesday == meetingToAdd.wednesday:
-                            conflict = True
-                        if m.thursday and m.thursday == meetingToAdd.thursday:
-                            conflict = True
-                        if m.friday and m.friday == meetingToAdd.friday:
-                            conflict = True
-                    
+                    for meetingToAdd in meetingsToAdd:
+                        for m in meetings:
+                            if (meetingToAdd.start_time <= m.end_time) and (m.start_time <= meetingToAdd.end_time):
+                                time_overlap = True
+                            
+                            elif (m.start_time <= meetingToAdd.end_time) and (meetingToAdd.start_time <= m.end_time):
+                                time_overlap = True
+                                
+                            #check days overlap as well?
+                            
+                            if time_overlap: # only need to check if days overlap if time overlaps
+                                if m.monday and m.monday == meetingToAdd.monday:
+                                    conflict = True
+                                if m.tuesday and m.tuesday == meetingToAdd.tuesday:
+                                    conflict = True
+                                if m.wednesday and m.wednesday == meetingToAdd.wednesday:
+                                    conflict = True
+                                if m.thursday and m.thursday == meetingToAdd.thursday:
+                                    conflict = True
+                                if m.friday and m.friday == meetingToAdd.friday:
+                                    conflict = True
+                            
 
-                    if conflict:
-                        valid = False
-                        break
+                            if conflict:
+                                valid = False
+                                break
 
                 # if we can't add class, don't, otherwise do add it
                 if valid == False:     
@@ -817,3 +850,60 @@ def advanced_search2(request):
                         }
          
     return render(request, "classlist/advanced_search.html", context=dept_context)
+
+
+
+def view_comments(request, userID):
+    """
+    userID: the user who owns the schedule where comments are posted
+    """
+    
+    if userID:
+        account = Account.objects.get(email=userID) # whose account the schedule belongs to
+        print(account)
+        comments_list = Comment.objects.filter(to_user=account)
+        print(comments_list)
+        
+        # my_schedule = Schedule.objects.filter(scheduleUser=account)
+    
+        context = get_user_info(request)
+        # context['my_schedule'] = my_schedule
+        context['comments_list'] = comments_list
+        
+        return render(request, 'classlist/view_comments.html', context)
+    else:
+        return HTTPResponse("No matching user found")
+    
+    
+
+def add_comment(request, userID):
+    if request.method == 'POST':
+        form = CommentForm(request.POST)
+    else:
+        form = CommentForm()
+    
+    from_user = Account.objects.get(email=request.user.email)
+    to_user = Account.objects.get(email=userID)
+    # schedule = Schedule.objects.get(scheduleUser=schedule_owner)
+    
+    if form.is_valid():
+        
+        comment_text = form.cleaned_data.get('comment_text')
+        if comment_text != "":
+            comment = Comment(from_user=from_user, to_user=to_user, text=comment_text)
+            comment.save()
+            print(comment_text)
+
+    context = get_user_info(request)
+    context['from_user'] = from_user
+    context['to_user'] = to_user
+    # context['schedule'] = schedule
+    context['form'] = form
+    
+    if request.method == 'POST':
+        # return render(request, "classlist/schedule.html", context=context)
+        return redirect('/classlist/schedule/' + to_user.email + '/')
+    else:
+        return render(request, "classlist/add_comment.html", context=context)
+
+

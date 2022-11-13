@@ -41,6 +41,7 @@ class Account(models.Model):
     is_authenticated = models.BooleanField(default=True)
     is_anonymous = models.BooleanField(default=False)
     
+    avatar = models.URLField(default='/static/classlist/default_account_image.png')
     account_created = models.BooleanField(default=False) # currently not used
     
     # friends fields
@@ -231,3 +232,13 @@ class Schedule(models.Model):
 
     def __unicode__(self):
         return str(self.scheduleUser)
+
+
+class Comment(models.Model):
+    from_user = models.ForeignKey(Account, related_name="my_comments", on_delete=models.CASCADE, blank=True)
+    to_user = models.ForeignKey(Account, related_name="schedule_comments", on_delete=models.CASCADE, blank=True)
+    # schedule = models.ForeignKey(Schedule, on_delete=models.CASCADE, blank=True)
+    text = models.CharField(max_length=250)
+    
+    def __str__(self) -> str:
+        return self.text
