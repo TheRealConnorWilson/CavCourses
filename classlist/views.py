@@ -249,7 +249,7 @@ def get_depts(request):
             
     context = {'form':form, "all_depts_search":all_depts_search, 'a_depts':a_depts, 'b_depts':b_depts, 'c_depts':c_depts, 'd_depts':d_depts, 'e_depts':e_depts, 'f_depts':f_depts, 'g_depts':g_depts, 'h_depts':h_depts, 'i_depts':i_depts, 'j_depts':j_depts, 'k_depts':k_depts, 'l_depts':l_depts, 'm_depts':m_depts, 'n_depts':n_depts, 'o_depts':o_depts, 'p_depts':p_depts, 'q_depts':q_depts, 'r_depts':r_depts, 's_depts':s_depts, 't_depts':t_depts, 'u_depts':u_depts, 'v_depts':v_depts, 'w_depts':w_depts, 'x_depts':x_depts, 'y_depts':y_depts, 'z_depts':z_depts}
     
-    if Account.objects.filter(email=request.user.email):
+    if request.user.is_authenticated:
         context['user'] = Account.objects.get(email=request.user.email)
 
     return render(request, 'classlist/class.html', context)
@@ -363,28 +363,28 @@ def update_courses_from_API(dept_abbr):
                                         section = meeting_section
                                         )
             
-            print(course_obj)
+            # print(course_obj)
             # print(course_obj)
             # setting boolean fields for meetings
             if meetings_obj.days.find("Mo") != -1:
                 meetings_obj.monday = True
-                print("Monday")
+                # print("Monday")
                 # print("Monday")
             if meetings_obj.days.find("Tu") != -1:
                 meetings_obj.tuesday = True
-                print("Tuesday")
+                # print("Tuesday")
                 # print("Tuesday")
             if meetings_obj.days.find("We") != -1:
                 meetings_obj.wednesday = True
-                print("Wednesday")
+                # print("Wednesday")
                 # print("Wednesday")
             if meetings_obj.days.find("Th") != -1:
                 meetings_obj.thursday = True
-                print("Thursday")
+                # print("Thursday")
                 # print("Thursday")
             if meetings_obj.days.find("Fr") != -1:
                 meetings_obj.friday = True
-                print("Friday")
+                # print("Friday")
                 # print("Friday")
                 
             # in cases where there are no meetings, none of these will be true (ex. CS 3240's lab section)
@@ -614,13 +614,13 @@ def schedule_view(request, userID=None):
                 for meeting in meetings_for_section:
                     meetings_list.append(meeting)
                 
-            print(meetings_list)
+            # print(meetings_list)
             # print(meetings_list)
             # print(schedule_obj)
             
             schedule_context['meetings_list'] = meetings_list
             comments_list = Comment.objects.filter(to_user=theUser)
-            print(comments_list)
+            # print(comments_list)
             # print(comments_list)
         
             
