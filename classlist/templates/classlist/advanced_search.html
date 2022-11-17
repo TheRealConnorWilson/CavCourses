@@ -46,6 +46,8 @@
                                     <button type="button" class="btn btn-secondary" data-bs-toggle="collapse" data-bs-target="#card{{c.id}}">Section Information</button>
                                     {% for section in c.section_set.all %}
                                         <div class="card collapse" id="card{{c.id}}">
+                                            <button type="button" class="btn btn-dark" data-bs-toggle="collapse" data-bs-target="#section{{section.section_number}}">{{section.section_number}} ({{section.component}})</button>
+                                            <div class="card collapse" id="section{{section.section_number}}">
                                             <ul class="list-group list-group-flush">
                                                 <li class="list-group-item">
                                                     <h6>{{section.section_number}} ({{section.component}})</h6>
@@ -71,7 +73,8 @@
 
                                                 </li>
                                             </ul>
-                                          </div>
+                                            </div>
+                                        </div>
                                     {% endfor %}
                             </div>
                         </div>  
