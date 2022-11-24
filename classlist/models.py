@@ -172,8 +172,8 @@ class Section(models.Model):
         return str(self.section_id) + ": " + str(self.section_number) + " - " + self.component
 class Meetings(models.Model):
     days = models.CharField(max_length=100, blank=True) # MoWeFr, -
-    start_time = models.CharField(max_length=100, blank=True) # 17.00.00.000000-05:00
-    end_time = models.CharField(max_length=100, blank=True) # 18.15.00.000000-05:00
+    start_time = models.CharField(max_length=100, blank=False, default="00.00.00.000000-05:00") # 17.00.00.000000-05:00
+    end_time = models.CharField(max_length=100, blank=False, default="00.00.00.000000-05:00") # 18.15.00.000000-05:00
     facility_description = models.CharField(max_length=200, blank=True) # Olsson Hall 009
     section = models.ForeignKey(Section, on_delete=models.CASCADE, blank=True)
     
@@ -206,13 +206,13 @@ class Meetings(models.Model):
         if self.start_time != "":
             start_time_split = self.start_time.split('.')
             return start_time_split[0] + ":" + start_time_split[1]
-        return self.start_time
+        return "00:00"
 
     def end_time_as_date_time(self):
         if self.end_time != "":
             end_time_split = self.end_time.split('.')
             return end_time_split[0] + ":" + end_time_split[1]
-        return self.end_time
+        return "00:00"
 
     # for calculating positioning of classes in schedule
     # def x_position(self):

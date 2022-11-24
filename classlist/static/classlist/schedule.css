@@ -21,7 +21,7 @@ Got a lot of help with the CSS and HTML stuff from my brother
 .grid {
     display: grid;
     grid-template-columns: repeat(8, 1fr);
-    grid-template-rows: auto repeat(calc(24 * 60), minmax(0.75px, auto));
+    grid-template-rows: auto repeat(calc(24 * 60), minmax(0, auto));
     grid-column-gap: 1em;
     background-color: rgb(128, 178, 216);
     padding: 1em;
@@ -52,6 +52,6 @@ Got a lot of help with the CSS and HTML stuff from my brother
   .ts-time {
     /* grid-row: auto / span 60; */
     grid-column: 1 / span 8;
-    /* height: 50px; */
+    height: 100px;
   }
 

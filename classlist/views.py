@@ -375,7 +375,11 @@ def update_courses_from_API(dept_abbr):
         for meeting in meetings:
             meeting_days = meeting["days"]
             meeting_start_time = meeting["start_time"]
+            if meeting_start_time == "":
+                meeting_start_time = "00.00.00.000000-05:00"
             meeting_end_time = meeting["end_time"]
+            if meeting_end_time == "":
+                meeting_end_time = "00.00.00.000000-05:00"
             meeting_location = meeting["facility_description"]
             meeting_section = section
             if meeting_location == "-":
@@ -438,13 +442,14 @@ def update_courses_from_API(dept_abbr):
 
     return dept
 
+@transaction.atomic
 def delete_all_courses_from_API():
-
     Course.objects.all().delete() # delete all of them
     Meetings.objects.all().delete()
     Instructor.objects.all().delete()
     Section.objects.all().delete()
     Schedule.objects.all().delete()
+    Department.objects.all().delete()
 
 def load_all_courses_from_API():
     api_url = "http://luthers-list.herokuapp.com/api/deptlist?format=json"
@@ -452,6 +457,7 @@ def load_all_courses_from_API():
     all_depts = depts_json.json()
 
     for dept in all_depts:
+        print(dept['subject'])
         update_courses_from_API(dept['subject'])
 
 def load_dept_courses_from_db(request, dept_abbr):
@@ -628,70 +634,70 @@ def remove_friend(request, requestID):
     return redirect('/classlist/my_account/')
 
 # this method just displays schedule
-def schedule_view(request, userID=None):
+# def schedule_view(request, userID=None):
     
-    # ISSUE WITH THIS: returning 2 users??
-    # find our user
-    # theUser = Account.objects.get(USERNAME_FIELD = request.user.username)
-    # if theUser:
-        # theUser = theUser[0]
+#     # ISSUE WITH THIS: returning 2 users??
+#     # find our user
+#     # theUser = Account.objects.get(USERNAME_FIELD = request.user.username)
+#     # if theUser:
+#         # theUser = theUser[0]
         
-    if userID is None:
-        # userID = request.user.email
-        if Account.objects.filter(email=request.user.email).exists():
-            userID = Account.objects.get(email=request.user.email).id
-        else:
-            return HttpResponse('No associated schedule found!')
+#     if userID is None:
+#         # userID = request.user.email
+#         if Account.objects.filter(email=request.user.email).exists():
+#             userID = Account.objects.get(email=request.user.email).id
+#         else:
+#             return HttpResponse('No associated schedule found!')
 
         
-    # TODO change to use parameter user instead to make generic
-    if Account.objects.filter(id=userID):
-        theUser = Account.objects.get(id=userID)
+#     # TODO change to use parameter user instead to make generic
+#     if Account.objects.filter(id=userID):
+#         theUser = Account.objects.get(id=userID)
 
-        # mnow atch our user to the schedule's owner (foreign key!)
+#         # mnow atch our user to the schedule's owner (foreign key!)
 
-        # if sched exists, pass its context onto schedule template to see it
-        if Schedule.objects.filter(scheduleUser=theUser).exists():
+#         # if sched exists, pass its context onto schedule template to see it
+#         if Schedule.objects.filter(scheduleUser=theUser).exists():
 
-            schedule_obj = Schedule.objects.get(scheduleUser=theUser)
-            schedule_context = {'the_schedule' : schedule_obj}
-            # print(schedule_obj)
+#             schedule_obj = Schedule.objects.get(scheduleUser=theUser)
+#             schedule_context = {'the_schedule' : schedule_obj}
+#             # print(schedule_obj)
             
-            meetings_list = []
+#             meetings_list = []
 
-            for section in schedule_obj.classRoster.all():
-                meetings_for_section = Meetings.objects.filter(section=section)
-                for meeting in meetings_for_section:
-                    meetings_list.append(meeting)
+#             for section in schedule_obj.classRoster.all():
+#                 meetings_for_section = Meetings.objects.filter(section=section)
+#                 for meeting in meetings_for_section:
+#                     meetings_list.append(meeting)
                 
-            # print(meetings_list)
-            # print(meetings_list)
-            # print(schedule_obj)
+#             # print(meetings_list)
+#             # print(meetings_list)
+#             # print(schedule_obj)
             
-            schedule_context['meetings_list'] = meetings_list
-            comments_list = Comment.objects.filter(to_user=theUser)
-            # print(comments_list)
-            # print(comments_list)
+#             schedule_context['meetings_list'] = meetings_list
+#             comments_list = Comment.objects.filter(to_user=theUser)
+#             # print(comments_list)
+#             # print(comments_list)
         
             
-            schedule_context['comments_list'] = comments_list
-            schedule_context['user'] = theUser
+#             schedule_context['comments_list'] = comments_list
+#             schedule_context['user'] = theUser
             
-            return render(request, 'classlist/schedule.html', schedule_context)
+#             return render(request, 'classlist/schedule.html', schedule_context)
 
-        # else:
-        #     return render(request, 'classlist/schedule.html', {})
+#         # else:
+#         #     return render(request, 'classlist/schedule.html', {})
 
-        # if sched doesn't exist, create it and pass its context onto schedule template
-        # else:
-        #     schedule_obj = Schedule(scheduleUser=theUser)
-        #     schedule_obj.save()
+#         # if sched doesn't exist, create it and pass its context onto schedule template
+#         # else:
+#         #     schedule_obj = Schedule(scheduleUser=theUser)
+#         #     schedule_obj.save()
 
-        #     schedule_context = {'the_schedule' : schedule_obj}
+#         #     schedule_context = {'the_schedule' : schedule_obj}
             
-        #     return render(request, 'classlist/schedule.html', schedule_context)
-    else:
-        return render(request, 'classlist/schedule.html', {})
+#         #     return render(request, 'classlist/schedule.html', schedule_context)
+#     else:
+#         return render(request, 'classlist/schedule.html', {})
 
 # this method adds to the schedule
 def schedule_add(request, section_id):
@@ -978,20 +984,15 @@ def add_comment(request, userID):
         return render(request, "classlist/add_comment.html", context=context)
 
 
-def test_schedule(request, userID=None):
+def schedule_view(request, userID=None):
 
     time_range = [
         (i*60+2,((str((i - 1) % 12 + 1) if len(str((i - 1) % 12 + 1)) >= 2 
         else ("0" + str((i - 1) % 12 + 1))) 
         + ":00 " + ("AM" if i < 12 else "PM")))
         for i in range(0, 24)]
-    print(time_range)
 
     weekdays = ["         ", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
-
-
-    
-
 
     if userID is None:
         # userID = request.user.email
@@ -1027,10 +1028,10 @@ def test_schedule(request, userID=None):
             
             schedule_context['meetings_list'] = meetings_list
 
-            print(meetings_list)
-            for i in meetings_list:
-                print(i.y_position())
-                print(i.length())
+            # print(meetings_list)
+            # for i in meetings_list:
+            #     print(i.y_position())
+            #     print(i.length())
 
             comments_list = Comment.objects.filter(to_user=theUser)
             # print(comments_list)
@@ -1039,21 +1040,28 @@ def test_schedule(request, userID=None):
             
             schedule_context['comments_list'] = comments_list
             schedule_context['user'] = theUser
+    
+            # find the earliest start time and latest end time
+            earliest = 2300
+            latest = 0000
+            for m in meetings_list:
+                start = int(m.start_time_as_date_time().replace(":", ""))
+                if start < earliest:
+                    earliest = start
+                
+                end = int(m.end_time_as_date_time().replace(":", ""))
+                if end > latest:
+                    latest = end
+
+            earliest = earliest // 100
+            latest = latest // 100
+            time_range = time_range[earliest:latest+ 1]
+            print(time_range)
+
             schedule_context['time_range'] = time_range
             schedule_context['weekdays'] = weekdays
             
-            return render(request, 'classlist/test_schedule.html', schedule_context)
+            return render(request, 'classlist/schedule.html', schedule_context)
 
-        # else:
-        #     return render(request, 'classlist/schedule.html', {})
-
-        # if sched doesn't exist, create it and pass its context onto schedule template
-        # else:
-        #     schedule_obj = Schedule(scheduleUser=theUser)
-        #     schedule_obj.save()
-
-        #     schedule_context = {'the_schedule' : schedule_obj}
-            
-        #     return render(request, 'classlist/schedule.html', schedule_context)
     else:
-        return render(request, 'classlist/test_schedule.html', {})
+        return render(request, 'classlist/schedule.html', {})

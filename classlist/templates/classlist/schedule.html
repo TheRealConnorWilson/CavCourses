@@ -3,248 +3,177 @@
 
     Title: Card Columns
     URL: https://mdbootstrap.com/docs/standard/extended/card-columns/
+
+    https://icons.getbootstrap.com/icons/trash3-fill/
  -->
 
-<html>
+ <html>
     {% extends "base.html" %}
 
-<head>
-    {% load bootstrap5 %}
-    {% bootstrap_css %}
-    {% bootstrap_javascript%}
-</head>
+    <head>
+        {% load bootstrap5 %}
+        {% bootstrap_css %}
+        {% bootstrap_javascript%}
+    </head>
 
-{% block body %}
-<!-- <body style="background-color: rgb(28, 148, 148);"> -->
-    
-    <div class="text-center" style="color:white">
-        {% if user.email == request.user.email %}
-            <h1>My Schedule</h1>
-        {% else %}
-            <h1>{{user.USERNAME_FIELD}}'s Schedule</h1>
-        {% endif %}
-      <br>
-    </div>
+    {% block body %}
 
-    {% if the_schedule %}
-        <table class="table">
-            <thead>
-                <tr>
-                    <th scope="col">Mon</th>
-                    <th scope="col">Tue</th>
-                    <th scope="col">Wed</th>
-                    <th scope="col">Thu</th>
-                    <th scope="col">Fri</th>
-                    <!-- <th scope="col">Sat</th>
-                    <th scope="col">Sun</th> -->
-                </tr>
-            </thead>
-            {% if the_schedule.classRoster %}
-                <tbody>
-                    <tr>
-                        <td>
-                            {% for c in the_schedule.classRoster.all %}
-                                {% for m in meetings_list %}
-                                    <div class="row row-cols-1 g-1">
-                                        <div class="col">
-                                            {% if m.monday and m.section.section_id == c.section_id %}
-                                                <div class="card" display="inline-block" style="width:17rem">
-                                                    <h5 class="card-header text-center">{{c.course.title}}</h5>
-                                                    <div class="card-body text-center">
-                                                        {{m.start_time|make_list|slice:':2'|join:''}}:{{m.start_time|make_list|slice:'3:5'|join:''}} - {{m.end_time|make_list|slice:':2'|join:''}}:{{m.end_time|make_list|slice:'3:5'|join:''}} <br>
-                                                        {{m.facility_description}}
-                                                    </div>
-                                                    <div class="card-footer text-center">
-                                                        {% if user.email == request.user.email %}
-                                                        <form action="delete/{{c.section_id}}/" method="post">
-                                                            {% csrf_token %}
-                                                            
-                                                            <button type = 'submit' button name = 'delete-button' value = "{{c.section_id}}" class = 'btn btn-danger'>Remove Class</button>
-                                                        </form>
-                                                        {% endif %}
-                                                    </div>
-                                                </div>
-                                            {% endif %}
-                                    </div>
-                                {% endfor %}
-                            {% endfor %}
-                        </td>
-                        <td>
-                            {% for c in the_schedule.classRoster.all %}
-                                {% for m in meetings_list %}
-                                    <div class="row row-cols-1 g-1">
-                                        <div class="col">
-                                            {% if m.tuesday and m.section.section_id == c.section_id %}
-                                                <div class="card" display="inline-block" style="width:17rem">
-                                                    <h5 class="card-header text-center">{{c.course.title}}</h5>
-                                                    <div class="card-body text-center">
-                                                        {{m.start_time|make_list|slice:':2'|join:''}}:{{m.start_time|make_list|slice:'3:5'|join:''}} - {{m.end_time|make_list|slice:':2'|join:''}}:{{m.end_time|make_list|slice:'3:5'|join:''}} <br>
-                                                        {{m.facility_description}}
-                                                    </div>
-                                                    <div class="card-footer text-center">
-                                                        {% if user.email == request.user.email %}
-                                                        <form action="delete/{{c.section_id}}/" method="post">
-                                                            {% csrf_token %}
-                                                            <button type = 'submit' button name = 'delete-button' value = "{{c.section_id}}" class = 'btn btn-danger'>Remove Class</button>
-                                                        </form>
-                                                        {% endif %}
-                                                    </div>
-                                                </div>
-                                            {% endif %}
-                                    </div>
-                                {% endfor %}
-                            {% endfor %}
-                        </td>
-                        <td>
-                            {% for c in the_schedule.classRoster.all %}
-                                {% for m in meetings_list %}
-                                    <div class="row row-cols-1 g-1">
-                                        <div class="col">
-                                            {% if m.wednesday and m.section.section_id == c.section_id %}
-                                                <div class="card" display="inline-block" style="width:17rem">
-                                                    <h5 class="card-header text-center">{{c.course.title}}</h5>
-                                                    <div class="card-body text-center">
-                                                        {{m.start_time|make_list|slice:':2'|join:''}}:{{m.start_time|make_list|slice:'3:5'|join:''}} - {{m.end_time|make_list|slice:':2'|join:''}}:{{m.end_time|make_list|slice:'3:5'|join:''}} <br>
-                                                        {{m.facility_description}}
-                                                    </div>
-                                                    <div class="card-footer text-center">
-                                                        {% if user.email == request.user.email %}
-                                                        <form action="delete/{{c.section_id}}/" method="post">
-                                                            {% csrf_token %}
-                                                            <button type = 'submit' button name = 'delete-button' value = "{{c.section_id}}" class = 'btn btn-danger'>Remove Class</button>
-                                                        </form>
-                                                        {% endif %}
-                                                    </div>
-                                                </div>
-                                            {% endif %}
-                                    </div>
-                                {% endfor %}
-                            {% endfor %}
-                        </td>
-                        <td>
-                            {% for c in the_schedule.classRoster.all %}
-                                {% for m in meetings_list %}
-                                    <div class="row row-cols-1 g-1">
-                                        <div class="col">
-                                            {% if m.thursday and m.section.section_id == c.section_id %}
-                                                <div class="card" display="inline-block" style="width:17rem">
-                                                    <h5 class="card-header text-center">{{c.course.title}}</h5>
-                                                    <div class="card-body text-center">
-                                                        {{m.start_time|make_list|slice:':2'|join:''}}:{{m.start_time|make_list|slice:'3:5'|join:''}} - {{m.end_time|make_list|slice:':2'|join:''}}:{{m.end_time|make_list|slice:'3:5'|join:''}} <br>
-                                                        {{m.facility_description}}
-                                                    </div>
-                                                    <div class="card-footer text-center">
-                                                        {% if user.email == request.user.email %}
-                                                        <form action="delete/{{c.section_id}}/" method="post">
-                                                            {% csrf_token %}
-                                                            <button type = 'submit' button name = 'delete-button' value = "{{c.section_id}}" class = 'btn btn-danger'>Remove Class</button>
-                                                        </form>
-                                                        {% endif %}
-                                                    </div>
-                                                </div>
-                                            {% endif %}
-                                    </div>
-                                {% endfor %}
-                            {% endfor %}
-                            <td>
-                                {% for c in the_schedule.classRoster.all %}
-                                    {% for m in meetings_list %}
-                                        <div class="row row-cols-1 g-1">
-                                            <div class="col">
-                                                {% if m.friday and m.section.section_id == c.section_id %}
-                                                    <div class="card" display="inline-block" style="width:17rem">
-                                                        <h5 class="card-header text-center">{{c.course.title}}</h5>
-                                                        <div class="card-body text-center">
-                                                            {{m.start_time|make_list|slice:':2'|join:''}}:{{m.start_time|make_list|slice:'3:5'|join:''}} - {{m.end_time|make_list|slice:':2'|join:''}}:{{m.end_time|make_list|slice:'3:5'|join:''}} <br>
-                                                            {{m.facility_description}}
-                                                        </div>
-                                                        <div class="card-footer text-center">
-                                                            {% if user.email == request.user.email %}
-                                                            <form action="delete/{{c.section_id}}/" method="post">
-                                                                {% csrf_token %}
-                                                                <button type = 'submit' button name = 'delete-button' value = "{{c.section_id}}" class = 'btn btn-danger'>Remove Class</button>
-                                                            </form>
-                                                            {% endif %}
-                                                        </div>
-                                                    </div>
-                                                {% endif %}
-                                        </div>
-                                    {% endfor %}
-                                {% endfor %}
-                            </td>
-                        </td>
-                    </tr>
-                </tbody>
-            {% endif %}
-        </table>
-        <div class="container">
-            <div class="card-deck">
-                
-                <!-- 
-                    For comment in the_scedule.comments:
-                        create a card with the username, profile pic, and comment
-                 -->
-                 {% if comments_list %}
-                 <div class="justify-content-center">
-                     <div class="row">
-                         <div class="col-md-5">
-                             <div class="card ccard radius-t-0 h-100">
+        <body>
 
-                                 <div class="card-header pb-3 brc-secondary-l3">
-                                     <h5 class="card-title mb-2 mb-md-0 text-dark-m3 text-center">
-                                         Comments for {{user.USERNAME_FIELD}}'s schedule:
-                                     </h5>
-                                 </div>
-                                 <div class="card-body pt-2 pb-1">
-                                     {% for c in comments_list %}
-                                         {% comment %} {% if c.schedule == my_schedule %} {% endcomment %}
-                                             {% comment %} <div role="button" class="d-flex flex-wrap align-items-center my-2 bgc-secondary-l4 bgc-h-secondary-l3 radius-1 p-25 d-style">
-                                                 <span class="mr-25 w-4 h-4 overflow-hidden text-center border-1 brc-secondary-m2 radius-round shadow-sm d-zoom-2">
-                                                     <img src="{{c.from_user.avatar}}" class="h-4 w-4" style="width: 80px;"/>
-                                                 </span>
-                                                 <span class="text-default-d3 text-90 text-600 text-left">
-                                                     {{c.from_user.USERNAME_FIELD}}: {{c.text}}
-                                                 </span>
-                                                 <span>
-                                                     &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp
-                                                 </span>
-                                             </div> {% endcomment %}
-                                         {% comment %} {% endif %} {% endcomment %}
+            <!-- <body style="background-color: rgb(28, 148, 148);"> -->
+            <link rel="stylesheet" href="/static/classlist/schedule.css">
 
-                                         <div class="card mb-3" width="width:17rem">
-                                             <div class="card-header"> 
-                                                 <div class="col float-start">
-                                                     <img src="{{c.from_user.avatar}}" class="rounded-circle" height="30" width="30">
-                                                 </div>
-                                                 <div class="row row-cols-2">
-                                                     <div class="col"> {{c.from_user.USERNAME_FIELD}}:</div>
-                                                 </div> 
-                                                 
-                                             </div>
-                                             <div class="card-body"> {{c.text}} </div>
-                                         </div>
-
-
-                                     {% endfor %}
-                                 </div>
-                             </div>
-                         </div>
-                     </div>
-                 </div>
-             {% else %}
-                 <p> No comments exist for this user's schedule. </p>
-             {% endif %}
-
-             <p>
-             <a class="btn btn-primary" href='/classlist/schedule/{{user.id}}/add_comment'>
-             add comment
-             </a></p> 
+            <div class="text-center" style="color:white">
+                {% if user.email == request.user.email %}
+                    <h1>My Schedule</h1>
+                {% else %}
+                    <h1>{{user.USERNAME_FIELD}}'s Schedule</h1>
+                {% endif %}
+                <br>
             </div>
-        </div>
-    {% else %}
-        <h1>No classes to see here!</h1>
-    {% endif %}
-</body>
-{% endblock %}
+
+                <!-- adding different way of displaying classes -->
+
+            <div class="grid-container">
+                <div class="grid mx-5">
+                    {% comment %} 
+                    <div class="sq sq-2">Example</div>
+                    <div class="sq sq-3">Example</div>
+                    <div class="sq sq-4">Example</div>
+                    <div class="sq sq-5">Example</div> 
+                    {% endcomment %}
+                    <!-- <div class="sq sq-6" style="grid-column: {{dotw}}; grid-row: {{st}} / span {{dur}};">Example</div> -->
+                    
+                    {% comment %} <div class="ts ts-header">header</div> {% endcomment %}
+                    {% for day in weekdays %}
+                        <div class="ts ts-header">{{day}}</div>
+
+                    {% endfor %}
+
+                    {% for index, time in time_range %}
+                        <div class="ts ts-time" style="grid-row: {{index}} / span 60 ;">{{time}}</div>
+                    {% endfor %}
+
+                    {% for meeting in meetings_list%}
+                        {% for column, value in meeting.days_of_the_week %}
+                            {% if value %}
+
+                                <div class="sq" style="grid-row: {{meeting.y_position}} / span {{meeting.length}}; grid-column: {{column}};">
+                                
+                                    {% for c in the_schedule.classRoster.all %}
+                                        {% if meeting.section.section_id == c.section_id %}
+
+                                                <div class="text-center">{{c.course.title}}</div>
+                                                <div class="text-center">
+                                                    {{meeting.start_time|make_list|slice:':2'|join:''}}:{{meeting.start_time|make_list|slice:'3:5'|join:''}} - {{meeting.end_time|make_list|slice:':2'|join:''}}:{{meeting.end_time|make_list|slice:'3:5'|join:''}} <br>
+                                                    {{meeting.facility_description}}
+                                                </div>
+                                                <div class="text-center">
+                                                    {% if user.email == request.user.email %}
+                                                    <form action="delete/{{c.section_id}}/" method="post">
+                                                        {% csrf_token %}
+                                                        
+                                                        <button type = 'submit' value = "{{c.section_id}}" class = 'btn-danger btn-small' size="small">
+
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash3-fill" viewBox="0 0 16 16">
+                                                                <path d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5Zm-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5ZM4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06Zm6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528ZM8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5Z"/>
+                                                              </svg>
+
+                                                        </button>
+                                                    </form>
+                                                    {% endif %}
+                                                </div>
+                                            
+                                        
+                                        {% endif %}
+                                    {% endfor %}
+
+
+                                </div>
+
+                            {% endif %}
+                        {% endfor %}
+
+                    {% endfor %}
+                </div>
+            </div>
+
+            {% if the_schedule %}
+                <div class="container text-center">
+                    <div class="card-deck">
+                        
+                        <!-- 
+                            For comment in the_scedule.comments:
+                                create a card with the username, profile pic, and comment
+                        -->
+                        {% if comments_list %}
+                            <div class="">
+                                <div class="row justify-content-center">
+                                    <div class="col-md-5 mt-3 mb-3">
+                                        <div class="card ccard radius-t-0 h-100">
+
+                                            <div class="card-header pb-3 brc-secondary-l3">
+                                                <h5 class="card-title mb-2 mb-md-0 text-dark-m3 text-center">
+                                                    Comments for {{user.USERNAME_FIELD}}'s schedule:
+                                                </h5>
+                                            </div>
+                                            <div class="card-body pt-2 pb-1">
+                                                {% for c in comments_list %}
+                                                    {% comment %} {% if c.schedule == my_schedule %} {% endcomment %}
+                                                        {% comment %} <div role="button" class="d-flex flex-wrap align-items-center my-2 bgc-secondary-l4 bgc-h-secondary-l3 radius-1 p-25 d-style">
+                                                            <span class="mr-25 w-4 h-4 overflow-hidden text-center border-1 brc-secondary-m2 radius-round shadow-sm d-zoom-2">
+                                                                <img src="{{c.from_user.avatar}}" class="h-4 w-4" style="width: 80px;"/>
+                                                            </span>
+                                                            <span class="text-default-d3 text-90 text-600 text-left">
+                                                                {{c.from_user.USERNAME_FIELD}}: {{c.text}}
+                                                            </span>
+                                                            <span>
+                                                                &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp
+                                                            </span>
+                                                        </div> {% endcomment %}
+                                                    {% comment %} {% endif %} {% endcomment %}
+
+                                                    <div class="card mb-3" width="width:17rem">
+                                                        <div class="card-header"> 
+
+                                                            <div class="row row-cols-2">
+                                                                <div class="col-auto">
+                                                                    <img src="{{c.from_user.avatar}}" class="rounded-circle" height="30" width="30">
+                                                                </div>
+                                                                    <div class="col-auto"> {{c.from_user.USERNAME_FIELD}}:</div>
+                                                            </div> 
+                                                            
+                                                        </div>
+                                                        <div class="card-body"> {{c.text}} </div>
+                                                    </div>
+
+
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {% comment %} can use this to add other content if we want to {% endcomment %}
+                                    {% comment %} <div class="col-md-5 mt-3 mb-3">
+                                        other stuff
+                                    </div> {% endcomment %}
+
+                                </div>
+                            </div>
+                        {% else %}
+                            <p> No comments exist for this user's schedule. </p>
+                        {% endif %}
+
+                    <p>
+                        <a class="btn btn-primary" href='/classlist/schedule/{{user.email}}/add_comment'>
+                        add comment
+                        </a>
+                    </p> 
+                </div>
+            {% else %}
+                <h1>No classes to see here!</h1>
+            {% endif %}
+        </body>
+    {% endblock %}
 
 </html>
