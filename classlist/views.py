@@ -297,6 +297,8 @@ def update_courses_from_API(dept_abbr):
         dept.save()
 
     #Assign all fields
+
+
     for course in all_dept_classes:
         
         instructor_name = course["instructor"]["name"]
@@ -413,6 +415,14 @@ def update_courses_from_API(dept_abbr):
                 meetings_obj.friday = True
                 # print("Friday")
                 # print("Friday")
+            if meetings_obj.days.find("Sa") != -1:
+                meetings_obj.saturday = True
+                # print("Friday")
+                # print("Friday")
+            if meetings_obj.days.find("Su") != -1:
+                meetings_obj.sunday = True
+                # print("Friday")
+                # print("Friday")
                 
             # in cases where there are no meetings, none of these will be true (ex. CS 3240's lab section)
             
@@ -427,6 +437,14 @@ def update_courses_from_API(dept_abbr):
 
 
     return dept
+
+def delete_all_courses_from_API():
+
+    Course.objects.all().delete() # delete all of them
+    Meetings.objects.all().delete()
+    Instructor.objects.all().delete()
+    Section.objects.all().delete()
+    Schedule.objects.all().delete()
 
 def load_all_courses_from_API():
     api_url = "http://luthers-list.herokuapp.com/api/deptlist?format=json"
@@ -745,6 +763,10 @@ def schedule_add(request, section_id):
                                     conflict = True
                                 if m.friday and m.friday == meetingToAdd.friday:
                                     conflict = True
+                                if m.saturday and m.saturday == meetingToAdd.saturday:
+                                    conflict = True
+                                if m.sunday and m.sunday == meetingToAdd.sunday:
+                                    conflict = True
                             
 
                             if conflict:
@@ -965,7 +987,7 @@ def test_schedule(request, userID=None):
         for i in range(0, 24)]
     print(time_range)
 
-    weekdays = ["         ", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
+    weekdays = ["         ", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
 
 
     

@@ -3,6 +3,8 @@
 CITATIONS:
 https://css-tricks.com/snippets/css/complete-guide-grid/#prop-grid-template-columns-rows
 
+Got a lot of help with the CSS and HTML stuff from my brother
+
 
 */
 
@@ -10,12 +12,20 @@ https://css-tricks.com/snippets/css/complete-guide-grid/#prop-grid-template-colu
     --
 } */
 
+.grid-container {
+    height: 75vh;
+    overflow-y: scroll;
+    
+}
+
 .grid {
     display: grid;
-    grid-template-columns: repeat(6, 1fr);
-    grid-template-rows: auto repeat(calc(24 * 60), 1px);
-    /* height: 90vh; */
+    grid-template-columns: repeat(8, 1fr);
+    grid-template-rows: auto repeat(calc(24 * 60), 1fr);
     grid-column-gap: 1em;
+    background-color: rgb(128, 178, 216);
+    padding: 1em;
+    border: 1px solid black
   }
   
   .sq {
@@ -23,6 +33,8 @@ https://css-tricks.com/snippets/css/complete-guide-grid/#prop-grid-template-colu
     background: lightblue;
     z-index: 10; /* positive is in front, negative is behind */
     grid-column: 2 / span 1;
+    font-size: 12px;
+    line-height: 100%;
   }
   
   .ts {
@@ -39,7 +51,7 @@ https://css-tricks.com/snippets/css/complete-guide-grid/#prop-grid-template-colu
   
   .ts-time {
     /* grid-row: auto / span 60; */
-    grid-column: 1 / span 6;
+    grid-column: 1 / span 8;
   }
 
   /* .ts-600 {

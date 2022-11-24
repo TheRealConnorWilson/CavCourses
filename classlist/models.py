@@ -184,6 +184,18 @@ class Meetings(models.Model):
     wednesday = models.BooleanField(blank=True, default=False)
     thursday = models.BooleanField(blank=True, default=False)
     friday = models.BooleanField(blank=True, default=False)
+    saturday = models.BooleanField(blank=True, default=False)
+    sunday = models.BooleanField(blank=True, default=False)
+
+    def days_of_the_week(self):
+        days = [(2, self.monday), 
+                (3, self.tuesday), 
+                (4, self.wednesday), 
+                (5, self.thursday), 
+                (6, self.friday), 
+                (7, self.saturday), 
+                (8, self.sunday)]
+        return days
     
 
     # @classmethod
