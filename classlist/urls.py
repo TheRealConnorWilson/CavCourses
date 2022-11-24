@@ -30,6 +30,6 @@ urlpatterns = [
     
     # path('schedule/<int:userID', views.schedule_view, name ='schedule'),
 
-    path('/schedule/test', views.test_schedule, name='test_schedule'),
+    path('schedule/test/<int:userID>', views.test_schedule, name='test_schedule'),
     
 ]

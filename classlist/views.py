@@ -951,6 +951,55 @@ def add_comment(request, userID):
         return render(request, "classlist/add_comment.html", context=context)
 
 
-def test_schedule(request):
-    
-    return render(request, "classlist/test_schedule.html", {})
+def test_schedule(request, userID=None):
+    if userID is None:
+        userID = request.user.email
+        
+    # TODO change to use parameter user instead to make generic
+    if Account.objects.filter(email=userID):
+        theUser = Account.objects.get(email=userID)
+
+        # mnow atch our user to the schedule's owner (foreign key!)
+
+        # if sched exists, pass its context onto schedule template to see it
+        if Schedule.objects.filter(scheduleUser=theUser).exists():
+
+            schedule_obj = Schedule.objects.get(scheduleUser=theUser)
+            schedule_context = {'the_schedule' : schedule_obj}
+            # print(schedule_obj)
+            
+            meetings_list = []
+
+            for section in schedule_obj.classRoster.all():
+                meetings_for_section = Meetings.objects.filter(section=section)
+                for meeting in meetings_for_section:
+                    meetings_list.append(meeting)
+                
+            # print(meetings_list)
+            # print(meetings_list)
+            # print(schedule_obj)
+            
+            schedule_context['meetings_list'] = meetings_list
+            comments_list = Comment.objects.filter(to_user=theUser)
+            # print(comments_list)
+            # print(comments_list)
+        
+            
+            schedule_context['comments_list'] = comments_list
+            schedule_context['user'] = theUser
+            
+            return render(request, 'classlist/test_schedule.html', schedule_context)
+
+        # else:
+        #     return render(request, 'classlist/schedule.html', {})
+
+        # if sched doesn't exist, create it and pass its context onto schedule template
+        # else:
+        #     schedule_obj = Schedule(scheduleUser=theUser)
+        #     schedule_obj.save()
+
+        #     schedule_context = {'the_schedule' : schedule_obj}
+            
+        #     return render(request, 'classlist/schedule.html', schedule_context)
+    else:
+        return render(request, 'classlist/test_schedule.html', {})
