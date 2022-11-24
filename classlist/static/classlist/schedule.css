@@ -1,7 +1,19 @@
+/* 
+
+CITATIONS:
+https://css-tricks.com/snippets/css/complete-guide-grid/#prop-grid-template-columns-rows
+
+
+*/
+
+/* :root{
+    --
+} */
+
 .grid {
     display: grid;
     grid-template-columns: repeat(6, 1fr);
-    grid-template-rows: repeat(10, 1fr);
+    grid-template-rows: repeat(20, 1fr);
     height: 90vh;
     grid-column-gap: 1em;
   }
@@ -40,24 +52,86 @@
   .ts {
     grid-column: 1 / span 6;
     border-bottom: 1px solid gray;
+    height: 50;
+  }
+
+  .ts-header {
+    grid-row: span 1;
+    grid-column: span 1;
   }
   
+  
+  .ts-time {
+    grid-row: span 2;
+  }
+
+  /* .ts-600 {
+    grid-row: span 2;
+  }
+
+  .ts-700 {
+    grid-row: span 2;
+  }
+
+  .ts-800 {
+    grid-row: span 2;
+  } 
+
   .ts-900 {
-    grid-row: 1 / span 2;
+    grid-row: span 2;
   }
   
   .ts-1000 {
-    grid-row: 3 / span 2;
+    grid-row: span 2;
   }
   
   .ts-1100 {
-    grid-row: 5 / span 2;
+    grid-row: span 2;
   }
   
   .ts-1200 {
-    grid-row: 7 / span 2;
+    grid-row: span 2;
   }
   
-  .ts-100 {
-    grid-row: 9 / span 2;
+  .ts-1300 {
+    grid-row: span 2;
   }
+
+  .ts-1400 {
+    grid-row: 19 / span 2;
+  }
+
+  .ts-1500 {
+    grid-row: 21 / span 2;
+  }
+
+  .ts-1600 {
+    grid-row: 23 / span 2;
+  }
+
+  .ts-1700 {
+    grid-row: 25 / span 2;
+  }
+
+  .ts-1800 {
+    grid-row: 27 / span 2;
+  }
+
+  .ts-1900 {
+    grid-row: 29 / span 2;
+  }
+
+  .ts-2000 {
+    grid-row: 31 / span 2;
+  }
+  .ts-2100 {
+    grid-row: 33 / span 2;
+  }
+
+  .ts-2200 {
+    grid-row: 35 / span 2;
+  }
+
+  .ts-2300 {
+    grid-row: 37 / span 2;
+  } */

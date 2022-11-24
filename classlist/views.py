@@ -957,6 +957,19 @@ def add_comment(request, userID):
 
 
 def test_schedule(request, userID=None):
+
+    time_range = [
+        ((str((i - 1) % 12 + 1) if len(str((i - 1) % 12 + 1)) >= 2 
+        else ("0" + str((i - 1) % 12 + 1))) 
+        + ":00 " + ("AM" if i < 12 else "PM")) for i in range(0, 24)]
+    print(time_range)
+
+    weekdays = ["", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
+
+
+    
+
+
     if userID is None:
         # userID = request.user.email
         if Account.objects.filter(email=request.user.email).exists():
@@ -990,6 +1003,9 @@ def test_schedule(request, userID=None):
             # print(schedule_obj)
             
             schedule_context['meetings_list'] = meetings_list
+
+            print(meetings_list)
+
             comments_list = Comment.objects.filter(to_user=theUser)
             # print(comments_list)
             # print(comments_list)
@@ -997,6 +1013,8 @@ def test_schedule(request, userID=None):
             
             schedule_context['comments_list'] = comments_list
             schedule_context['user'] = theUser
+            schedule_context['time_range'] = time_range
+            schedule_context['weekdays'] = weekdays
             
             return render(request, 'classlist/test_schedule.html', schedule_context)
 
