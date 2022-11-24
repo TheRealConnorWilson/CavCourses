@@ -29,5 +29,7 @@ urlpatterns = [
     # path('schedule/<int:userID>/add_comment/', views.add_comment, name='add_comment'),
     
     # path('schedule/<int:userID', views.schedule_view, name ='schedule'),
+
+    path('/schedule/test', views.test_schedule, name='test_schedule'),
     
 ]

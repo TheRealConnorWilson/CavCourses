@@ -951,3 +951,6 @@ def add_comment(request, userID):
         return render(request, "classlist/add_comment.html", context=context)
 
 
+def test_schedule(request):
+    
+    return render(request, "classlist/test_schedule.html", {})
