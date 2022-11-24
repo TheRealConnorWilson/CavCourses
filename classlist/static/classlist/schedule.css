@@ -21,7 +21,7 @@ Got a lot of help with the CSS and HTML stuff from my brother
 .grid {
     display: grid;
     grid-template-columns: repeat(8, 1fr);
-    grid-template-rows: auto repeat(calc(24 * 60), 1fr);
+    grid-template-rows: auto repeat(calc(24 * 60), minmax(0.75px, auto));
     grid-column-gap: 1em;
     background-color: rgb(128, 178, 216);
     padding: 1em;
@@ -34,7 +34,7 @@ Got a lot of help with the CSS and HTML stuff from my brother
     z-index: 10; /* positive is in front, negative is behind */
     grid-column: 2 / span 1;
     font-size: 12px;
-    line-height: 100%;
+    /* line-height: 100%; */
   }
   
   .ts {
@@ -52,75 +52,6 @@ Got a lot of help with the CSS and HTML stuff from my brother
   .ts-time {
     /* grid-row: auto / span 60; */
     grid-column: 1 / span 8;
+    /* height: 50px; */
   }
 
-  /* .ts-600 {
-    grid-row: span 2;
-  }
-
-  .ts-700 {
-    grid-row: span 2;
-  }
-
-  .ts-800 {
-    grid-row: span 2;
-  } 
-
-  .ts-900 {
-    grid-row: span 2;
-  }
-  
-  .ts-1000 {
-    grid-row: span 2;
-  }
-  
-  .ts-1100 {
-    grid-row: span 2;
-  }
-  
-  .ts-1200 {
-    grid-row: span 2;
-  }
-  
-  .ts-1300 {
-    grid-row: span 2;
-  }
-
-  .ts-1400 {
-    grid-row: 19 / span 2;
-  }
-
-  .ts-1500 {
-    grid-row: 21 / span 2;
-  }
-
-  .ts-1600 {
-    grid-row: 23 / span 2;
-  }
-
-  .ts-1700 {
-    grid-row: 25 / span 2;
-  }
-
-  .ts-1800 {
-    grid-row: 27 / span 2;
-  }
-
-  .ts-1900 {
-    grid-row: 29 / span 2;
-  }
-
-  .ts-2000 {
-    grid-row: 31 / span 2;
-  }
-  .ts-2100 {
-    grid-row: 33 / span 2;
-  }
-
-  .ts-2200 {
-    grid-row: 35 / span 2;
-  }
-
-  .ts-2300 {
-    grid-row: 37 / span 2;
-  } */
