@@ -15,8 +15,11 @@
 </head>
 
 {% block body %}
+
+
 <!-- <body style="background-color: rgb(28, 148, 148);"> -->
-    
+    <link rel="stylesheet" href="/static/classlist/schedule.css">
+
     <div class="text-center" style="color:white">
         {% if user.email == request.user.email %}
             <h1>My Schedule</h1>
@@ -26,7 +29,24 @@
       <br>
     </div>
 
-    {% if the_schedule %}
+    <!-- adding different way of displaying classes -->
+
+
+    <div class="grid">
+        <div class="sq sq-2">Example</div>
+        <div class="sq sq-3">Example</div>
+        <div class="sq sq-4">Example</div>
+        <div class="sq sq-5">Example</div>
+        <!-- <div class="sq sq-6" style="grid-column: {{dotw}}; grid-row: {{st}} / span {{dur}};">Example</div> -->
+        
+        <div class="ts ts-900">9:00 AM</div>
+        <div class="ts ts-1000">10:00 AM</div>
+        <div class="ts ts-1100">11:00 AM</div>
+        <div class="ts ts-1200">12:00 PM</div>
+        <div class="ts ts-100">1:00 PM</div>
+    </div>
+
+    <!-- {% if the_schedule %}
         <table class="table">
             <thead>
                 <tr>
@@ -35,8 +55,6 @@
                     <th scope="col">Wed</th>
                     <th scope="col">Thu</th>
                     <th scope="col">Fri</th>
-                    <!-- <th scope="col">Sat</th>
-                    <th scope="col">Sun</th> -->
                 </tr>
             </thead>
             {% if the_schedule.classRoster %}
@@ -176,7 +194,10 @@
                     </tr>
                 </tbody>
             {% endif %}
-        </table>
+        </table> -->
+
+
+
         <div class="container">
             <div class="card-deck">
                 

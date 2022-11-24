@@ -958,11 +958,16 @@ def add_comment(request, userID):
 
 def test_schedule(request, userID=None):
     if userID is None:
-        userID = request.user.email
+        # userID = request.user.email
+        if Account.objects.filter(email=request.user.email).exists():
+            userID = Account.objects.get(email=request.user.email).id
+        else:
+            return HttpResponse('No associated schedule found!')
+
         
     # TODO change to use parameter user instead to make generic
-    if Account.objects.filter(email=userID):
-        theUser = Account.objects.get(email=userID)
+    if Account.objects.filter(id=userID):
+        theUser = Account.objects.get(id=userID)
 
         # mnow atch our user to the schedule's owner (foreign key!)
 
