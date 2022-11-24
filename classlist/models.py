@@ -34,7 +34,7 @@ class Account(models.Model):
     USERNAME_FIELD = models.CharField(max_length=150, default="User") # something was demanding this be USERNAME_FIELD instead of username
     first_name = models.CharField(max_length=150, blank=True, default="User") # blank=True means that it is optional
     last_name = models.CharField(max_length=150, blank=True, default="Name")
-    email = models.EmailField(max_length=150, default="none@gmail.com", primary_key=True)
+    email = models.EmailField(max_length=150, default="none@gmail.com")
     # password = models.CharField(max_length=150) # not sure if we need to store this?
     last_login = models.DateTimeField('last date logged in', default=timezone.now)
     date_joined = models.DateTimeField('date joined', default=timezone.now)

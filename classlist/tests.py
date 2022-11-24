@@ -259,15 +259,15 @@ class TestViews(TestCase):
         self.assertEqual(response.status_code, 200)
         
     def test_view_other_schedule(self):
-        request = self.factory.get('/classlist/schedule/' + self.u2.email)
+        request = self.factory.get('/classlist/schedule/' + str(self.u2.id))
         request.user = self.u1
-        response = schedule_view(request, self.u2.email)
+        response = schedule_view(request, self.u2.id)
         self.assertEqual(response.status_code, 200)
         
     def test_add_comment(self):
-        request = self.factory.get('/classlist/schedule/' + self.u2.email +'/add_comment')
+        request = self.factory.get('/classlist/schedule/' + str(self.u2.id) +'/add_comment')
         request.user = self.u1
-        response = add_comment(request, self.u2.email)
+        response = add_comment(request, self.u2.id)
         self.assertEqual(response.status_code, 200)
 
     # def tearDown(self):

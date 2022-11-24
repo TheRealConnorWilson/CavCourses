@@ -552,7 +552,7 @@ def send_friend_request(request, userID):
     user_email = get_user(request).email
 
     from_user = Account.objects.get(email=user_email)
-    to_user = Account.objects.get(email=userID)
+    to_user = Account.objects.get(id=userID)
     friend_request = Friend_Request(
         from_user = from_user,
         to_user = to_user,
@@ -603,7 +603,7 @@ def remove_friend(request, requestID):
     
     current_user_email = get_user(request).email
     current_account = Account.objects.filter(email = current_user_email)[0]
-    user_friend = Account.objects.get(email=requestID)
+    user_friend = Account.objects.get(id=requestID)
     current_account.friends.remove(user_friend)
     user_friend.friends.remove(current_account)
 
@@ -619,11 +619,16 @@ def schedule_view(request, userID=None):
         # theUser = theUser[0]
         
     if userID is None:
-        userID = request.user.email
+        # userID = request.user.email
+        if Account.objects.filter(email=request.user.email).exists():
+            userID = Account.objects.get(email=request.user.email).id
+        else:
+            return HttpResponse('No associated schedule found!')
+
         
     # TODO change to use parameter user instead to make generic
-    if Account.objects.filter(email=userID):
-        theUser = Account.objects.get(email=userID)
+    if Account.objects.filter(id=userID):
+        theUser = Account.objects.get(id=userID)
 
         # mnow atch our user to the schedule's owner (foreign key!)
 
@@ -903,7 +908,7 @@ def view_comments(request, userID):
     """
     
     if userID:
-        account = Account.objects.get(email=userID) # whose account the schedule belongs to
+        account = Account.objects.get(id=userID) # whose account the schedule belongs to
         print(account)
         comments_list = Comment.objects.filter(to_user=account)
         print(comments_list)
@@ -927,7 +932,7 @@ def add_comment(request, userID):
         form = CommentForm()
     
     from_user = Account.objects.get(email=request.user.email)
-    to_user = Account.objects.get(email=userID)
+    to_user = Account.objects.get(id=userID)
     # schedule = Schedule.objects.get(scheduleUser=schedule_owner)
     
     if form.is_valid():
@@ -946,7 +951,7 @@ def add_comment(request, userID):
     
     if request.method == 'POST':
         # return render(request, "classlist/schedule.html", context=context)
-        return redirect('/classlist/schedule/' + to_user.email + '/')
+        return redirect('/classlist/schedule/' + str(to_user.id) + '/')
     else:
         return render(request, "classlist/add_comment.html", context=context)
 

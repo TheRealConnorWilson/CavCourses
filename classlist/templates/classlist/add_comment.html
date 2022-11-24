@@ -21,7 +21,7 @@ https://www.bootdey.com/snippets/view/Card-user-transfer-list#html
                         </div>
                     </div>
                     {% comment %} <div class="card-body"> Comment here </div> {% endcomment %}
-                    <form action="/schedule/{{to_user.email}}/add_comment/" method="post">
+                    <form action="/schedule/{{to_user.id}}/add_comment/" method="post">
                         {% csrf_token %}
                         <!-- {{ form }} -->
                         {% for field in form %}
