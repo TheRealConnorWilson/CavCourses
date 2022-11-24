@@ -959,12 +959,13 @@ def add_comment(request, userID):
 def test_schedule(request, userID=None):
 
     time_range = [
-        ((str((i - 1) % 12 + 1) if len(str((i - 1) % 12 + 1)) >= 2 
+        (i*60+2,((str((i - 1) % 12 + 1) if len(str((i - 1) % 12 + 1)) >= 2 
         else ("0" + str((i - 1) % 12 + 1))) 
-        + ":00 " + ("AM" if i < 12 else "PM")) for i in range(0, 24)]
+        + ":00 " + ("AM" if i < 12 else "PM")))
+        for i in range(0, 24)]
     print(time_range)
 
-    weekdays = ["", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
+    weekdays = ["         ", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
 
 
     
@@ -1005,6 +1006,9 @@ def test_schedule(request, userID=None):
             schedule_context['meetings_list'] = meetings_list
 
             print(meetings_list)
+            for i in meetings_list:
+                print(i.y_position())
+                print(i.length())
 
             comments_list = Comment.objects.filter(to_user=theUser)
             # print(comments_list)

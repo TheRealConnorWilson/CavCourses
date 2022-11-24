@@ -202,6 +202,31 @@ class Meetings(models.Model):
             return end_time_split[0] + ":" + end_time_split[1]
         return self.end_time
 
+    # for calculating positioning of classes in schedule
+    # def x_position(self):
+
+    HEADER_HEIGHT = 2
+
+    def y_position(self):
+        start_time = self.start_time_as_date_time().split(":")
+        hour = int(start_time[0]) * 60
+        minutes = int(start_time[1])
+
+        print(start_time, hour, minutes)
+
+        return hour + minutes + self.HEADER_HEIGHT
+    
+    def length(self):
+        start = self.y_position()
+        end_time = self.end_time_as_date_time().split(":")
+        hour = int(end_time[0]) * 60
+        minutes = int(end_time[1])
+        end = hour + minutes + self.HEADER_HEIGHT
+
+        # print(end, hour, minutes)
+
+        return end - start
+
     def __str__(self):
         return self.days + ": " + self.start_time + "-" + self.end_time + " @ " + self.facility_description
 
