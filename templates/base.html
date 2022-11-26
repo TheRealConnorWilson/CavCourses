@@ -49,18 +49,23 @@ https://stackoverflow.com/questions/30810028/how-to-display-image-from-google-ac
                   </li>
                   {% endif %}
                 </ul>
+
                 {% if user.is_authenticated %}
-                        <button class="btn me-2 btn-primary" type="button" role="button">
-                            <a href="/classlist/my_account/" style="color:inherit"> My Account </a>
-                        </button>
-                        <button class="btn me-2 btn-primary" type="button" role="button">
-                            <a href="/classlist/accounts/logout" style="color:inherit"> Logout </a>
-                        </button>
-                        <img src="{{user.avatar}}" class="rounded-circle" height="30" width="30">
+
+                  {% comment %} {% if user.is_authenticated %} {% endcomment %}
+                    <button class="btn me-2 btn-primary" type="button" role="button">
+                        <a href="/classlist/my_account/" style="color:inherit"> My Account </a>
+                    </button>
+                  {% comment %} {% endif %} {% endcomment %}
+                  <button class="btn me-2 btn-primary" type="button" role="button">
+                      <a href="/classlist/accounts/logout" style="color:inherit"> Logout </a>
+                  </button>
+                  <img src="{{user.avatar}}" class="rounded-circle" height="30" width="30">
+                  
                 {% else %}
-                        <button class="btn me-2 btn-primary" type="" color="#fff" role="button">
-                            <a href="/classlist/accounts/google/login/?process=login" style="color:inherit"> Login </a>
-                        </button>
+                  <button class="btn me-2 btn-primary" type="" color="#fff" role="button">
+                      <a href="/classlist/accounts/google/login/?process=login" style="color:inherit"> Login </a>
+                  </button>
                 {% endif %}
               </div>
             </div>
@@ -75,7 +80,7 @@ https://stackoverflow.com/questions/30810028/how-to-display-image-from-google-ac
     <body style="background-color: cornflowerblue"></body>
 
 
-    <footer class="bg-dark text-center text-white">
+    <footer class="bg-dark text-center text-white mt-5">
         <!-- Grid container -->
         <div class="container p-4">
     
@@ -92,6 +97,16 @@ https://stackoverflow.com/questions/30810028/how-to-display-image-from-google-ac
         <!-- Grid container -->
     
     </footer>
+
+
+    {% comment %} <footer>
+      <div class="container-fluid fixed-bottom bg-dark text-light mt-5 pt-5">
+          <div class="container text-center py-3">
+              <p style="font-size:14px">Made by Team A-27</p>
+              <p style="font-size:14px">Fall 2022 CS 3240</p>
+          </div>
+      </div>
+    </footer> {% endcomment %}
 
 </html>
 

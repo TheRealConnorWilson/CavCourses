@@ -166,7 +166,7 @@ AUTHENTICATION_BACKENDS = [
 ]
 
 SITE_ID = 1
-LOGIN_REDIRECT_URL = '/login/'
+LOGIN_REDIRECT_URL = '/classlist/home'
 
 # Additional configuration settings
 SOCIALACCOUNT_QUERY_EMAIL = True

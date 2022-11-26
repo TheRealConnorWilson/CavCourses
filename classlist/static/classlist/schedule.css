@@ -1,0 +1,57 @@
+/* 
+
+CITATIONS:
+https://css-tricks.com/snippets/css/complete-guide-grid/#prop-grid-template-columns-rows
+
+Got a lot of help with the CSS and HTML stuff from my brother
+
+
+*/
+
+/* :root{
+    --
+} */
+
+.grid-container {
+    height: 75vh;
+    overflow-y: scroll;
+    
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    grid-template-rows: auto repeat(calc(24 * 60), minmax(0, auto));
+    grid-column-gap: 1em;
+    background-color: rgb(128, 178, 216);
+    padding: 1em;
+    border: 1px solid black
+  }
+  
+  .sq {
+    border: 1px solid black;
+    background: lightblue;
+    z-index: 10; /* positive is in front, negative is behind */
+    grid-column: 2 / span 1;
+    font-size: 12px;
+    /* line-height: 100%; */
+  }
+  
+  .ts {
+    /* grid-column: 1 / span 6; */
+    border-bottom: 1px solid gray;
+    /* height: 50; */
+  }
+
+  .ts-header {
+    grid-row: 1;
+    grid-column: auto;
+  }
+  
+  
+  .ts-time {
+    /* grid-row: auto / span 60; */
+    grid-column: 1 / span 8;
+    height: 100px;
+  }
+

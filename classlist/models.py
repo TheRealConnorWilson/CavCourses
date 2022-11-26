@@ -172,8 +172,8 @@ class Section(models.Model):
         return str(self.section_id) + ": " + str(self.section_number) + " - " + self.component
 class Meetings(models.Model):
     days = models.CharField(max_length=100, blank=True) # MoWeFr, -
-    start_time = models.CharField(max_length=100, blank=True) # 17.00.00.000000-05:00
-    end_time = models.CharField(max_length=100, blank=True) # 18.15.00.000000-05:00
+    start_time = models.CharField(max_length=100, blank=False, default="00.00.00.000000-05:00") # 17.00.00.000000-05:00
+    end_time = models.CharField(max_length=100, blank=False, default="00.00.00.000000-05:00") # 18.15.00.000000-05:00
     facility_description = models.CharField(max_length=200, blank=True) # Olsson Hall 009
     section = models.ForeignKey(Section, on_delete=models.CASCADE, blank=True)
     
@@ -184,6 +184,18 @@ class Meetings(models.Model):
     wednesday = models.BooleanField(blank=True, default=False)
     thursday = models.BooleanField(blank=True, default=False)
     friday = models.BooleanField(blank=True, default=False)
+    saturday = models.BooleanField(blank=True, default=False)
+    sunday = models.BooleanField(blank=True, default=False)
+
+    def days_of_the_week(self):
+        days = [(2, self.monday), 
+                (3, self.tuesday), 
+                (4, self.wednesday), 
+                (5, self.thursday), 
+                (6, self.friday), 
+                (7, self.saturday), 
+                (8, self.sunday)]
+        return days
     
 
     # @classmethod
@@ -194,13 +206,38 @@ class Meetings(models.Model):
         if self.start_time != "":
             start_time_split = self.start_time.split('.')
             return start_time_split[0] + ":" + start_time_split[1]
-        return self.start_time
+        return "00:00"
 
     def end_time_as_date_time(self):
         if self.end_time != "":
             end_time_split = self.end_time.split('.')
             return end_time_split[0] + ":" + end_time_split[1]
-        return self.end_time
+        return "00:00"
+
+    # for calculating positioning of classes in schedule
+    # def x_position(self):
+
+    HEADER_HEIGHT = 2
+
+    def y_position(self):
+        start_time = self.start_time_as_date_time().split(":")
+        hour = int(start_time[0]) * 60
+        minutes = int(start_time[1])
+
+        print(start_time, hour, minutes)
+
+        return hour + minutes + self.HEADER_HEIGHT
+    
+    def length(self):
+        start = self.y_position()
+        end_time = self.end_time_as_date_time().split(":")
+        hour = int(end_time[0]) * 60
+        minutes = int(end_time[1])
+        end = hour + minutes + self.HEADER_HEIGHT
+
+        # print(end, hour, minutes)
+
+        return end - start
 
     def __str__(self):
         return self.days + ": " + self.start_time + "-" + self.end_time + " @ " + self.facility_description
