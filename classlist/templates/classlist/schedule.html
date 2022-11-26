@@ -34,69 +34,79 @@
 
                 <!-- adding different way of displaying classes -->
 
-            <div class="grid-container">
-                <div class="grid mx-5">
-                    {% comment %} 
-                    <div class="sq sq-2">Example</div>
-                    <div class="sq sq-3">Example</div>
-                    <div class="sq sq-4">Example</div>
-                    <div class="sq sq-5">Example</div> 
-                    {% endcomment %}
-                    <!-- <div class="sq sq-6" style="grid-column: {{dotw}}; grid-row: {{st}} / span {{dur}};">Example</div> -->
-                    
-                    {% comment %} <div class="ts ts-header">header</div> {% endcomment %}
-                    {% for day in weekdays %}
-                        <div class="ts ts-header">{{day}}</div>
+            {% if meetings_list %}
+                <div class="grid-container">
+                    <div class="grid mx-5">
+                        {% comment %} 
+                        <div class="sq sq-2">Example</div>
+                        <div class="sq sq-3">Example</div>
+                        <div class="sq sq-4">Example</div>
+                        <div class="sq sq-5">Example</div> 
+                        {% endcomment %}
+                        <!-- <div class="sq sq-6" style="grid-column: {{dotw}}; grid-row: {{st}} / span {{dur}};">Example</div> -->
+                        
+                        {% comment %} <div class="ts ts-header">header</div> {% endcomment %}
+                        {% for day in weekdays %}
+                            <div class="ts ts-header">{{day}}</div>
 
-                    {% endfor %}
-
-                    {% for index, time in time_range %}
-                        <div class="ts ts-time" style="grid-row: {{index}} / span 60 ;">{{time}}</div>
-                    {% endfor %}
-
-                    {% for meeting in meetings_list%}
-                        {% for column, value in meeting.days_of_the_week %}
-                            {% if value %}
-
-                                <div class="sq" style="grid-row: {{meeting.y_position}} / span {{meeting.length}}; grid-column: {{column}};">
-                                
-                                    {% for c in the_schedule.classRoster.all %}
-                                        {% if meeting.section.section_id == c.section_id %}
-
-                                                <div class="text-center">{{c.course.title}}</div>
-                                                <div class="text-center">
-                                                    {{meeting.start_time|make_list|slice:':2'|join:''}}:{{meeting.start_time|make_list|slice:'3:5'|join:''}} - {{meeting.end_time|make_list|slice:':2'|join:''}}:{{meeting.end_time|make_list|slice:'3:5'|join:''}} <br>
-                                                    {{meeting.facility_description}}
-                                                </div>
-                                                <div class="text-center">
-                                                    {% if user.email == request.user.email %}
-                                                    <form action="delete/{{c.section_id}}/" method="post">
-                                                        {% csrf_token %}
-                                                        
-                                                        <button type = 'submit' value = "{{c.section_id}}" class = 'btn-danger btn-small' size="small">
-
-                                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash3-fill" viewBox="0 0 16 16">
-                                                                <path d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5Zm-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5ZM4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06Zm6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528ZM8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5Z"/>
-                                                              </svg>
-
-                                                        </button>
-                                                    </form>
-                                                    {% endif %}
-                                                </div>
-                                            
-                                        
-                                        {% endif %}
-                                    {% endfor %}
-
-
-                                </div>
-
-                            {% endif %}
                         {% endfor %}
 
-                    {% endfor %}
+                        {% for index, time in time_range %}
+                            <div class="ts ts-time" style="grid-row: {{index}} / span 60 ;">{{time}}</div>
+                        {% endfor %}
+
+                        
+                            {% for meeting in meetings_list%}
+                                {% for column, value in meeting.days_of_the_week %}
+                                    {% if value %}
+
+                                        <div class="sq" style="grid-row: {{meeting.y_position}} / span {{meeting.length}}; grid-column: {{column}};">
+                                        
+                                            {% for c in the_schedule.classRoster.all %}
+                                                {% if meeting.section.section_id == c.section_id %}
+
+                                                        <div class="text-center">{{c.course.title}}</div>
+                                                        <div class="text-center">
+                                                            {{meeting.start_time|make_list|slice:':2'|join:''}}:{{meeting.start_time|make_list|slice:'3:5'|join:''}} - {{meeting.end_time|make_list|slice:':2'|join:''}}:{{meeting.end_time|make_list|slice:'3:5'|join:''}} <br>
+                                                            {{meeting.facility_description}}
+                                                        </div>
+                                                        <div class="text-center">
+                                                            {% if user.email == request.user.email %}
+                                                            <form action="delete/{{c.section_id}}/" method="post">
+                                                                {% csrf_token %}
+                                                                
+                                                                <button type = 'submit' value = "{{c.section_id}}" class = 'btn-danger btn-small' size="small">
+
+                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash3-fill" viewBox="0 0 16 16">
+                                                                        <path d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5Zm-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5ZM4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06Zm6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528ZM8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5Z"/>
+                                                                    </svg>
+
+                                                                </button>
+                                                            </form>
+                                                            {% endif %}
+                                                        </div>
+                                                    
+                                                
+                                                {% endif %}
+                                            {% endfor %}
+
+
+                                        </div>
+
+                                    {% endif %}
+                                {% endfor %}    
+                            {% endfor %}
+                        
+                        
+                    </div>
                 </div>
-            </div>
+            {% else %}
+                {% if user.email == request.user.email %}
+                    <p style="font-size: large;" class="text-center">No classes have been added to your schedule yet.</p>
+                {% else %}
+                    <h2 style="font-size: large;" class="text-center">No classes have been added to {{user.USERNAME_FIELD}}'s schedule yet.</h2>
+                {% endif %}
+            {% endif %}
 
             {% if the_schedule %}
                 <div class="container text-center">
@@ -161,12 +171,16 @@
                                 </div>
                             </div>
                         {% else %}
-                            <p> No comments exist for this user's schedule. </p>
+                            {% if user.email == request.user.email %}
+                                <p style="font-size: large;" class="text-center mt-5">No comments have been left on your schedule yet.</p>
+                            {% else %}
+                                <h2 style="font-size: large;" class="text-center mt-5">No comments have been left on {{user.USERNAME_FIELD}}'s schedule yet.</h2>
+                            {% endif %}
                         {% endif %}
-
+                    </div>
                     <p>
                         <a class="btn btn-primary" href='/classlist/schedule/{{user.email}}/add_comment'>
-                        add comment
+                        Add comment
                         </a>
                     </p> 
                 </div>

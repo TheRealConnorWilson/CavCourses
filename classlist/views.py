@@ -1006,7 +1006,10 @@ def schedule_view(request, userID=None):
     if Account.objects.filter(id=userID):
         theUser = Account.objects.get(id=userID)
 
-        # mnow atch our user to the schedule's owner (foreign key!)
+        if not Schedule.objects.filter(scheduleUser=theUser).exists():
+            # makes a Schedule for the user if they don't already have one
+            schedule_obj = Schedule.objects.create(scheduleUser=theUser)
+            schedule_obj.save()
 
         # if sched exists, pass its context onto schedule template to see it
         if Schedule.objects.filter(scheduleUser=theUser).exists():
@@ -1065,3 +1068,4 @@ def schedule_view(request, userID=None):
 
     else:
         return render(request, 'classlist/schedule.html', {})
+    print("hi")

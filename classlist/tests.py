@@ -516,7 +516,7 @@ class TestSchedule(TestCase):  # Johnny's Tests
         request = self.factory.get('/classlist/schedule/')
         request.user = self.u1
         response = schedule_view(request)
-        self.assertEqual(len(Schedule.objects.all()), 0)
+        self.assertEqual(len(Schedule.objects.all()), 1) # tweaked because now a Schedule will be created to be displayed (avoid error)
 
     def test_create_schedule(self):
         schedule_obj = Schedule(scheduleUser=self.a1)
