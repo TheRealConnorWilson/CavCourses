@@ -41,7 +41,11 @@ URL: https://mdbootstrap.com/docs/standard/extended/profiles/
                                 </div>
                                 <div class="col-6 mb-3">
                                     <h6>Year</h6>
-                                    <p class="text-muted">{{user.year}}</p>
+                                    {% if user.year == 5 %}
+                                        <p class="text-muted">Other</p>
+                                    {% else %}
+                                        <p class="text-muted">{{user.year}}</p>
+                                    {% endif %}
                                 </div>
                             </div>
                         </div>
@@ -64,7 +68,12 @@ URL: https://mdbootstrap.com/docs/standard/extended/profiles/
                                         <tr>
                                             <td>{{other_user.USERNAME_FIELD}}</td>
                                             <td>{{other_user.major}}</td>
-                                            <td>{{other_user.year}}</td>
+                                            {% comment %} <td>{{other_user.year}}</td> {% endcomment %}
+                                            {% if other_user.year == 5 %}
+                                                <td class="text-muted">Other</td>
+                                            {% else %}
+                                                <td class="text-muted">{{other_user.year}}</td>
+                                            {% endif %}
                                             <td><a href="/classlist/schedule/{{other_user.id}}/">{{other_user.USERNAME_FIELD}}'s schedule</a></td>
                                             {% comment %} <td><a href="/classlist/schedule/{{other_user.id}}/comments">(comments)</a></td> {% endcomment %}
                                             <td><a href="/remove_friend/{{other_user.id}}/">Remove Friend</a></td>
@@ -72,7 +81,7 @@ URL: https://mdbootstrap.com/docs/standard/extended/profiles/
                                     {% endfor %}
                                 </table>
                             {% else %}
-                                <p>No friends found. You are a lonely wumpus... :( </p>
+                                <p> No friends found. You are a lonely wumpus... :( </p>
                             {% endif %}
                         </div>
                         <!-- Friend Requests -->
