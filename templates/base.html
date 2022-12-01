@@ -51,21 +51,20 @@ https://stackoverflow.com/questions/30810028/how-to-display-image-from-google-ac
                 </ul>
 
                 {% if user.is_authenticated %}
-
-                  {% comment %} {% if user.is_authenticated %} {% endcomment %}
+                  <a href="/classlist/my_account/" style="color:inherit"> 
+                    <button class="btn me-2 btn-primary" type="button" role="button"> My Account </button>
+                  </a>
+                  <a href="/classlist/accounts/logout" style="color:inherit">
                     <button class="btn me-2 btn-primary" type="button" role="button">
-                        <a href="/classlist/my_account/" style="color:inherit"> My Account </a>
-                    </button>
-                  {% comment %} {% endif %} {% endcomment %}
-                  <button class="btn me-2 btn-primary" type="button" role="button">
-                      <a href="/classlist/accounts/logout" style="color:inherit"> Logout </a>
-                  </button>
+                       Logout </button>
+                    </a>
                   <img src="{{user.avatar}}" class="rounded-circle" height="30" width="30">
                   
                 {% else %}
-                  <button class="btn me-2 btn-primary" type="" color="#fff" role="button">
-                      <a href="/classlist/accounts/google/login/?process=login" style="color:inherit"> Login </a>
-                  </button>
+                  
+                  <a href="/classlist/accounts/google/login/?process=login" style="color:inherit">
+                    <button class="btn me-2 btn-primary" type="" color="#fff" role="button"> Login </button>
+                  </a>
                 {% endif %}
               </div>
             </div>
