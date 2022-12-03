@@ -847,6 +847,8 @@ def advanced_search2(request):
                 if title in (each.description).lower():
                     all_courses.append(each)
     
+    all_courses.sort()
+
     if request.user.is_authenticated:
         dept_context = {"dept" : dept,
                     "dept_abbr" : dept.dept_abbr,

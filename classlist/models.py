@@ -149,6 +149,10 @@ class Course(models.Model):
 
     def __str__(self):
         return self.title # + str(self.catalog_number)
+
+    def __lt__(self, other):
+        return self.title < other.title
+
 class Section(models.Model):
     # additional model fields so that a section knows what course it belongs to
     course_dept = models.CharField(max_length = 100, blank=True)
