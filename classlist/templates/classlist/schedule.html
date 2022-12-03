@@ -66,6 +66,7 @@
                                                 {% if meeting.section.section_id == c.section_id %}
 
                                                         <div class="text-center">{{c.course.title}}</div>
+                                                        <div class="text-center">{{meeting.section.component}}</div>
                                                         <div class="text-center">
                                                             {{meeting.start_time|make_list|slice:':2'|join:''}}:{{meeting.start_time|make_list|slice:'3:5'|join:''}} - {{meeting.end_time|make_list|slice:':2'|join:''}}:{{meeting.end_time|make_list|slice:'3:5'|join:''}} <br>
                                                             {{meeting.facility_description}}
