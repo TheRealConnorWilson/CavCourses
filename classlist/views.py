@@ -674,7 +674,6 @@ def schedule_add(request, section_id):
                 
                 # for each class in our schedule, if one isn't compatible, we don't add the class
                 for s in schedule_obj.classRoster.all():
-                    
 
                     # need to find associated meeting object with section object
                     meetings = Meetings.objects.filter(section_id=s.section_id)
@@ -686,7 +685,12 @@ def schedule_add(request, section_id):
                     # shortcut to check timedate validity - see Activity Scheduling from DSA2
                     # https://stackoverflow.com/questions/325933/determine-whether-two-date-ranges-overlap
                     for meetingToAdd in meetingsToAdd:
+
                         for m in meetings:
+
+                            time_overlap = False
+                            conflict = False
+
                             if (meetingToAdd.start_time <= m.end_time) and (m.start_time <= meetingToAdd.end_time):
                                 time_overlap = True
                                 print("POTENTIAL CONFLICT -- start time:", meetingToAdd, m)
