@@ -678,6 +678,8 @@ def schedule_add(request, section_id):
 
                     # need to find associated meeting object with section object
                     meetings = Meetings.objects.filter(section_id=s.section_id)
+
+                    print(meetings)
                     
                     # print(m)
                     
@@ -687,31 +689,41 @@ def schedule_add(request, section_id):
                         for m in meetings:
                             if (meetingToAdd.start_time <= m.end_time) and (m.start_time <= meetingToAdd.end_time):
                                 time_overlap = True
+                                print("POTENTIAL CONFLICT -- start time:", meetingToAdd, m)
                             
                             elif (m.start_time <= meetingToAdd.end_time) and (meetingToAdd.start_time <= m.end_time):
                                 time_overlap = True
+                                print("POTENTIAL CONFLICT -- end time:", meetingToAdd, m)
                                 
                             #check days overlap as well?
                             
                             if time_overlap: # only need to check if days overlap if time overlaps
                                 if m.monday and m.monday == meetingToAdd.monday:
                                     conflict = True
+                                    print("POTENTIAL CONFLICT -- monday:", meetingToAdd, m)
                                 if m.tuesday and m.tuesday == meetingToAdd.tuesday:
                                     conflict = True
+                                    print("POTENTIAL CONFLICT -- tue:", meetingToAdd, m)
                                 if m.wednesday and m.wednesday == meetingToAdd.wednesday:
                                     conflict = True
+                                    print("POTENTIAL CONFLICT -- wed:", meetingToAdd, m)
                                 if m.thursday and m.thursday == meetingToAdd.thursday:
                                     conflict = True
+                                    print("POTENTIAL CONFLICT -- thu:", meetingToAdd, m)
                                 if m.friday and m.friday == meetingToAdd.friday:
                                     conflict = True
+                                    print("POTENTIAL CONFLICT -- fri:", meetingToAdd, m)
                                 if m.saturday and m.saturday == meetingToAdd.saturday:
                                     conflict = True
+                                    print("POTENTIAL CONFLICT -- sat:", meetingToAdd, m)
                                 if m.sunday and m.sunday == meetingToAdd.sunday:
                                     conflict = True
+                                    print("POTENTIAL CONFLICT -- sunday:", meetingToAdd, m)
                             
 
                             if conflict:
                                 valid = False
+                                print("CONFLICT FOUND:", meetingToAdd, m)
                                 break
 
                 # if we can't add class, don't, otherwise do add it
