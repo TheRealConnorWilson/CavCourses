@@ -19,7 +19,7 @@ URL: https://mdbootstrap.com/docs/standard/content-styles/dividers/
 <!-- <body style="background-color: rgb(28, 148, 148);"> -->
     
 <div class="text-center" style="color:white">
-  <h1>{{dept_abbr}} Classes</h1>
+  <h1>{{dept_abbr}} Courses</h1>
   <br>
 </div>
 
@@ -41,8 +41,8 @@ URL: https://mdbootstrap.com/docs/standard/content-styles/dividers/
                                     <button type="button" class="btn btn-secondary w-100" data-bs-toggle="collapse" data-bs-target="#card{{c.id}}">Section Information</button>
                                     {% for section in c.section_set.all %}
                                         <div class="card collapse" id="card{{c.id}}">
-                                            <button type="button" class="btn btn-dark" data-bs-toggle="collapse" data-bs-target="#section{{section.section_number}}">{{section.section_number}} ({{section.component}})</button>
-                                            <div class="card collapse" id="section{{section.section_number}}">
+                                            <button type="button" class="btn btn-dark" data-bs-toggle="collapse" data-bs-target="#section{{section.section_id}}">{{section.section_number}} ({{section.component}})</button>
+                                            <div class="card collapse" id="section{{section.section_id}}">
                                             <ul class="list-group list-group-flush">
                                                 <li class="list-group-item">
                                                     {% if section.topic == "" %}
