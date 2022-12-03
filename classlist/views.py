@@ -888,7 +888,7 @@ def advanced_search2(request):
         title = form.cleaned_data.get('searched_title')
         if title != "":
             for course in Course.objects.filter(department=dept):
-                if title in (course.description).lower():
+                if title.lower() in (course.description).lower():
                     title_list.append(course)
     
         # generating classes to display
