@@ -20,8 +20,11 @@
       {% csrf_token %}
       <!-- {{ form }} -->
       {% for field in form %}
-        <h5>{{field.label}} {{field}}</h5>
-        <!-- <h5>{{field}}</h5> -->
+      <h4 style="display:inline"> {{field.label}} 
+        <h6 style="display:inline;color:rgb(205, 25, 25)">{{field.help_text}}</h6>
+        {{field}} 
+      </h4> 
+      <br>
       {% endfor %}
       <input type="submit" value="Search">
       <input type="reset" value="Clear">
