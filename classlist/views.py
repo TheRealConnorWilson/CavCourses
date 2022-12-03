@@ -855,6 +855,7 @@ def advanced_search2(request):
     else:
         form = AdvancedSearchForm()
     
+    no_match = False
     dept_abbr = ""
     dept = ""
     all_dept_classes = []
@@ -873,7 +874,7 @@ def advanced_search2(request):
     if form.is_valid():
         for course in Course.objects.filter(department=dept):
             all_dept_classes.append(course)
-    
+        
         catalog_list = []
         title_list = []
         
@@ -911,18 +912,23 @@ def advanced_search2(request):
             for each in catalog_list:
                 if title in (each.description).lower():
                     all_courses.append(each)
+
+        if len(all_courses) == 0:
+            no_match = True
     
     if request.user.is_authenticated:
         dept_context = {"dept" : dept,
                     "dept_abbr" : dept.dept_abbr,
                     "dept_courses" : all_courses,
                     'user' : Account.objects.get(email=request.user.email),
+                    "no_match" : no_match,
                     "form" : form,
                     }
     else:
         dept_context = {"dept" : dept,
                         "dept_abbr" : dept.dept_abbr,
                         "dept_courses" : all_courses,
+                        "no_match" : no_match,
                         "form": form,
                         }
          
