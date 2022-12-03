@@ -40,7 +40,7 @@
             {% comment %} <div class="grid-container"> {% endcomment %}
             <div class="grid-other mx-5">
                 <div class="d-inline-flex p-2 mx-auto ms-3 me-3">
-                    <div class="text" style="vertical-align: middle; color: #fff; font-size: 150%;">Other:</div>
+                    <div class="text" style="vertical-align: middle; color: #000; font-size: 150%;">Other:</div>
                     {% for meeting in other_meetings %}
                         {% for c in the_schedule.classRoster.all %}
                             {% if meeting.section.section_id == c.section_id %}
