@@ -46,7 +46,8 @@
                             {% if meeting.section.section_id == c.section_id %}
                                 
                                     <div class="sq-other m-1" size="5em">
-                                        <div class="text-center">{{c.course.title}}</div>
+                                        {% comment %} <div class="text-center">{{c.course.title}}</div> {% endcomment %}
+                                        <div class="text-center">{{c.course.title}} ({{meeting.section.component}})</div>
                                         <div class="text-center">
                                             {% comment %} {{meeting.start_time|make_list|slice:':2'|join:''}}:{{meeting.start_time|make_list|slice:'3:5'|join:''}} - {{meeting.end_time|make_list|slice:':2'|join:''}}:{{meeting.end_time|make_list|slice:'3:5'|join:''}} <br> {% endcomment %}
                                             <div>N/A</div>
@@ -114,8 +115,8 @@
                                             {% for c in the_schedule.classRoster.all %}
                                                 {% if meeting.section.section_id == c.section_id %}
 
-                                                        <div class="text-center">{{c.course.title}}</div>
-                                                        <div class="text-center">{{meeting.section.component}}</div>
+                                                        <div class="text-center">{{c.course.title}} ({{meeting.section.component}})</div>
+                                                        {% comment %} <div class="text-center">{{meeting.section.component}}</div> {% endcomment %}
                                                         <div class="text-center">
                                                             {{meeting.start_time|make_list|slice:':2'|join:''}}:{{meeting.start_time|make_list|slice:'3:5'|join:''}} - {{meeting.end_time|make_list|slice:':2'|join:''}}:{{meeting.end_time|make_list|slice:'3:5'|join:''}} <br>
                                                             {{meeting.facility_description}}
