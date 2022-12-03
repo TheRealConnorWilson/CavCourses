@@ -988,16 +988,27 @@ def schedule_view(request, userID=None):
             schedule_context['user'] = theUser
     
             # find the earliest start time and latest end time
-            earliest = 2300
-            latest = 0000
+            earliest = 900
+            latest = 1700
+            other_meetings = []
             for m in meetings_list:
-                start = int(m.start_time_as_date_time().replace(":", ""))
-                if start < earliest:
-                    earliest = start
+
+                if m.start_time_as_date_time() == "00:00" and m.end_time_as_date_time() == "00:00": # classes that are "other"
+                    other_meetings.append(m)
                 
-                end = int(m.end_time_as_date_time().replace(":", ""))
-                if end > latest:
-                    latest = end
+                else:
+                    start = int(m.start_time_as_date_time().replace(":", ""))
+
+                    if start < earliest:
+                        earliest = start
+                    
+                    end = int(m.end_time_as_date_time().replace(":", ""))
+                    if end > latest:
+                        latest = end
+
+            for meeting in other_meetings:
+                if meeting in meetings_list:
+                    meetings_list.remove(meeting)
 
             earliest = earliest // 100
             latest = latest // 100
@@ -1006,6 +1017,7 @@ def schedule_view(request, userID=None):
 
             schedule_context['time_range'] = time_range
             schedule_context['weekdays'] = weekdays
+            schedule_context['other_meetings'] = other_meetings
             
             return render(request, 'classlist/schedule.html', schedule_context)
 
