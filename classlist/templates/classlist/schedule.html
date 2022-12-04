@@ -31,12 +31,16 @@
             {% if valid == False %}
             <div class="alert alert-danger alert-dismissible fade show" role=""alert>
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="close"></button>
-                Class could not be added due to conflict in your schedule
+                {% if section.course == conflict.course %}
+                {{section.course}} ({{section.course.description}}) is already in your schedule.
+                {% else %}
+                {{section.course}} ({{section.course.description}}) could not be added due to a conflict in your schedule with {{conflict.course}} ({{conflict.course.description}}).
+                {% endif %}
             </div>
             {% elif valid == True %}
             <div class="alert alert-success alert-dismissible fade show" role=""alert>
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="close"></button>
-                Class successfully added to schedule!
+                {{section.course}} ({{section.course.description}}) successfully added to schedule!
             </div>
             {% endif %} 
 

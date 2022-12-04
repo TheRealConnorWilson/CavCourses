@@ -665,6 +665,7 @@ def schedule_add(request, section_id):
                 
                 time_overlap = False
                 conflict = False
+                conflicting = None
                 
                 # for each class in our schedule, if one isn't compatible, we don't add the class
                 for s in schedule_obj.classRoster.all():
@@ -679,6 +680,7 @@ def schedule_add(request, section_id):
                         for m in meetings:
                             if m.section == meetingToAdd.section:
                                 valid = False
+                                conflicting = m.section
                                 print("repeat class")
                                 break
 
@@ -722,6 +724,7 @@ def schedule_add(request, section_id):
                             if conflict:
                                 valid = False
                                 print("CONFLICT FOUND:", meetingToAdd, m)
+                                conflicting = m.section
                                 break
 
                 # if we can't add class, don't, otherwise do add it
@@ -745,10 +748,10 @@ def schedule_add(request, section_id):
             # check if class was successfully added or not
             # print(valid)
             if valid:
-                return redirect('/schedule/valid_add')
+                return redirect('/schedule/add/valid/' + str(section_id))
             else:
                 # return render(request, 'classlist/schedule.html', schedule_context)
-                return redirect('/schedule/invalid_add')
+                return redirect('/schedule/add/invalid/' + str(section_id) + '/' + str(conflicting.section_id))
                 # HttpResponseRedirect(reverse('schedule', kwargs={ 'valid': valid}))
             
 
@@ -770,7 +773,8 @@ def schedule_add(request, section_id):
             # print(schedule_obj)
     
             # return render(request, 'classlist/schedule.html', schedule_context)
-            return redirect('/schedule/valid')
+            # return redirect('/schedule/valid')
+            return redirect('/schedule/add/valid/' + str(section_id))
 
     # if we didn't add anything, go home
     else:
@@ -1050,7 +1054,7 @@ def schedule_view(request, userID=None):
     print("hi")
 
 
-def schedule_view_valid_add(request, userID=None):
+def schedule_view_valid_add(request, userID=None, section_id=None):
 
     time_range = [
         (i*60+2,((str((i - 1) % 12 + 1) if len(str((i - 1) % 12 + 1)) >= 2 
@@ -1142,6 +1146,7 @@ def schedule_view_valid_add(request, userID=None):
             schedule_context['weekdays'] = weekdays
             schedule_context['other_meetings'] = other_meetings
             schedule_context['valid'] = True
+            schedule_context['section'] = Section.objects.get(section_id = section_id)
             
             return render(request, 'classlist/schedule.html', schedule_context)
 
@@ -1150,7 +1155,7 @@ def schedule_view_valid_add(request, userID=None):
     print("hi")
 
 
-def schedule_view_invalid_add(request, userID=None):
+def schedule_view_invalid_add(request, userID=None, section_id=None, conflict_id=None):
 
     time_range = [
         (i*60+2,((str((i - 1) % 12 + 1) if len(str((i - 1) % 12 + 1)) >= 2 
@@ -1238,10 +1243,13 @@ def schedule_view_invalid_add(request, userID=None):
             time_range = time_range[earliest:latest+ 1]
             print(time_range)
 
+            
             schedule_context['time_range'] = time_range
             schedule_context['weekdays'] = weekdays
             schedule_context['other_meetings'] = other_meetings
             schedule_context['valid'] = False
+            schedule_context['section'] = Section.objects.get(section_id = section_id)
+            schedule_context['conflict'] = Section.objects.get(section_id = conflict_id)
             
             return render(request, 'classlist/schedule.html', schedule_context)
 
