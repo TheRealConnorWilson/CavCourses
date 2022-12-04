@@ -149,6 +149,10 @@ class Course(models.Model):
 
     def __str__(self):
         return self.title # + str(self.catalog_number)
+
+    def __lt__(self, other):
+        return self.title < other.title
+
 class Section(models.Model):
     # additional model fields so that a section knows what course it belongs to
     course_dept = models.CharField(max_length = 100, blank=True)
@@ -170,6 +174,7 @@ class Section(models.Model):
 
     def __str__(self):
         return str(self.section_id) + ": " + str(self.section_number) + " - " + self.component
+        
 class Meetings(models.Model):
     days = models.CharField(max_length=100, blank=True) # MoWeFr, -
     start_time = models.CharField(max_length=100, blank=False, default="00.00.00.000000-05:00") # 17.00.00.000000-05:00

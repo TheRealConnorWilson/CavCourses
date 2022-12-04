@@ -133,8 +133,8 @@ def get_depts(request):
     'ENCW': 'Creative Writing', 'ENGL': 'English-Literature', 'ENGR': 'Engineering', 'ENTP': 'Entrepreneurship', 'ENWR': 'Writing and Rhetoric', 'ESL': 'English as a Second Language', 'ETP': 'Enviromental Thought and Practice', 'EURS': 'European Studies', 
     'EVAT': 'Environmental Sciences-Atmospheric Sciences', 'EVEC': 'Environmental Sciences-Ecology', 'EVGE': 'Environmental Sciences-Geosciences', 'EVHY': 'Environmental Sciences-Hydrology', 'EVSC': 'Environmental Sciences', 'FREN': 'French', 'GBAC': 'Grad Business Analytics Comm.', 
     'GBUS': 'Graduate Business', 'GCCS': 'Global Commerce in Culture and Society', 'GCNL': 'Clinical Nurse Leader', 'GCOM': 'Graduate Commerce', 'GDS': 'Global Development Studies', 'GERM': 'German', 'GETR': 'German in Translation', 'GHSS': 'Grad Humanities & Social Sci', 'GNUR': 'Graduate Nursing', 
-    'GREE': 'Greek', 'GSAS': 'Graduate Arts & Sciences', 'GSCI': '', 'GSGS': 'Global Studies-Global Studies', 'GSMS': 'GS-Middle East and South Asia', 'GSSJ': 'Global Studies-Security and Justice', 'GSVS': 'Global Studies-Environments and Sustainability', 'HBIO': 'Human Biology', 'HEBR': 
-    'Hebrew', 'HHE': '', 'HIAF': 'History-African History', 'HIEA': 'History-East Asian History', 'HIEU': 'History-European History', 'HILA': 'History-Latin American History', 'HIME': 'History-Middle Eastern History', 'HIND': 'Hindi', 'HISA': 'History-South Asian History', 
+    'GREE': 'Greek', 'GSAS': 'Graduate Arts & Sciences', 'GSCI': 'Graduate Biological and Physical Sciences', 'GSGS': 'Global Studies-Global Studies', 'GSMS': 'GS-Middle East and South Asia', 'GSSJ': 'Global Studies-Security and Justice', 'GSVS': 'Global Studies-Environments and Sustainability', 'HBIO': 'Human Biology', 'HEBR': 
+    'Hebrew', 'HHE': 'Health, Humanities & Ethics', 'HIAF': 'History-African History', 'HIEA': 'History-East Asian History', 'HIEU': 'History-European History', 'HILA': 'History-Latin American History', 'HIME': 'History-Middle Eastern History', 'HIND': 'Hindi', 'HISA': 'History-South Asian History', 
     'HIST': 'History-General History', 'HIUS': 'History-United States History', 'HR': 'Human Resources', 'HSCI': 'College Science Scholars Seminar', 'IMP': 'Interdisciplinary Thesis', 'INST': 'Interdisciplinary Studies', 'ISBU': 'Interdisciplinary Studies-Business', 
     'ISHU': 'Interdisiplinary Studies-Humanities', 'ISIN': 'Interdisciplinary Studies-Individualized Other', 'ISLS': 'Interdisciplinary Studies-Liberal Studies Seminar', 'ISSS': 'Interdisciplinary Studies-Social Sciences', 'IT': 'Informational Technology', 
     'ITAL': 'Italian', 'ITTR': 'Italian in Translation', 'JAPN': 'Japanese', 'JPTR': 'Japanese in Translation', 'KICH': "Maya K'iche", 'KINE': 'Kinesiology', 'KLPA': 'Lifetime Physical Activity', 'KOR': 'Korean', 'LAR': 'Landscape Architecture', 
@@ -145,10 +145,10 @@ def get_depts(request):
     'PC': 'Procurement and Contracts Management', 'PERS': 'Persian', 'PETR': 'Persian in Translation', 'PHAR': 'Pharmacology', 'PHIL': 'Philosophy', 'PHS': 'Public Health Sciences', 'PHY': 'Physiology', 'PHYS': 'Physics', 'PLAC': 'Planning Application', 
     'PLAD': 'Politics-Departmental Seminar', 'PLAN': 'Urban and Environmental Planning', 'PLAP': 'Politics-American Politics', 'PLCP': 'Politics-Comparative Politics', 'PLIR': 'Politics-International Relations', 'PLPT': 'Politics-Political Theory', 
     'POL': 'Polish', 'PORT': 'Portuguese', 'POTR': 'Portugese in Translation', 'PPL': 'Political Philosophy, Policy, and Law', 'PSHM': 'PS-Health Sciences Management', 'PSLP': 'PS-Leadership Program', 'PSPA': 'Professional Studies-Public Administration', 
-    'PSPM': 'Professional Studies-Project Management', 'PSPS': '', 'PST': 'Political and Social Thought', 'PSYC': 'Psychology', 'RELA': 'Religion-African Religions', 'RELB': 'Religion-Buddhism', 'RELC': 'Religion-Christianity', 'RELG': 'Religion-General Religion', 
+    'PSPM': 'Professional Studies-Project Management', 'PSPS': 'Professional Studies - Public Safety', 'PST': 'Political and Social Thought', 'PSYC': 'Psychology', 'RELA': 'Religion-African Religions', 'RELB': 'Religion-Buddhism', 'RELC': 'Religion-Christianity', 'RELG': 'Religion-General Religion', 
     'RELH': 'Religion-Hinduism', 'RELI': 'Religion-Islam', 'RELJ': 'Religion-Judaism', 'RELS': 'Religion-Special Topic', 'RUSS': 'Russian', 'RUTR': 'Russian in Translation', 'SANS': 'Sanskrit', 'SARC': 'Architecture School', 'SAST': 'South Asian Studies', 
     'SATR': 'South Asian Literature in Translation', 'SEC': 'Cyber Security Analysis', 'SLAV': 'Slavic', 'SLTR': 'Slavic in Translation', 'SOC': 'Sociology', 'SPAN': 'Spanish', 'STAT': 'Statistics', 'STS': 'Science, Technology, and Society', 'SWAH': 'Swahili', 
-    'SYS': 'Systems & Information Engineering', 'TURK': 'Turkish', 'UD': '', 'UNST': 'University Studies', 'URDU': 'Urdu', 'USEM': 'University Seminar', 'WGS': 'Women and Gender Studies'}
+    'SYS': 'Systems & Information Engineering', 'TURK': 'Turkish', 'UD': 'Urban Design', 'UNST': 'University Studies', 'URDU': 'Urdu', 'USEM': 'University Seminar', 'WGS': 'Women and Gender Studies'}
 
 
     a_depts = []
@@ -633,71 +633,6 @@ def remove_friend(request, requestID):
 
     return redirect('/classlist/my_account/')
 
-# this method just displays schedule
-# def schedule_view(request, userID=None):
-    
-#     # ISSUE WITH THIS: returning 2 users??
-#     # find our user
-#     # theUser = Account.objects.get(USERNAME_FIELD = request.user.username)
-#     # if theUser:
-#         # theUser = theUser[0]
-        
-#     if userID is None:
-#         # userID = request.user.email
-#         if Account.objects.filter(email=request.user.email).exists():
-#             userID = Account.objects.get(email=request.user.email).id
-#         else:
-#             return HttpResponse('No associated schedule found!')
-
-        
-#     # TODO change to use parameter user instead to make generic
-#     if Account.objects.filter(id=userID):
-#         theUser = Account.objects.get(id=userID)
-
-#         # mnow atch our user to the schedule's owner (foreign key!)
-
-#         # if sched exists, pass its context onto schedule template to see it
-#         if Schedule.objects.filter(scheduleUser=theUser).exists():
-
-#             schedule_obj = Schedule.objects.get(scheduleUser=theUser)
-#             schedule_context = {'the_schedule' : schedule_obj}
-#             # print(schedule_obj)
-            
-#             meetings_list = []
-
-#             for section in schedule_obj.classRoster.all():
-#                 meetings_for_section = Meetings.objects.filter(section=section)
-#                 for meeting in meetings_for_section:
-#                     meetings_list.append(meeting)
-                
-#             # print(meetings_list)
-#             # print(meetings_list)
-#             # print(schedule_obj)
-            
-#             schedule_context['meetings_list'] = meetings_list
-#             comments_list = Comment.objects.filter(to_user=theUser)
-#             # print(comments_list)
-#             # print(comments_list)
-        
-            
-#             schedule_context['comments_list'] = comments_list
-#             schedule_context['user'] = theUser
-            
-#             return render(request, 'classlist/schedule.html', schedule_context)
-
-#         # else:
-#         #     return render(request, 'classlist/schedule.html', {})
-
-#         # if sched doesn't exist, create it and pass its context onto schedule template
-#         # else:
-#         #     schedule_obj = Schedule(scheduleUser=theUser)
-#         #     schedule_obj.save()
-
-#         #     schedule_context = {'the_schedule' : schedule_obj}
-            
-#         #     return render(request, 'classlist/schedule.html', schedule_context)
-#     else:
-#         return render(request, 'classlist/schedule.html', {})
 
 # this method adds to the schedule
 def schedule_add(request, section_id):
@@ -739,44 +674,60 @@ def schedule_add(request, section_id):
                 
                 # for each class in our schedule, if one isn't compatible, we don't add the class
                 for s in schedule_obj.classRoster.all():
-                    
 
                     # need to find associated meeting object with section object
                     meetings = Meetings.objects.filter(section_id=s.section_id)
+
+                    print(meetings)
                     
                     # print(m)
                     
                     # shortcut to check timedate validity - see Activity Scheduling from DSA2
                     # https://stackoverflow.com/questions/325933/determine-whether-two-date-ranges-overlap
                     for meetingToAdd in meetingsToAdd:
+
                         for m in meetings:
+
+                            time_overlap = False
+                            conflict = False
+
                             if (meetingToAdd.start_time <= m.end_time) and (m.start_time <= meetingToAdd.end_time):
                                 time_overlap = True
+                                print("POTENTIAL CONFLICT -- start time:", meetingToAdd, m)
                             
                             elif (m.start_time <= meetingToAdd.end_time) and (meetingToAdd.start_time <= m.end_time):
                                 time_overlap = True
+                                print("POTENTIAL CONFLICT -- end time:", meetingToAdd, m)
                                 
                             #check days overlap as well?
                             
                             if time_overlap: # only need to check if days overlap if time overlaps
                                 if m.monday and m.monday == meetingToAdd.monday:
                                     conflict = True
+                                    print("POTENTIAL CONFLICT -- monday:", meetingToAdd, m)
                                 if m.tuesday and m.tuesday == meetingToAdd.tuesday:
                                     conflict = True
+                                    print("POTENTIAL CONFLICT -- tue:", meetingToAdd, m)
                                 if m.wednesday and m.wednesday == meetingToAdd.wednesday:
                                     conflict = True
+                                    print("POTENTIAL CONFLICT -- wed:", meetingToAdd, m)
                                 if m.thursday and m.thursday == meetingToAdd.thursday:
                                     conflict = True
+                                    print("POTENTIAL CONFLICT -- thu:", meetingToAdd, m)
                                 if m.friday and m.friday == meetingToAdd.friday:
                                     conflict = True
+                                    print("POTENTIAL CONFLICT -- fri:", meetingToAdd, m)
                                 if m.saturday and m.saturday == meetingToAdd.saturday:
                                     conflict = True
+                                    print("POTENTIAL CONFLICT -- sat:", meetingToAdd, m)
                                 if m.sunday and m.sunday == meetingToAdd.sunday:
                                     conflict = True
+                                    print("POTENTIAL CONFLICT -- sunday:", meetingToAdd, m)
                             
 
                             if conflict:
                                 valid = False
+                                print("CONFLICT FOUND:", meetingToAdd, m)
                                 break
 
                 # if we can't add class, don't, otherwise do add it
@@ -923,6 +874,8 @@ def advanced_search2(request):
         if len(all_courses) == 0:
             no_match = True
     
+    all_courses.sort()
+
     if request.user.is_authenticated:
         dept_context = {"dept" : dept,
                     "dept_abbr" : dept.dept_abbr,
@@ -1058,16 +1011,27 @@ def schedule_view(request, userID=None):
             schedule_context['user'] = theUser
     
             # find the earliest start time and latest end time
-            earliest = 2300
-            latest = 0000
+            earliest = 900
+            latest = 1700
+            other_meetings = []
             for m in meetings_list:
-                start = int(m.start_time_as_date_time().replace(":", ""))
-                if start < earliest:
-                    earliest = start
+
+                if m.start_time_as_date_time() == "00:00" and m.end_time_as_date_time() == "00:00": # classes that are "other"
+                    other_meetings.append(m)
                 
-                end = int(m.end_time_as_date_time().replace(":", ""))
-                if end > latest:
-                    latest = end
+                else:
+                    start = int(m.start_time_as_date_time().replace(":", ""))
+
+                    if start < earliest:
+                        earliest = start
+                    
+                    end = int(m.end_time_as_date_time().replace(":", ""))
+                    if end > latest:
+                        latest = end
+
+            for meeting in other_meetings:
+                if meeting in meetings_list:
+                    meetings_list.remove(meeting)
 
             earliest = earliest // 100
             latest = latest // 100
@@ -1076,6 +1040,7 @@ def schedule_view(request, userID=None):
 
             schedule_context['time_range'] = time_range
             schedule_context['weekdays'] = weekdays
+            schedule_context['other_meetings'] = other_meetings
             
             return render(request, 'classlist/schedule.html', schedule_context)
 

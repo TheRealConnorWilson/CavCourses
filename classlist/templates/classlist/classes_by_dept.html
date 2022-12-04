@@ -6,6 +6,15 @@
     {% bootstrap_javascript%}
 </head>
 
+{% comment %} 
+Citations:
+
+Title: Dividers
+URL: https://mdbootstrap.com/docs/standard/content-styles/dividers/
+
+{% endcomment %}
+
+
 {% block body %}
 <!-- <body style="background-color: rgb(28, 148, 148);"> -->
     
@@ -21,7 +30,7 @@
             {% for c in dept_courses %}
                 <div class = "col-sm-3">
                     <div class="card-deck">
-                        <div class="card mb-5" style="width:15rem">
+                        <div class="card mb-5 mx-auto" style="width:15rem">
                             <div id="accordion">
                                 <h5 class="card-header" >{{c.title}}</h5>
                                     <div class="card-body">
@@ -29,7 +38,7 @@
                                         <p class="card-text">Credits: {{c.units}}</p>
                                     </div>
 
-                                    <button type="button" class="btn btn-secondary" data-bs-toggle="collapse" data-bs-target="#card{{c.id}}">Section Information</button>
+                                    <button type="button" class="btn btn-secondary w-100" data-bs-toggle="collapse" data-bs-target="#card{{c.id}}">Section Information</button>
                                     {% for section in c.section_set.all %}
                                         <div class="card collapse" id="card{{c.id}}">
                                             <button type="button" class="btn btn-dark" data-bs-toggle="collapse" data-bs-target="#section{{section.section_id}}">{{section.section_number}} ({{section.component}})</button>
@@ -37,25 +46,34 @@
                                             <ul class="list-group list-group-flush">
                                                 <li class="list-group-item">
                                                     {% if section.topic == "" %}
-                                                        <h6>{{section.section_number}} ({{section.component}})</h6>
+                                                        {% comment %} <h6>{{section.section_number}} ({{section.component}})</h6> {% endcomment %}
                                                     {% else %}
                                                         <h6>{{section.topic}}</h6>
-                                                        <p>{{section.section_number}} ({{section.component}})</p>
+                                                        {% comment %} <p>{{section.section_number}} ({{section.component}})</p> {% endcomment %}
                                                     {% endif %}
                                                     <p>{{section.instructor.name}} 
                                                         <a href="mailto:{{section.instructor.email}}">{{section.instructor.email}}</a>
                                                     </p>
                                                     <p>{{section.enrollment_available}}/{{section.capacity}} seats open</p>
                                                     <p>{{section.wait_list}}/{{section.wait_cap}} seats open on the waitlist</p>
-                                                    <h6>-------------------------------</h6>
+                                                    <hr class="hr"></hr>
                                                     {% if section.meetings_set.all %}
                                                         {% for meeting in section.meetings_set.all %}
-                                                            <p>{{meeting.days}}</p>
-                                                            <p>{{meeting.start_time_as_date_time}} - {{meeting.end_time_as_date_time}}</p>
+                                                            {% if meeting.days != "-" %}
+                                                            <p>Days: {{meeting.days}}</p>
+                                                            {% else %}
+                                                                <p>Days: N/A</p>
+                                                            {% endif %}
+                                                            
+                                                            {% if meeting.start_time_as_date_time != "00:00" and meeting.end_time_as_date_time != "00:00" %}
+                                                                <p>Time: {{meeting.start_time_as_date_time}} - {{meeting.end_time_as_date_time}}</p>
+                                                            {% else %}
+                                                                <p>Time: N/A</p>
+                                                            {% endif %}
                                                             <p>{{meeting.facility_description}}</p>
                                                             
                                                             {% if request.user.is_authenticated %}
-                                                            <form method="post">
+                                                            <form method="post" class="text-center">
                                                                 {% csrf_token %}
                                                                 <a type = 'submit' button name = 'schedule-button' value = "{{c}} {{section}} {{meeting.days}}" href="/schedule/add/{{section.pk}}/" class = 'btn btn-success'>Add to Schedule</a>
                                                             </form>

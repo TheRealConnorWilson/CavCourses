@@ -5,6 +5,9 @@
     URL: https://mdbootstrap.com/docs/standard/extended/card-columns/
 
     https://icons.getbootstrap.com/icons/trash3-fill/
+
+    title: A Perfect Square with CSS
+    URL: https://tylerduprey-52451.medium.com/a-perfect-square-with-css-964499440998
  -->
 
  <html>
@@ -32,6 +35,49 @@
                 <br>
             </div>
 
+            <!-- if there are classes that will not be displayed on the schedule -->
+            {% if other_meetings %}
+            {% comment %} <div class="grid-container"> {% endcomment %}
+            <div class="grid-other mx-5">
+                <div class="d-inline-flex p-2 mx-auto ms-3 me-3">
+                    <div class="text" style="vertical-align: middle; color: #000; font-size: 150%;">Other:</div>
+                    {% for meeting in other_meetings %}
+                        {% for c in the_schedule.classRoster.all %}
+                            {% if meeting.section.section_id == c.section_id %}
+                                
+                                    <div class="sq-other m-1" size="5em">
+                                        {% comment %} <div class="text-center">{{c.course.title}}</div> {% endcomment %}
+                                        <div class="text-center">{{c.course.title}} ({{meeting.section.component}})</div>
+                                        <div class="text-center">
+                                            {% comment %} {{meeting.start_time|make_list|slice:':2'|join:''}}:{{meeting.start_time|make_list|slice:'3:5'|join:''}} - {{meeting.end_time|make_list|slice:':2'|join:''}}:{{meeting.end_time|make_list|slice:'3:5'|join:''}} <br> {% endcomment %}
+                                            <div>N/A</div>
+                                            {{meeting.facility_description}}
+                                        </div>
+                                        <div class="text-center">
+                                            {% if user.email == request.user.email %}
+                                            <form action="delete/{{c.section_id}}/" method="post">
+                                                {% csrf_token %}
+                                                
+                                                <button type = 'submit' value = "{{c.section_id}}" class = 'btn-danger btn-small' size="small">
+
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash3-fill" viewBox="0 0 16 16">
+                                                        <path d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5Zm-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5ZM4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06Zm6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528ZM8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5Z"/>
+                                                    </svg>
+
+                                                </button>
+                                            </form>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                
+                                
+                            
+                            {% endif %}
+                        {% endfor %}
+                    {% endfor %}
+                    </div>
+                {% endif %}                       
+            </div>
                 <!-- adding different way of displaying classes -->
 
             
@@ -62,8 +108,12 @@
                         <!-- <div class="sq sq-6" style="grid-column: {{dotw}}; grid-row: {{st}} / span {{dur}};">Example</div> -->
                         
                         {% comment %} <div class="ts ts-header">header</div> {% endcomment %}
+                        {% comment %} <div class="ts"> {% endcomment %}
+
+                        
+
                         {% for day in weekdays %}
-                            <div class="ts ts-header">{{day}}</div>
+                            <div class="ts ts-header text-center">{{day}}</div>
 
                         {% endfor %}
 
@@ -83,8 +133,9 @@
                                                 {% if meeting.section.section_id == c.section_id %}
 
 
-                                                        <div class="text-center">{{c.course.title}}</div>
-                                                        <div class="text-center">{{meeting.section.component}}</div>
+                                                        <div class="text-center">{{c.course.title}} ({{meeting.section.component}})</div>
+                                                        {% comment %} <div class="text-center">{{meeting.section.component}}</div> {% endcomment %}
+
                                                         <div class="text-center">
                                                             {{meeting.start_time|make_list|slice:':2'|join:''}}:{{meeting.start_time|make_list|slice:'3:5'|join:''}} - {{meeting.end_time|make_list|slice:':2'|join:''}}:{{meeting.end_time|make_list|slice:'3:5'|join:''}} <br>
                                                             {{meeting.facility_description}}
