@@ -73,7 +73,7 @@
                                         </div>
                                         <div class="text-center">
                                             {% if user.email == request.user.email %}
-                                            <form action="delete/{{c.section_id}}/" method="post">
+                                            <form action="/schedule/delete/{{c.section_id}}/" method="post">
                                                 {% csrf_token %}
                                                 
                                                 <button type = 'submit' value = "{{c.section_id}}" class = 'btn-danger btn-small' size="small">
@@ -150,7 +150,7 @@
                                                         </div>
                                                         <div class="text-center">
                                                             {% if user.email == request.user.email %}
-                                                            <form action="delete/{{c.section_id}}/" method="post">
+                                                            <form action="/schedule/delete/{{c.section_id}}/" method="post">
                                                                 {% csrf_token %}
                                                                 
                                                                 <button type = 'submit' value = "{{c.section_id}}" class = 'btn-danger btn-small' size="small">
@@ -180,8 +180,8 @@
                     </div>
                 </div>
                 
-            {% else %}
-                {% if user.email == to_user.email %}
+            {% elif not other_meetings %}
+                {% if user.email == to_user.email%}
                     <p style="font-size: large;" class="text-center">No classes have been added to your schedule yet.</p>
                 {% else %}
                     <h2 style="font-size: large;" class="text-center">No classes have been added to {{to_user.USERNAME_FIELD}}'s schedule yet.</h2>
