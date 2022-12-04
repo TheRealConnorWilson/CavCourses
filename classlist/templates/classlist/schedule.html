@@ -17,6 +17,8 @@
         {% load bootstrap5 %}
         {% bootstrap_css %}
         {% bootstrap_javascript%}
+
+        
     </head>
 
     {% block body %}
@@ -25,6 +27,18 @@
 
             <!-- <body style="background-color: rgb(28, 148, 148);"> -->
             <link rel="stylesheet" href="/static/classlist/schedule.css">
+
+            {% if valid == False %}
+            <div class="alert alert-danger alert-dismissible fade show" role=""alert>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="close"></button>
+                Class could not be added due to conflict in your schedule
+            </div>
+            {% elif valid == True %}
+            <div class="alert alert-success alert-dismissible fade show" role=""alert>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="close"></button>
+                Class successfully added to schedule!
+            </div>
+            {% endif %} 
 
             <div class="text-center" style="color:white">
                 {% if user.email == request.user.email %}
@@ -85,17 +99,7 @@
 
             {% if meetings_list %}
 
-            {% if not request.session.valid %}
-            <div class="alert alert-danger alert-dismissible fade show" role=""alert>
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="close"></button>
-                Class could not be added due to conflict in your schedule
-            </div>
-            {% else %}
-            <div class="alert alert-success alert-dismissible fade show" role=""alert>
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="close"></button>
-                Class successfully added to schedule!
-            </div>
-            {% endif %} 
+            
 
                 <div class="grid-container">
                     <div class="grid mx-5">

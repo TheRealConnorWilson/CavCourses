@@ -636,14 +636,6 @@ def remove_friend(request, requestID):
 
 # this method adds to the schedule
 def schedule_add(request, section_id):
-    # if request.method == 'POST':
-        # s = Schedule() 
-        # s.save()         
-        # c = request.POST['schedule-button']
-        # c = request.POST.get('schedule-button')
-
-        # if our post data is valid
-        # if c != None:
     if section_id:
 
         # getting our user
@@ -654,6 +646,8 @@ def schedule_add(request, section_id):
         
         sectionToAdd = Section.objects.get(section_id=section_id)
         meetingsToAdd = Meetings.objects.filter(section_id=section_id)
+
+
 
         # if schedule exists, add the class and re-render
         if Schedule.objects.filter(scheduleUser=theUser).exists():
@@ -677,16 +671,16 @@ def schedule_add(request, section_id):
 
                     # need to find associated meeting object with section object
                     meetings = Meetings.objects.filter(section_id=s.section_id)
-
-                    print(meetings)
-                    
-                    # print(m)
                     
                     # shortcut to check timedate validity - see Activity Scheduling from DSA2
                     # https://stackoverflow.com/questions/325933/determine-whether-two-date-ranges-overlap
                     for meetingToAdd in meetingsToAdd:
 
                         for m in meetings:
+                            if m.section == meetingToAdd.section:
+                                valid = False
+                                print("repeat class")
+                                break
 
                             time_overlap = False
                             conflict = False
@@ -748,9 +742,14 @@ def schedule_add(request, section_id):
 
             request.session["valid"] = valid
 
-            # return render(request, 'classlist/schedule.html', schedule_context)
-            return redirect('/schedule')
-            # HttpResponseRedirect(reverse('schedule', kwargs={ 'valid': valid}))
+            # check if class was successfully added or not
+            # print(valid)
+            if valid:
+                return redirect('/schedule/valid_add')
+            else:
+                # return render(request, 'classlist/schedule.html', schedule_context)
+                return redirect('/schedule/invalid_add')
+                # HttpResponseRedirect(reverse('schedule', kwargs={ 'valid': valid}))
             
 
             
@@ -770,7 +769,8 @@ def schedule_add(request, section_id):
             print(schedule_obj)
             # print(schedule_obj)
     
-            return render(request, 'classlist/schedule.html', schedule_context)
+            # return render(request, 'classlist/schedule.html', schedule_context)
+            return redirect('/schedule/valid')
 
     # if we didn't add anything, go home
     else:
@@ -1041,9 +1041,209 @@ def schedule_view(request, userID=None):
             schedule_context['time_range'] = time_range
             schedule_context['weekdays'] = weekdays
             schedule_context['other_meetings'] = other_meetings
+            schedule_context['valid'] = "View"
             
             return render(request, 'classlist/schedule.html', schedule_context)
 
     else:
         return render(request, 'classlist/schedule.html', {})
     print("hi")
+
+
+def schedule_view_valid_add(request, userID=None):
+
+    time_range = [
+        (i*60+2,((str((i - 1) % 12 + 1) if len(str((i - 1) % 12 + 1)) >= 2 
+        else ("0" + str((i - 1) % 12 + 1))) 
+        + ":00 " + ("AM" if i < 12 else "PM")))
+        for i in range(0, 24)]
+
+    weekdays = ["         ", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+
+    if userID is None:
+        # userID = request.user.email
+        if Account.objects.filter(email=request.user.email).exists():
+            userID = Account.objects.get(email=request.user.email).id
+        else:
+            return HttpResponse('No associated schedule found!')
+
+        
+    # TODO change to use parameter user instead to make generic
+    if Account.objects.filter(id=userID):
+        theUser = Account.objects.get(id=userID)
+
+        if not Schedule.objects.filter(scheduleUser=theUser).exists():
+            # makes a Schedule for the user if they don't already have one
+            schedule_obj = Schedule.objects.create(scheduleUser=theUser)
+            schedule_obj.save()
+
+        # if sched exists, pass its context onto schedule template to see it
+        if Schedule.objects.filter(scheduleUser=theUser).exists():
+
+            schedule_obj = Schedule.objects.get(scheduleUser=theUser)
+            schedule_context = {'the_schedule' : schedule_obj}
+            # print(schedule_obj)
+            
+            meetings_list = []
+
+            for section in schedule_obj.classRoster.all():
+                meetings_for_section = Meetings.objects.filter(section=section)
+                for meeting in meetings_for_section:
+                    meetings_list.append(meeting)
+                
+            # print(meetings_list)
+            # print(meetings_list)
+            # print(schedule_obj)
+            
+            schedule_context['meetings_list'] = meetings_list
+
+            # print(meetings_list)
+            # for i in meetings_list:
+            #     print(i.y_position())
+            #     print(i.length())
+
+            comments_list = Comment.objects.filter(to_user=theUser)
+            # print(comments_list)
+            # print(comments_list)
+        
+            
+            schedule_context['comments_list'] = comments_list
+            schedule_context['user'] = theUser
+    
+            # find the earliest start time and latest end time
+            earliest = 900
+            latest = 1700
+            other_meetings = []
+            for m in meetings_list:
+
+                if m.start_time_as_date_time() == "00:00" and m.end_time_as_date_time() == "00:00": # classes that are "other"
+                    other_meetings.append(m)
+                
+                else:
+                    start = int(m.start_time_as_date_time().replace(":", ""))
+
+                    if start < earliest:
+                        earliest = start
+                    
+                    end = int(m.end_time_as_date_time().replace(":", ""))
+                    if end > latest:
+                        latest = end
+
+            for meeting in other_meetings:
+                if meeting in meetings_list:
+                    meetings_list.remove(meeting)
+
+            earliest = earliest // 100
+            latest = latest // 100
+            time_range = time_range[earliest:latest+ 1]
+            print(time_range)
+
+            schedule_context['time_range'] = time_range
+            schedule_context['weekdays'] = weekdays
+            schedule_context['other_meetings'] = other_meetings
+            schedule_context['valid'] = True
+            
+            return render(request, 'classlist/schedule.html', schedule_context)
+
+    else:
+        return render(request, 'classlist/schedule.html', {})
+    print("hi")
+
+
+def schedule_view_invalid_add(request, userID=None):
+
+    time_range = [
+        (i*60+2,((str((i - 1) % 12 + 1) if len(str((i - 1) % 12 + 1)) >= 2 
+        else ("0" + str((i - 1) % 12 + 1))) 
+        + ":00 " + ("AM" if i < 12 else "PM")))
+        for i in range(0, 24)]
+
+    weekdays = ["         ", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+
+    if userID is None:
+        # userID = request.user.email
+        if Account.objects.filter(email=request.user.email).exists():
+            userID = Account.objects.get(email=request.user.email).id
+        else:
+            return HttpResponse('No associated schedule found!')
+
+        
+    # TODO change to use parameter user instead to make generic
+    if Account.objects.filter(id=userID):
+        theUser = Account.objects.get(id=userID)
+
+        if not Schedule.objects.filter(scheduleUser=theUser).exists():
+            # makes a Schedule for the user if they don't already have one
+            schedule_obj = Schedule.objects.create(scheduleUser=theUser)
+            schedule_obj.save()
+
+        # if sched exists, pass its context onto schedule template to see it
+        if Schedule.objects.filter(scheduleUser=theUser).exists():
+
+            schedule_obj = Schedule.objects.get(scheduleUser=theUser)
+            schedule_context = {'the_schedule' : schedule_obj}
+            # print(schedule_obj)
+            
+            meetings_list = []
+
+            for section in schedule_obj.classRoster.all():
+                meetings_for_section = Meetings.objects.filter(section=section)
+                for meeting in meetings_for_section:
+                    meetings_list.append(meeting)
+                
+            # print(meetings_list)
+            # print(meetings_list)
+            # print(schedule_obj)
+            
+            schedule_context['meetings_list'] = meetings_list
+
+            # print(meetings_list)
+            # for i in meetings_list:
+            #     print(i.y_position())
+            #     print(i.length())
+
+            comments_list = Comment.objects.filter(to_user=theUser)
+            # print(comments_list)
+            # print(comments_list)
+        
+            
+            schedule_context['comments_list'] = comments_list
+            schedule_context['user'] = theUser
+    
+            # find the earliest start time and latest end time
+            earliest = 900
+            latest = 1700
+            other_meetings = []
+            for m in meetings_list:
+
+                if m.start_time_as_date_time() == "00:00" and m.end_time_as_date_time() == "00:00": # classes that are "other"
+                    other_meetings.append(m)
+                
+                else:
+                    start = int(m.start_time_as_date_time().replace(":", ""))
+
+                    if start < earliest:
+                        earliest = start
+                    
+                    end = int(m.end_time_as_date_time().replace(":", ""))
+                    if end > latest:
+                        latest = end
+
+            for meeting in other_meetings:
+                if meeting in meetings_list:
+                    meetings_list.remove(meeting)
+
+            earliest = earliest // 100
+            latest = latest // 100
+            time_range = time_range[earliest:latest+ 1]
+            print(time_range)
+
+            schedule_context['time_range'] = time_range
+            schedule_context['weekdays'] = weekdays
+            schedule_context['other_meetings'] = other_meetings
+            schedule_context['valid'] = False
+            
+            return render(request, 'classlist/schedule.html', schedule_context)
+
+    else:
+        return render(request, 'classlist/schedule.html', {})
