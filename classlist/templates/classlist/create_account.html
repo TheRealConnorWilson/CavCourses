@@ -48,48 +48,97 @@ This page does not extend base.html because it can't display all of the account-
     <title>Create account</title>
 
     {% block body %}
+    
 
     <body style="background-color: cornflowerblue">
+      <style>
+        .create_account{ 
+          font-size: 1rem;
+          height: 3rem;
+          width: 20rem;
+          
+        }
+      </style>
         {% comment %} <h1>Create an account</h1> {% endcomment %}
-
-        {% block title %}Create an Account{% endblock %}
+    
+        
 
         {% block content %}
 
             <form method="POST" class="form-group">
             {% csrf_token %}
-            <tr>
-    <th><label for="id_username">Username:</label></th>
-    <td>
-      <input type="text" name="username" value={{user.username}} required id="id_username">
-    </td>
-  </tr>
 
-  <tr>
-    <th><label for="id_major">Major:</label></th>
-    <td>
-      <input type="text" name="major" value="Unknown" required id="id_major">
-    </td>
-  </tr>
 
-  <tr>
-    <th><label for="id_year">Year:</label></th>
-    <td>
-      
-      {% comment %} <input type="text" name="year" value="Unknown" required id="id_year"> {% endcomment %}
-      <select name="year" required id="id_year">
-        <option value="">--Please choose an option--</option>
-        <option value="1">First year</option>
-        <option value="2">Second year</option>
-        <option value="3">Third year</option>
-        <option value="4">Fourth year</option>
-        <option value="5">Other</option>
-      </select>
-      
-    </td>
-  </tr>
-            <button type="submit" class="btn btn-success">Register</button>
+
+
+            <link rel="stylesheet" href="{% static 'classlist/style.css' %}">
+            <title>My account</title>
+                <body>
+                    <div class="card mb-3" style="border-radius: .5rem;">
+                        <div class="row g-0">
+                            
+                            <div class="col">
+                                <!-- User info -->
+                                <div class="card-body p-4">
+                                    {% comment %} <h6>Information</h6> {% endcomment %}
+                                    {% block title %}<h2>Create an Account</h2>{% endblock %}
+                                    <hr class="mt-0 mb-4">
+                                    <div class="row pt-1">
+                                      <div class="col-12 mb-3">
+                              
+                                        <h6>Email</h6>
+                                        <p class="text-muted">{{user.email}}</p>
+                                    </div>
+
+                                    <div class="col-12 mb-3">
+                              
+                                      <h6><label for="id_username">Username</label></h6>
+                                      
+                                          <p><input class="create_account" type="text-muted" name="username" value={{user.username}} required id="id_username"></p>
+                                        
+                                  </div>
+
+
+                                        <div class="col-12 mb-3">
+                                            <h6><label for="id_major">Major</label></h6>
+                                            <p class="text-muted">
+                                                <input class="create_account" type="text" name="major" value="Unknown" required id="id_major">
+                                              
+                                            </p>
+                                        </div>
+                                        <div class="col-12 mb-3">
+                                            <h6><label for="id_year">Year</label></h6>
+                                          
+                                                {% comment %} <input type="text" name="year" value="Unknown" required id="id_year"> {% endcomment %}
+                                                <select class="create_account" name="year" required id="id_year">
+                                                  <option value="">--Please choose an option--</option>
+                                                  <option value="1">First year</option>
+                                                  <option value="2">Second year</option>
+                                                  <option value="3">Third year</option>
+                                                  <option value="4">Fourth year</option>
+                                                  <option value="5">Other</option>
+                                                </select>
+                                                
+                                        </div>
+                                        <div class="col-12 mb-3 mt-3">
+                                          <button type="submit" class="btn btn-success">Register</button>
             </form>
+                                              
+                                      </div>
+                                    </div>
+                                </div>
+
+
+
+
+
+
+            
+
+  
+
+  
+            
         {% endblock %}
 
     </body>

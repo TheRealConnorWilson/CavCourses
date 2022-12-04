@@ -45,10 +45,10 @@
             {% endif %} 
 
             <div class="text-center" style="color:white">
-                {% if user.email == request.user.email %}
+                {% if to_user.email == request.user.email %}
                     <h1>My Schedule</h1>
                 {% else %}
-                    <h1>{{user.USERNAME_FIELD}}'s Schedule</h1>
+                    <h1>{{to_user.USERNAME_FIELD}}'s Schedule</h1>
                 {% endif %}
                 <br>
             </div>
@@ -181,10 +181,10 @@
                 </div>
                 
             {% else %}
-                {% if user.email == request.user.email %}
+                {% if user.email == to_user.email %}
                     <p style="font-size: large;" class="text-center">No classes have been added to your schedule yet.</p>
                 {% else %}
-                    <h2 style="font-size: large;" class="text-center">No classes have been added to {{user.USERNAME_FIELD}}'s schedule yet.</h2>
+                    <h2 style="font-size: large;" class="text-center">No classes have been added to {{to_user.USERNAME_FIELD}}'s schedule yet.</h2>
                 {% endif %}
             {% endif %}
 
@@ -196,7 +196,6 @@
                             For comment in the_scedule.comments:
                                 create a card with the username, profile pic, and comment
                         -->
-                        {% if comments_list %}
                             <div class="">
                                 <div class="row justify-content-center">
                                     <div class="col-md-5 mt-3 mb-3">
@@ -204,24 +203,15 @@
 
                                             <div class="card-header pb-3 brc-secondary-l3">
                                                 <h5 class="card-title mb-2 mb-md-0 text-dark-m3 text-center">
-                                                    Comments for {{user.USERNAME_FIELD}}'s schedule:
+                                                    {% if user.email == to_user.email %}
+                                                        Comments:
+                                                    {% else %}
+                                                        Comments:
+                                                    {% endif %}
                                                 </h5>
                                             </div>
                                             <div class="card-body pt-2 pb-1">
                                                 {% for c in comments_list %}
-                                                    {% comment %} {% if c.schedule == my_schedule %} {% endcomment %}
-                                                        {% comment %} <div role="button" class="d-flex flex-wrap align-items-center my-2 bgc-secondary-l4 bgc-h-secondary-l3 radius-1 p-25 d-style">
-                                                            <span class="mr-25 w-4 h-4 overflow-hidden text-center border-1 brc-secondary-m2 radius-round shadow-sm d-zoom-2">
-                                                                <img src="{{c.from_user.avatar}}" class="h-4 w-4" style="width: 80px;"/>
-                                                            </span>
-                                                            <span class="text-default-d3 text-90 text-600 text-left">
-                                                                {{c.from_user.USERNAME_FIELD}}: {{c.text}}
-                                                            </span>
-                                                            <span>
-                                                                &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp
-                                                            </span>
-                                                        </div> {% endcomment %}
-                                                    {% comment %} {% endif %} {% endcomment %}
 
                                                     <div class="card mb-3" width="width:17rem">
                                                         <div class="card-header"> 
@@ -239,6 +229,41 @@
 
 
                                                 {% endfor %}
+                                                
+                                                {% if not comments_list %}
+                                                    {% if user.email == to_user.email %}
+                                                        <p style="font-size: large;" class="text-center mt-3 mb-3">No comments have been left on your schedule yet.</p>
+                                                    {% else %}
+                                                        <p style="font-size: large;" class="text-center mt-3 mb-3">No comments have been left on {{to_user.USERNAME_FIELD}}'s schedule yet.</p>
+                                                    {% endif %}
+                                                {% endif %}
+
+                                                <div class="card mb-3" width="width:17rem">
+                                                    <div class="card-header"> 
+
+                                                        <div class="row row-cols-2">
+                                                            <div class="col-auto">
+                                                                <img src="{{avatar}}" class="rounded-circle" height="30" width="30">
+                                                            </div>
+                                                                <div class="col-auto"> {{user.USERNAME_FIELD}}:</div>
+                                                        </div> 
+                                                        
+                                                    </div>
+                                                    <div class="card-body"> {{c.text}} 
+                                                        <form action="/schedule/{{to_user.id}}/add_comment/" method="post">
+                                                            {% csrf_token %}
+                                                            <!-- {{ form }} -->
+                                                            {% for field in form %}
+                                                              <p>{{field.label}}</p>
+                                                              <p>{{field}}</p>
+                                                              <br>
+                                                            {% endfor %}
+                                                            <input type="submit" value="Submit">
+                                                          </form>
+                                                    </div>
+
+                                                </div>
+                                                
                                             </div>
                                         </div>
                                     </div>
@@ -250,19 +275,9 @@
 
                                 </div>
                             </div>
-                        {% else %}
-                            {% if user.email == request.user.email %}
-                                <p style="font-size: large;" class="text-center mt-5">No comments have been left on your schedule yet.</p>
-                            {% else %}
-                                <h2 style="font-size: large;" class="text-center mt-5">No comments have been left on {{user.USERNAME_FIELD}}'s schedule yet.</h2>
-                            {% endif %}
-                        {% endif %}
+                            
+
                     </div>
-                    <p>
-                        <a class="btn btn-primary" href='/classlist/schedule/{{user.id}}/add_comment'>
-                        Add comment
-                        </a>
-                    </p> 
                 </div>
             {% else %}
                 <h1>No classes to see here!</h1>

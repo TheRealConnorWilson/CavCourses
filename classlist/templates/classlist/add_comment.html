@@ -9,24 +9,79 @@ https://www.bootdey.com/snippets/view/Card-user-transfer-list#html
     <title>View Comments</title>
 
     {% block body %}
+        
+
+
+
         <body>
-                <div class="card" width="width:17rem">
+
+            {% if comments_list %}
+                            <div class="">
+                                <div class="row justify-content-center">
+                                    <div class="col-md-5 mt-3 mb-3">
+                                        <div class="card ccard radius-t-0 h-100">
+
+                                            <div class="card-header pb-3 brc-secondary-l3">
+                                                <h5 class="card-title mb-2 mb-md-0 text-dark-m3 text-center">
+                                                    Comments for {{user.USERNAME_FIELD}}'s schedule:
+                                                </h5>
+                                            </div>
+                                            <div class="card-body pt-2 pb-1">
+                                                {% for c in comments_list %}
+
+                                                    <div class="card mb-3" width="width:17rem">
+                                                        <div class="card-header"> 
+
+                                                            <div class="row row-cols-2">
+                                                                <div class="col-auto">
+                                                                    <img src="{{c.from_user.avatar}}" class="rounded-circle" height="30" width="30">
+                                                                </div>
+                                                                    <div class="col-auto"> {{c.from_user.USERNAME_FIELD}}:</div>
+                                                            </div> 
+                                                            
+                                                        </div>
+                                                        <div class="card-body"> {{c.text}} </div>
+                                                    </div>
+
+
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    
+
+                                </div>
+                            </div>
+                        {% else %}
+                            {% if user.email == request.user.email %}
+                                <p style="font-size: large;" class="text-center mt-5">No comments have been left on your schedule yet.</p>
+                            {% else %}
+                                <h2 style="font-size: large;" class="text-center mt-5">No comments have been left on {{user.USERNAME_FIELD}}'s schedule yet.</h2>
+                            {% endif %}
+                        {% endif %}
+                    
+
+
+
+                {% comment %} <div class="card" width="width:17rem">
                     <div class="card-header"> 
-                        <div class="row row-cols-2">
-                            <div class="col"> Add a comment on {{to_user.USERNAME_FIELD}}'s schedule </div>
-                            
-                        </div> 
-                        <div class="col float-end">
-                            <img src="{{to_user.avatar}}" class="rounded-circle" height="30" width="30">
+                        
+                        <div class="col text-center mt-3 mb-3">
+                            <img src="{{to_user.avatar}}" class="rounded-circle" height="50" width="50">
                         </div>
+                        <div class="row row-cols">
+                            <h5 class="card-title mb-2 mb-md-0 text-dark-m3 text-center">
+                                Add a comment to {{to_user.USERNAME_FIELD}}'s schedule
+                            </h5>
+                        </div> 
                     </div>
-                    {% comment %} <div class="card-body"> Comment here </div> {% endcomment %}
                     <form action="/schedule/{{to_user.id}}/add_comment/" method="post">
                         {% csrf_token %}
                         <!-- {{ form }} -->
                         {% for field in form %}
-                          {{field.label}}
-                          {{field}}
+                          <p>{{field.label}}</p>
+                          <p>{{field}}</p>
                           <br>
                         {% endfor %}
                         <input type="submit" value="Submit">
@@ -37,7 +92,7 @@ https://www.bootdey.com/snippets/view/Card-user-transfer-list#html
                     <p><a class="btn btn-primary" href="..">
                         Return to all comments for {{to_user.USERNAME_FIELD}}
                     </a></p>
-                </div>
+                </div> {% endcomment %}
         </body>
     {% endblock %}
 </html>

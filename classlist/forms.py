@@ -288,5 +288,5 @@ class AdvancedSearchForm(forms.Form):
     searched_title = forms.CharField(label='Search for a class title or keyword:', required=False, widget=forms.TextInput(attrs={'placeholder': 'ex. intro'}))
 
 class CommentForm(forms.Form):
-    comment_text = forms.CharField(label='Leave a comment', max_length=250, required=True)
+    comment_text = forms.CharField(label='Add a comment!', max_length=250, required=True)
     

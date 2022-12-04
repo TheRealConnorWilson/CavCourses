@@ -985,7 +985,12 @@ def schedule_view(request, userID=None):
         if Schedule.objects.filter(scheduleUser=theUser).exists():
 
             schedule_obj = Schedule.objects.get(scheduleUser=theUser)
-            schedule_context = {'the_schedule' : schedule_obj}
+            schedule_context = get_user_info(request)
+            schedule_context['the_schedule'] = schedule_obj
+            schedule_context['form'] = CommentForm()
+            schedule_context['to_user'] = theUser
+            # schedule_context['user'] = schedule_context['account']
+            
             # print(schedule_obj)
             
             meetings_list = []
@@ -1012,7 +1017,7 @@ def schedule_view(request, userID=None):
         
             
             schedule_context['comments_list'] = comments_list
-            schedule_context['user'] = theUser
+            # schedule_context['user'] = theUser
     
             # find the earliest start time and latest end time
             earliest = 900
@@ -1086,6 +1091,8 @@ def schedule_view_valid_add(request, userID=None, section_id=None):
 
             schedule_obj = Schedule.objects.get(scheduleUser=theUser)
             schedule_context = {'the_schedule' : schedule_obj}
+            schedule_context['form'] = CommentForm()
+            schedule_context['to_user'] = theUser
             # print(schedule_obj)
             
             meetings_list = []
@@ -1187,6 +1194,8 @@ def schedule_view_invalid_add(request, userID=None, section_id=None, conflict_id
 
             schedule_obj = Schedule.objects.get(scheduleUser=theUser)
             schedule_context = {'the_schedule' : schedule_obj}
+            schedule_context['form'] = CommentForm()
+            schedule_context['to_user'] = theUser
             # print(schedule_obj)
             
             meetings_list = []
