@@ -507,6 +507,8 @@ class ViewAccount(AuthenticatedListView):
     def get_context_data(self,*args, **kwargs):
         context = super().get_context_data(*args,**kwargs)
         context.update({"all_friend_requests": Friend_Request.objects.all()})
+        context.update({"out_friend_requests": Friend_Request.objects.filter(from_user=context['user'])})
+        context.update({"in_friend_requests": Friend_Request.objects.filter(to_user=context['user'])})
         return context
 
 class ViewUsers(AuthenticatedListView):
@@ -518,6 +520,30 @@ class ViewUsers(AuthenticatedListView):
     model = Account
     template_name = 'classlist/view_users.html'
     context_object_name = 'all_accounts'
+
+    def get_context_data(self,*args, **kwargs):
+        context = super().get_context_data(*args,**kwargs)
+        context.update({"all_friend_requests": Friend_Request.objects.all()})
+        # context.update({"out_friend_requests": Friend_Request.objects.filter(from_user=context['user'])})
+        out_friend_requests = Friend_Request.objects.filter(from_user=context['user'])
+        to_user_list = []
+        for each in out_friend_requests:
+            to_user_list.append(each.to_user)
+        context.update({"out_friend_requests": to_user_list})
+
+        # context.update({"in_friend_requests": Friend_Request.objects.filter(to_user=context['user'])})
+        in_friend_requests = Friend_Request.objects.filter(to_user=context['user'])
+        from_user_list = []
+        for each in in_friend_requests:
+            from_user_list.append(each.from_user)
+        context.update({"in_friend_requests": from_user_list})
+
+        in_friend_list = []
+        for each in in_friend_requests:
+            in_friend_list.append(each)
+        context.update({"in_friend_list": in_friend_list})
+
+        return context
     
     def get_queryset(self):
         return Account.objects.all()

@@ -81,15 +81,18 @@ URL: https://mdbootstrap.com/docs/standard/extended/profiles/
                                     {% endfor %}
                                 </table>
                             {% else %}
-                                <p> No friends found. You are a lonely wumpus... :( </p>
+                                {% comment %} <p> No friends found. You are a lonely wumpus... :( </p> {% endcomment %}
+                                <div class="d-flex">
+                                    <p class="p-2 flex-strech">No friends found. You are a lonely wumpus... :(</p>
+                                </div>
                             {% endif %}
                         </div>
                         <!-- Friend Requests -->
                         <div class="card-body p-4">
-                            <h6>Friend Requests</h6>
+                            <h6>Incoming Friend Requests</h6>
                             <hr class="mt-0 mb-4">
-                            {% if all_friend_requests %}
-                                {% for friend_req in all_friend_requests %}
+                            {% if in_friend_requests %}
+                                {% for friend_req in in_friend_requests %}
                                     {% if friend_req.to_user.USERNAME_FIELD == user.USERNAME_FIELD %}
                                         <div class="d-flex">
                                             <p class="p-2 flex-strech">{{friend_req.from_user.USERNAME_FIELD}} wants to be your friend!</p>
@@ -99,10 +102,26 @@ URL: https://mdbootstrap.com/docs/standard/extended/profiles/
                                     {% endif %}
                                 {% endfor %}
                             {% else %}
-                                <p>No friend requests found. You are a lonely wumpus... :( </p>
+                                <div class="d-flex">
+                                    <p class="p-2 flex-strech">No friend requests pending.</p>
+                                </div>
+                            {% endif %}
+                            <h6 class="mt-5">Outgoing Friend Requests</h6>
+                            <hr class="mt-0 mb-4">
+                            {% if out_friend_requests %}
+                                {% for friend_req in out_friend_requests %}
+                                        <div class="d-flex">
+                                            <p class="p-2 flex-strech">Friend request to {{friend_req.to_user.USERNAME_FIELD}} pending!</p>
+                                        </div>
+                                {% endfor %}
+                            {% else %}
+                                <div class="d-flex">
+                                    <p class="p-2 flex-strech">No friend requests pending.</p>
+                                </div>
                             {% endif %}
                             <a class="p-4 stretch" href="{% url 'view_users' %}" class="card-link">Find Friends</a>
-                        <div>
+                                        
+                            
                     </div>
                 </div>
             </div>

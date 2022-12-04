@@ -32,7 +32,7 @@ https://www.bootdey.com/snippets/view/Card-user-transfer-list#html
                 {% if all_accounts %}
                     <div class="justify-content-center">
                         <div class="row">
-                            <div class="col-md-5">
+                            <div class="col">
                                 <div class="card ccard radius-t-0 h-100">
 
                                     <div class="card-header pb-3 brc-secondary-l3">
@@ -43,7 +43,7 @@ https://www.bootdey.com/snippets/view/Card-user-transfer-list#html
                                     <div class="card-body pt-2 pb-1">
                                         {% for other_user in all_accounts %}
                                             {% if other_user.email != user.email %}
-                                                <div role="button" class="d-flex flex-wrap align-items-center my-2 bgc-secondary-l4 bgc-h-secondary-l3 radius-1 p-25 d-style">
+                                                <div role="button" class="flex-wrap my-2 bgc-secondary-l4 bgc-h-secondary-l3 radius-1 ">
                                                     <span class="mr-25 w-4 h-4 overflow-hidden text-center border-1 brc-secondary-m2 radius-round shadow-sm d-zoom-2">
                                                         <img src="{{other_user.avatar}}" class="h-4 w-4" style="width: 80px;"/>
                                                     </span>
@@ -57,6 +57,20 @@ https://www.bootdey.com/snippets/view/Card-user-transfer-list#html
                                                     {% if other_user in user.friends.all %}
                                                         <span> 
                                                             Already Friends 
+                                                        </span>
+                                                    {% elif other_user in out_friend_requests %}
+                                                        <span> 
+                                                            Already Sent
+                                                        </span>
+                                                    {% elif other_user in in_friend_requests %}
+                                                        <span> 
+                                                            {% comment %} Currently Pending {% endcomment %}
+                                                            {% for friend_req in in_friend_list %}
+                                                                {% if other_user == friend_req.from_user %}
+                                                                    <a  class="p-2 flex-strech" mr-2 href="/accept_friend_request/{{friend_req.id}}/">Accept Friend Request</a>
+                                                                {% endif %}
+                                                                
+                                                            {% endfor %}
                                                         </span>
                                                     {% else %}
                                                         <span class="ml-auto text-dark-l2 text-right">
