@@ -80,7 +80,23 @@
             </div>
                 <!-- adding different way of displaying classes -->
 
+            
+
+
             {% if meetings_list %}
+
+            {% if not request.session.valid %}
+            <div class="alert alert-danger alert-dismissible fade show" role=""alert>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="close"></button>
+                Class could not be added due to conflict in your schedule
+            </div>
+            {% else %}
+            <div class="alert alert-success alert-dismissible fade show" role=""alert>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="close"></button>
+                Class successfully added to schedule!
+            </div>
+            {% endif %} 
+
                 <div class="grid-container">
                     <div class="grid mx-5">
                         {% comment %} 
@@ -107,6 +123,7 @@
 
                         
                             {% for meeting in meetings_list%}
+                                
                                 {% for column, value in meeting.days_of_the_week %}
                                     {% if value %}
 
@@ -115,8 +132,10 @@
                                             {% for c in the_schedule.classRoster.all %}
                                                 {% if meeting.section.section_id == c.section_id %}
 
+
                                                         <div class="text-center">{{c.course.title}} ({{meeting.section.component}})</div>
                                                         {% comment %} <div class="text-center">{{meeting.section.component}}</div> {% endcomment %}
+
                                                         <div class="text-center">
                                                             {{meeting.start_time|make_list|slice:':2'|join:''}}:{{meeting.start_time|make_list|slice:'3:5'|join:''}} - {{meeting.end_time|make_list|slice:':2'|join:''}}:{{meeting.end_time|make_list|slice:'3:5'|join:''}} <br>
                                                             {{meeting.facility_description}}
@@ -145,12 +164,14 @@
                                         </div>
 
                                     {% endif %}
-                                {% endfor %}    
+                                {% endfor %}  
+
                             {% endfor %}
                         
                         
                     </div>
                 </div>
+                
             {% else %}
                 {% if user.email == request.user.email %}
                     <p style="font-size: large;" class="text-center">No classes have been added to your schedule yet.</p>

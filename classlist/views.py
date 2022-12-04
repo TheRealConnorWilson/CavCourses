@@ -744,10 +744,17 @@ def schedule_add(request, section_id):
                 schedule_obj.classRoster.add(sectionToAdd)
                 schedule_obj.save()
 
-            schedule_context = {'the_schedule' : schedule_obj}
-    
+            schedule_context = {'the_schedule' : schedule_obj, 'valid' : valid}
+
+            request.session["valid"] = valid
+
             # return render(request, 'classlist/schedule.html', schedule_context)
             return redirect('/schedule')
+            # HttpResponseRedirect(reverse('schedule', kwargs={ 'valid': valid}))
+            
+
+            
+                
         
         #if schedule does not exists, make one and add the selected course section
         else:
@@ -759,7 +766,7 @@ def schedule_add(request, section_id):
             schedule_obj.classRoster.add(sectionToAdd)
             schedule_obj.save()
 
-            schedule_context = {'the_schedule' : schedule_obj}
+            schedule_context = {'the_schedule' : schedule_obj, 'valid': valid}
             print(schedule_obj)
             # print(schedule_obj)
     
