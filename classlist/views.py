@@ -36,6 +36,8 @@ URL: https://stackoverflow.com/questions/10506766/django-purpose-of-django-utils
 Title: Aggregating save()s in Django?
 URL: https://stackoverflow.com/questions/3395236/aggregating-saves-in-django
 
+Got a lot of help with the CSS and HTML stuff from my (Megan) brother, Calvin Kuo (clk3sx) -- he helped explain how CSS grid works, but I implemented everything myself
+
 """
 
 def get_user(request):
