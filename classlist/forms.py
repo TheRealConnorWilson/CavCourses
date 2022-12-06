@@ -78,7 +78,7 @@ class SearchForm(forms.Form):
 
 
 dept_choices = [
-    ("", "Select a department"),
+    ("", "Select a department (required)"),
     ("ACCT", "ACCT - Accounting"),
     ("AIRS", "AIRS - Air Science"),
     ("ALAR", "ALAR - Architecture and Landscape Architecture"),
