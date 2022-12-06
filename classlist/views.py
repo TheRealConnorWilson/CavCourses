@@ -676,7 +676,7 @@ def schedule_add(request, section_id):
 
 
         # if schedule exists, add the class and re-render
-        if Schedule.objects.filter(scheduleUser=theUser).exists():
+        if Schedule.objects.filter(scheduleUser=theUser):
             print("c")
 
             schedule_obj = Schedule.objects.get(scheduleUser=theUser)
@@ -853,7 +853,7 @@ def advanced_search2(request):
         dept_abbr = dept_abbr.upper()
     
     # dept is always required
-    if(Department.objects.filter(dept_abbr=dept_abbr).exists()):
+    if(Department.objects.filter(dept_abbr=dept_abbr)):
         dept = Department.objects.get(dept_abbr=dept_abbr)
     else:
         dept = Department(dept_abbr=dept_abbr)
@@ -992,7 +992,7 @@ def schedule_view(request, userID=None):
 
     if userID is None:
         # userID = request.user.email
-        if Account.objects.filter(email=request.user.email).exists():
+        if Account.objects.filter(email=request.user.email):
             userID = Account.objects.get(email=request.user.email).id
         else:
             return HttpResponse('No associated schedule found!')
@@ -1002,13 +1002,13 @@ def schedule_view(request, userID=None):
     if Account.objects.filter(id=userID):
         theUser = Account.objects.get(id=userID)
 
-        if not Schedule.objects.filter(scheduleUser=theUser).exists():
+        if not Schedule.objects.filter(scheduleUser=theUser):
             # makes a Schedule for the user if they don't already have one
             schedule_obj = Schedule.objects.create(scheduleUser=theUser)
             schedule_obj.save()
 
         # if sched exists, pass its context onto schedule template to see it
-        if Schedule.objects.filter(scheduleUser=theUser).exists():
+        if Schedule.objects.filter(scheduleUser=theUser):
 
             schedule_obj = Schedule.objects.get(scheduleUser=theUser)
             schedule_context = get_user_info(request)
@@ -1097,7 +1097,7 @@ def schedule_view_valid_add(request, userID=None, section_id=None):
 
     if userID is None:
         # userID = request.user.email
-        if Account.objects.filter(email=request.user.email).exists():
+        if Account.objects.filter(email=request.user.email):
             userID = Account.objects.get(email=request.user.email).id
         else:
             return HttpResponse('No associated schedule found!')
@@ -1107,16 +1107,17 @@ def schedule_view_valid_add(request, userID=None, section_id=None):
     if Account.objects.filter(id=userID):
         theUser = Account.objects.get(id=userID)
 
-        if not Schedule.objects.filter(scheduleUser=theUser).exists():
+        if not Schedule.objects.filter(scheduleUser=theUser):
             # makes a Schedule for the user if they don't already have one
             schedule_obj = Schedule.objects.create(scheduleUser=theUser)
             schedule_obj.save()
 
         # if sched exists, pass its context onto schedule template to see it
-        if Schedule.objects.filter(scheduleUser=theUser).exists():
+        if Schedule.objects.filter(scheduleUser=theUser):
 
             schedule_obj = Schedule.objects.get(scheduleUser=theUser)
-            schedule_context = {'the_schedule' : schedule_obj}
+            schedule_context = get_user_info(request)
+            schedule_context['the_schedule'] = schedule_obj
             schedule_context['form'] = CommentForm()
             schedule_context['to_user'] = theUser
             # print(schedule_obj)
@@ -1180,6 +1181,8 @@ def schedule_view_valid_add(request, userID=None, section_id=None):
             schedule_context['other_meetings'] = other_meetings
             schedule_context['valid'] = True
             schedule_context['section'] = Section.objects.get(section_id = section_id)
+
+            print(schedule_context)
             
             return render(request, 'classlist/schedule.html', schedule_context)
 
@@ -1200,7 +1203,7 @@ def schedule_view_invalid_add(request, userID=None, section_id=None, conflict_id
 
     if userID is None:
         # userID = request.user.email
-        if Account.objects.filter(email=request.user.email).exists():
+        if Account.objects.filter(email=request.user.email):
             userID = Account.objects.get(email=request.user.email).id
         else:
             return HttpResponse('No associated schedule found!')
@@ -1210,16 +1213,17 @@ def schedule_view_invalid_add(request, userID=None, section_id=None, conflict_id
     if Account.objects.filter(id=userID):
         theUser = Account.objects.get(id=userID)
 
-        if not Schedule.objects.filter(scheduleUser=theUser).exists():
+        if not Schedule.objects.filter(scheduleUser=theUser):
             # makes a Schedule for the user if they don't already have one
             schedule_obj = Schedule.objects.create(scheduleUser=theUser)
             schedule_obj.save()
 
         # if sched exists, pass its context onto schedule template to see it
-        if Schedule.objects.filter(scheduleUser=theUser).exists():
+        if Schedule.objects.filter(scheduleUser=theUser):
 
             schedule_obj = Schedule.objects.get(scheduleUser=theUser)
-            schedule_context = {'the_schedule' : schedule_obj}
+            schedule_context = get_user_info(request)
+            schedule_context['the_schedule'] = schedule_obj
             schedule_context['form'] = CommentForm()
             schedule_context['to_user'] = theUser
             # print(schedule_obj)
