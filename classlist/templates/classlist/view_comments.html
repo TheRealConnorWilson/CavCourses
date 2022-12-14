@@ -66,33 +66,6 @@ https://www.bootdey.com/snippets/view/Card-user-transfer-list#html
                 add comment
                 </a></p> 
                 
-                
-                
-                <!-- {% if all_accounts %}
-                    {% for other_user in all_accounts %}
-                    {% comment %} {% if user not in request.user.friends.all and user != request.user %} {% endcomment %}
-                        {% if other_user.email != user.email %}
-                            <h6> {{other_user.USERNAME_FIELD}} 
-                                {% if other_user in account.friends.all %}
-                                    <p> already friends </p>
-                                    <p> friends: {{ account.friends.all }} </p>
-                                {% else %}
-                                    {% comment %} Friending others is a work in progress {% endcomment %}
-                                    <a href="send_friend_request/{{other_user.pk}}">Send friend request</a>
-                                {% endif %}
-                            </h6>
-                        {% endif %}
-                    {% endfor %}
-                {% else %}
-                <p> No accounts exist right now. There is an error. </p>
-                {% endif %} -->
-            <!-- </ul>
-            {% comment %} <ul class="all_users">
-                {% for friend_request in all_friend_requests %}
-                <h1> {{friend_request.from_user}} 
-                    <a href="/accept_friend_request/{{friend_request.id}}">accept friend request</a></h1>
-                {% endfor %}
-            </ul> {% endcomment %} -->
         </body>
     {% endblock %}
 </html>

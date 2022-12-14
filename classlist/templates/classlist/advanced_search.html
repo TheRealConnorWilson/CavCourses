@@ -16,24 +16,14 @@
 </div>
 
 <div class="text-center" style="color:black">
-    <!-- <h2>Search for a department</h2> -->
     <form action="/advanced_search/" method="post">
       {% csrf_token %}
-      <!-- {{ form }} -->
-      <!-- {% for field in form %}
-      <h4 style="display:inline"> {{field.label}} 
-        <h6 style="display:inline;color:rgb(205, 25, 25)">{{field.help_text}}</h6>
-        {{field}} 
-      </h4> 
-      <br>
-      {% endfor %} -->
 
       {% for field in form %}
       <h5> {{field.label}} {{field}} </h5> 
       {% endfor %}
 
       <input type="submit" value="Search">
-      <!-- <input type="reset" value="Clear"> -->
     </form>
     <br>
 </div>
@@ -59,11 +49,9 @@
                                             <div class="card collapse" id="section{{section.section_number}}">
                                             <ul class="list-group list-group-flush">
                                                 <li class="list-group-item">
-                                                    {% comment %} <h6>{{section.section_number}} ({{section.component}})</h6> {% endcomment %}
                                                     <p>{{section.instructor.name}} ({{section.instructor.email}})</p>
                                                     <p>{{section.enrollment_available}}/{{section.capacity}} seats open</p>
                                                     <p>{{section.wait_list}}/{{section.wait_cap}} seats open on the waitlist</p>
-                                                    {% comment %} <h6>-------------------------------</h6> {% endcomment %}
                                                     <hr class="hr"></hr>
                                                     {% if section.meetings_set.all %}
                                                         {% for meeting in section.meetings_set.all %}
@@ -119,42 +107,3 @@
 {% endblock %}
 
 </html>
-
-<!-- 
-<div class="text-center" style="color:white">
-  <h1>{{dept_abbr}} Classes</h1>
-  <br>
-</div>
-
-<div class="text-center" style="color:black">
-    <h2>Search for a department</h2>
-    <form action="/advanced_search/" method="post">
-      {% csrf_token %}
-      {{ form }}
-      <input type="submit" value="Search">
-    </form>
-    <br>
-</div>
-
-{% if depts %}
-    <div class = "row">
-        {% for d in depts %}
-            <div class = "col-sm-3">
-                <div class="card-deck">
-                    <div class="card mb-5" style="width:17rem">
-                        <h5 class="card-header">{{d.subject}} {{d.catalog_number}}</h5>
-                    </div>  
-                </div>
-            </div>     
-        {% endfor %}
-    </div>
-{% else %}
-    <h2>Start searching to view classes</h2>
-{% endif %}
-
-<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.3/dist/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
-</body>
-
-</html> -->

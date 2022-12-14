@@ -27,11 +27,5 @@ urlpatterns = [
     path('schedule/delete/<str:section_id>/', views.delete_course, name='delete_course'),
     path('advanced_search/', views.advanced_search2, name='advanced_search'),
     path('schedule/<int:userID>/add_comment/', views.add_comment, name='add_comment'),
-    path('schedule/<int:userID>/comments/', views.view_comments, name='view_comments'),
-    # path('schedule/<int:userID>/add_comment/', views.add_comment, name='add_comment'),
-    
-    # path('schedule/<int:userID', views.schedule_view, name ='schedule'),
-
-    # path('schedule/test/<int:userID>', views.test_schedule, name='test_schedule'),
-    
+    path('schedule/<int:userID>/comments/', views.view_comments, name='view_comments'),    
 ]

@@ -30,7 +30,6 @@ class Account(models.Model):
     Represents each user's account in the database
     Reference for models.User: https://docs.djangoproject.com/en/3.1/ref/contrib/auth/#user-model
     """
-    # user = models.OneToOneField(User, on_delete=models.CASCADE)
     USERNAME_FIELD = models.CharField(max_length=150, default="User") # something was demanding this be USERNAME_FIELD instead of username
     first_name = models.CharField(max_length=150, blank=True, default="User") # blank=True means that it is optional
     last_name = models.CharField(max_length=150, blank=True, default="Name")
@@ -46,11 +45,8 @@ class Account(models.Model):
     
     # friends fields
     friends = models.ManyToManyField("Account", related_name='my_friends', blank=True)
-    # sent_friend_requests = models.ManyToManyField("Account", related_name = 'from_user', blank=True)
-    # received_friend_requests = models.ManyToManyField("Account", related_name = 'to_user', blank=True)
     
     # account info
-    #schedule = models.ManyToManyField("Section", blank=True)
     major = models.CharField(max_length=100, default=True)
     
     FIRST_YEAR = 1
@@ -84,9 +80,6 @@ class Friend_Request(models.Model):
     # call two user models
     from_user = models.ForeignKey(Account, related_name = 'from_user', on_delete=models.CASCADE)
     to_user = models.ForeignKey(Account, related_name = 'to_user', on_delete=models.CASCADE)
-    
-    # from_user = models.IntegerField(default=0)
-    # to_user = models.IntegerField(default=0)
     
     def __str__(self):
         return str("Request from " + str(self.from_user) + " to " + str(self.to_user)) 
@@ -143,12 +136,11 @@ class Course(models.Model):
             units = "", # 3, number of credits
             department = Department.get_default_dept(),
             subject = "",
-            # sections = []
             )[0]
         return default_course.pk
 
     def __str__(self):
-        return self.title # + str(self.catalog_number)
+        return self.title
 
     def __lt__(self, other):
         return self.title < other.title
@@ -170,7 +162,6 @@ class Section(models.Model):
     enrollment_total = models.IntegerField(default=0) # 72,
     enrollment_available = models.IntegerField(default=0) # 3
     topic = models.CharField(max_length=200, blank=True)
-    # meetings = []
 
     def __str__(self):
         return str(self.section_id) + ": " + str(self.section_number) + " - " + self.component
@@ -201,11 +192,6 @@ class Meetings(models.Model):
                 (7, self.saturday), 
                 (8, self.sunday)]
         return days
-    
-
-    # @classmethod
-    # def get_default_meeting():
-    #     return Meetings.objects.get_or_create(days="N/A", start_time="N/A", end_time="N/A", facility_description="N/A")[0]
 
     def start_time_as_date_time(self):
         if self.start_time != "":
@@ -218,9 +204,6 @@ class Meetings(models.Model):
             end_time_split = self.end_time.split('.')
             return end_time_split[0] + ":" + end_time_split[1]
         return "00:00"
-
-    # for calculating positioning of classes in schedule
-    # def x_position(self):
 
     HEADER_HEIGHT = 2
 
@@ -240,30 +223,16 @@ class Meetings(models.Model):
         minutes = int(end_time[1])
         end = hour + minutes + self.HEADER_HEIGHT
 
-        # print(end, hour, minutes)
-
         return end - start
 
     def __str__(self):
         return self.days + ": " + self.start_time + "-" + self.end_time + " @ " + self.facility_description
 
     ordering = ['start_time',]
-    
-# class Friend_Request(models.Model):
-#     # call two user models
-#     # from_user = models.ForeignKey(User, related_name = 'from_user', on_delete=models.CASCADE)
-#     # to_user = models.ForeignKey(User, related_name = 'to_user', on_delete=models.CASCADE)
-    
-#     from_user = models.IntegerField(default=0)
-#     to_user = models.IntegerField(default=0)
-    
-#     def __str__(self):
-#         return str("Request from " + str(self.from_user) + " to " + str(self.to_user))
 
 class Schedule(models.Model):
 
     # who owns the schedule?
-    #scheduleUser = models.ForeignKey(Account, related_name = 'user_schedule', on_delete=models.CASCADE)
     scheduleUser = models.OneToOneField(Account, on_delete=models.CASCADE, primary_key=True, default=None)
 
     # many-to-many field relating to a specific section of a course - allows for multiple classes
@@ -279,7 +248,6 @@ class Schedule(models.Model):
 class Comment(models.Model):
     from_user = models.ForeignKey(Account, related_name="my_comments", on_delete=models.CASCADE, blank=True)
     to_user = models.ForeignKey(Account, related_name="schedule_comments", on_delete=models.CASCADE, blank=True)
-    # schedule = models.ForeignKey(Schedule, on_delete=models.CASCADE, blank=True)
     text = models.CharField(max_length=250)
     
     def __str__(self) -> str:

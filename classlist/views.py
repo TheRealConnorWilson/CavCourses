@@ -1,10 +1,7 @@
-from django.shortcuts import get_object_or_404, render, redirect
+from django.shortcuts import render, redirect
 from django.http import HttpResponse, HttpResponseRedirect
 from django.views import generic
-from django.urls import reverse
 from django.utils import timezone
-from django.forms import modelformset_factory
-from django.views.generic.edit import CreateView
 from urllib3 import HTTPResponse
 from .models import Meetings, Instructor, Account, Course, Department, Section, Schedule, Friend_Request, Comment
 from django.contrib.auth.decorators import login_required
@@ -81,13 +78,9 @@ def get_user_info(request):
 def view_name(request):
     # ex. http://127.0.0.1:8000/accounts/google/login/
     template_name = "classlist/google_login.html"
-    # return HttpResponseRedirect("/accounts/google/login")
-    # model = User # need to make a user model
-    # print(User.get_full_name(User))
     user = request.user 
     
     # options for login page
-    # return HttpResponse("This is the login page!")
     if request.user.is_authenticated:
         if not Account.objects.filter(email=request.user.email).exists():
             return HttpResponseRedirect("/home")
@@ -112,11 +105,9 @@ def view_home(request):
     
     else: 
         account = Account.objects.get(email=request.user.email)
-        # print(account)
         context = context = get_user_info(request)
         return render(request, template_name, context)
 
-###########
 def get_depts(request):
     template_name = "classlist/class.html"
 
@@ -270,8 +261,6 @@ def get_depts(request):
             if d['subject'] == form.cleaned_data.get('searched_dept'):
                 dept_dict = {}
                 dept_dict['subject'] = d['subject']
-                # all_depts = []
-                # all_depts.append(dept_dict)
                 all_depts_search = []
                 all_depts_search.append(dept_dict)
                 break
@@ -282,7 +271,6 @@ def get_depts(request):
         context['user'] = Account.objects.get(email=request.user.email)
 
     return render(request, 'classlist/class.html', context)
-###########
 
 @transaction.atomic
 def update_courses_from_API(dept_abbr):
@@ -398,37 +386,21 @@ def update_courses_from_API(dept_abbr):
                                         section = meeting_section
                                         )
             
-            # print(course_obj)
-            # print(course_obj)
             # setting boolean fields for meetings
             if meetings_obj.days.find("Mo") != -1:
                 meetings_obj.monday = True
-                # print("Monday")
-                # print("Monday")
             if meetings_obj.days.find("Tu") != -1:
                 meetings_obj.tuesday = True
-                # print("Tuesday")
-                # print("Tuesday")
             if meetings_obj.days.find("We") != -1:
                 meetings_obj.wednesday = True
-                # print("Wednesday")
-                # print("Wednesday")
             if meetings_obj.days.find("Th") != -1:
                 meetings_obj.thursday = True
-                # print("Thursday")
-                # print("Thursday")
             if meetings_obj.days.find("Fr") != -1:
                 meetings_obj.friday = True
-                # print("Friday")
-                # print("Friday")
             if meetings_obj.days.find("Sa") != -1:
                 meetings_obj.saturday = True
-                # print("Friday")
-                # print("Friday")
             if meetings_obj.days.find("Su") != -1:
                 meetings_obj.sunday = True
-                # print("Friday")
-                # print("Friday")
                 
             # in cases where there are no meetings, none of these will be true (ex. CS 3240's lab section)
             
@@ -504,7 +476,6 @@ class ViewAccount(AuthenticatedListView):
     """
     model = Account
     template_name = 'classlist/view_account.html'
-    # extra_context = {"all_friend_requests": Friend_Request.objects.all()}
     
     def get_context_data(self,*args, **kwargs):
         context = super().get_context_data(*args,**kwargs)
@@ -526,14 +497,12 @@ class ViewUsers(AuthenticatedListView):
     def get_context_data(self,*args, **kwargs):
         context = super().get_context_data(*args,**kwargs)
         context.update({"all_friend_requests": Friend_Request.objects.all()})
-        # context.update({"out_friend_requests": Friend_Request.objects.filter(from_user=context['user'])})
         out_friend_requests = Friend_Request.objects.filter(from_user=context['user'])
         to_user_list = []
         for each in out_friend_requests:
             to_user_list.append(each.to_user)
         context.update({"out_friend_requests": to_user_list})
 
-        # context.update({"in_friend_requests": Friend_Request.objects.filter(to_user=context['user'])})
         in_friend_requests = Friend_Request.objects.filter(to_user=context['user'])
         from_user_list = []
         for each in in_friend_requests:
@@ -559,7 +528,6 @@ def create_account(request):
     TODO add warning messages/error messages
     TODO add drop downs for HTML
     """
-    # print(request.user.username, request.user.email)
     if request.method == 'POST':
         
         if request.user.socialaccount_set.count() == 0:
@@ -598,8 +566,6 @@ def send_friend_request(request, userID):
     """
     https://medium.com/analytics-vidhya/add-friends-with-689a2fa4e41d
     """
-    # template_name = 'classlist/view_account.html'
-    # context = {"all_friend_requests": Friend_Request.objects.all()}
     
     user_email = get_user(request).email
 
@@ -611,7 +577,6 @@ def send_friend_request(request, userID):
     )
     friend_request.save()
 
-    # return render(request, template_name, context)
     return HttpResponseRedirect('/my_account')
 
 @login_required
@@ -619,8 +584,6 @@ def accept_friend_request(request, requestID):
     """
     https://medium.com/analytics-vidhya/add-friends-with-689a2fa4e41d
     """
-    # template_name = 'classlist/view_account.html'
-    # context = {"all_friend_requests": Friend_Request.objects.all()}
 
     friend_request = Friend_Request.objects.filter(id=requestID)[0]
     user_email = get_user(request).email
@@ -633,7 +596,6 @@ def accept_friend_request(request, requestID):
     else:
         return HttpResponse("Error accepting friend request. Friend request outgoing field did not match current user.")
 
-    # return render(request, template_name, context)
     return HttpResponseRedirect('/my_account')
 
 @login_required
@@ -641,13 +603,9 @@ def deny_friend_request(request, requestID):
     """
     https://medium.com/analytics-vidhya/add-friends-with-689a2fa4e41d
     """
-    # template_name = 'classlist/view_account.html'
-    # context = {"all_friend_requests": Friend_Request.objects.all()}
 
     friend_request = Friend_Request.objects.get(id=requestID)
     friend_request.delete()
-
-    # return render(request, template_name, context)
     return HttpResponseRedirect('/my_account')
 
 @login_required
@@ -683,10 +641,7 @@ def schedule_add(request, section_id):
 
             schedule_obj = Schedule.objects.get(scheduleUser=theUser)
 
-            valid = True
-
-            # courseToAdd = c["section"].course
-            
+            valid = True            
 
             # if classroster has at least a class in it
             if schedule_obj.classRoster:
@@ -761,7 +716,6 @@ def schedule_add(request, section_id):
                 else:
                     schedule_obj.classRoster.add(sectionToAdd)
                     print(sectionToAdd)
-                    # print(sectionToAdd)
                     schedule_obj.save()
 
             # if classroster is empty, we can literally just add the class to schedule
@@ -778,30 +732,16 @@ def schedule_add(request, section_id):
             if valid:
                 return redirect('/schedule/add/valid/' + str(section_id))
             else:
-                # return render(request, 'classlist/schedule.html', schedule_context)
-                return redirect('/schedule/add/invalid/' + str(section_id) + '/' + str(conflicting.section_id))
-                # HttpResponseRedirect(reverse('schedule', kwargs={ 'valid': valid}))
-            
-
-            
-                
+                return redirect('/schedule/add/invalid/' + str(section_id) + '/' + str(conflicting.section_id))            
         
         #if schedule does not exists, make one and add the selected course section
         else:
             print("making new schedule")
-            # print("making new schedule")
-
             schedule_obj = Schedule.objects.create(scheduleUser=theUser)
-
             schedule_obj.classRoster.add(sectionToAdd)
             schedule_obj.save()
-
             schedule_context = {'the_schedule' : schedule_obj, 'valid': valid}
             print(schedule_obj)
-            # print(schedule_obj)
-    
-            # return render(request, 'classlist/schedule.html', schedule_context)
-            # return redirect('/schedule/valid')
             return redirect('/schedule/add/valid/' + str(section_id))
 
     # if we didn't add anything, go home
@@ -809,34 +749,25 @@ def schedule_add(request, section_id):
         return HttpResponseRedirect('/home/')
 
 def delete_course(request, section_id):
-    # print(section_id)
     if request.method == 'POST':
-        # course_id = request.POST['delete-button']
-
         theUser = Account.objects.filter(USERNAME_FIELD = request.user.username)
         if theUser:
             theUser = theUser[0]
 
-        # sec_id = int(request.POST.get('delete-button'))
         sec_id = section_id
         course = Section.objects.get(section_id=sec_id)
 
         schedule_obj = Schedule(scheduleUser=theUser)
         schedule_obj.classRoster.remove(course)
         
-        # print(schedule_obj.classRoster.all)
         counter = 0
         for each in schedule_obj.classRoster.all():
             print("wow")
             counter += 1
-        # if counter == 0:
-        #     schedule_obj.delete()
-        # else:
         schedule_obj.save()
 
         schedule_context = {'sched' : schedule_obj}
 
-        # return render(request, 'classlist/schedule.html', schedule_context)
         return redirect('/classlist/schedule/')
 
 def advanced_search2(request):
@@ -939,10 +870,7 @@ def view_comments(request, userID):
         comments_list = Comment.objects.filter(to_user=account)
         print(comments_list)
         
-        # my_schedule = Schedule.objects.filter(scheduleUser=account)
-    
         context = get_user_info(request)
-        # context['my_schedule'] = my_schedule
         context['comments_list'] = comments_list
         
         return render(request, 'classlist/view_comments.html', context)
@@ -959,7 +887,6 @@ def add_comment(request, userID):
     
     from_user = Account.objects.get(email=request.user.email)
     to_user = Account.objects.get(id=userID)
-    # schedule = Schedule.objects.get(scheduleUser=schedule_owner)
     
     if form.is_valid():
         
@@ -972,11 +899,9 @@ def add_comment(request, userID):
     context = get_user_info(request)
     context['from_user'] = from_user
     context['to_user'] = to_user
-    # context['schedule'] = schedule
     context['form'] = form
     
     if request.method == 'POST':
-        # return render(request, "classlist/schedule.html", context=context)
         return redirect('/classlist/schedule/' + str(to_user.id) + '/')
     else:
         return render(request, "classlist/add_comment.html", context=context)
@@ -993,7 +918,6 @@ def schedule_view(request, userID=None):
     weekdays = ["         ", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
 
     if userID is None:
-        # userID = request.user.email
         if Account.objects.filter(email=request.user.email):
             userID = Account.objects.get(email=request.user.email).id
         else:
@@ -1019,7 +943,6 @@ def schedule_view(request, userID=None):
             schedule_context['to_user'] = theUser
             # schedule_context['user'] = schedule_context['account']
             
-            # print(schedule_obj)
             
             meetings_list = []
 
@@ -1027,25 +950,12 @@ def schedule_view(request, userID=None):
                 meetings_for_section = Meetings.objects.filter(section=section)
                 for meeting in meetings_for_section:
                     meetings_list.append(meeting)
-                
-            # print(meetings_list)
-            # print(meetings_list)
-            # print(schedule_obj)
             
             schedule_context['meetings_list'] = meetings_list
 
-            # print(meetings_list)
-            # for i in meetings_list:
-            #     print(i.y_position())
-            #     print(i.length())
-
             comments_list = Comment.objects.filter(to_user=theUser)
-            # print(comments_list)
-            # print(comments_list)
         
-            
             schedule_context['comments_list'] = comments_list
-            # schedule_context['user'] = theUser
     
             # find the earliest start time and latest end time
             earliest = 900
@@ -1098,7 +1008,6 @@ def schedule_view_valid_add(request, userID=None, section_id=None):
     weekdays = ["         ", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
 
     if userID is None:
-        # userID = request.user.email
         if Account.objects.filter(email=request.user.email):
             userID = Account.objects.get(email=request.user.email).id
         else:
@@ -1130,21 +1039,10 @@ def schedule_view_valid_add(request, userID=None, section_id=None):
                 meetings_for_section = Meetings.objects.filter(section=section)
                 for meeting in meetings_for_section:
                     meetings_list.append(meeting)
-                
-            # print(meetings_list)
-            # print(meetings_list)
-            # print(schedule_obj)
-            
+
             schedule_context['meetings_list'] = meetings_list
 
-            # print(meetings_list)
-            # for i in meetings_list:
-            #     print(i.y_position())
-            #     print(i.length())
-
             comments_list = Comment.objects.filter(to_user=theUser)
-            # print(comments_list)
-            # print(comments_list)
         
             
             schedule_context['comments_list'] = comments_list
@@ -1204,7 +1102,6 @@ def schedule_view_invalid_add(request, userID=None, section_id=None, conflict_id
     weekdays = ["         ", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
 
     if userID is None:
-        # userID = request.user.email
         if Account.objects.filter(email=request.user.email):
             userID = Account.objects.get(email=request.user.email).id
         else:
@@ -1228,7 +1125,6 @@ def schedule_view_invalid_add(request, userID=None, section_id=None, conflict_id
             schedule_context['the_schedule'] = schedule_obj
             schedule_context['form'] = CommentForm()
             schedule_context['to_user'] = theUser
-            # print(schedule_obj)
             
             meetings_list = []
 
@@ -1236,22 +1132,9 @@ def schedule_view_invalid_add(request, userID=None, section_id=None, conflict_id
                 meetings_for_section = Meetings.objects.filter(section=section)
                 for meeting in meetings_for_section:
                     meetings_list.append(meeting)
-                
-            # print(meetings_list)
-            # print(meetings_list)
-            # print(schedule_obj)
-            
             schedule_context['meetings_list'] = meetings_list
 
-            # print(meetings_list)
-            # for i in meetings_list:
-            #     print(i.y_position())
-            #     print(i.length())
-
             comments_list = Comment.objects.filter(to_user=theUser)
-            # print(comments_list)
-            # print(comments_list)
-        
             
             schedule_context['comments_list'] = comments_list
             schedule_context['user'] = theUser

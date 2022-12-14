@@ -55,23 +55,6 @@ class UserAccountForm(UserCreationForm):
     class Meta:
         model = Account
         fields = ['username', 'major', 'year']
-        
-
-        # def clean_email_address(self):
-        #     data = self.cleaned_data['email_address']
-
-        #     # Check if a title is not blank.
-        #     if len(data) == 0:
-        #         raise ValidationError(_('No text in submission!'))
-
-        #     # # Check if a date is in the allowed range (+4 weeks from today).
-        #     # if data > datetime.date.today() + datetime.timedelta(weeks=4):
-        #     #     raise ValidationError(_('Invalid date - renewal more than 4 weeks ahead'))
-
-        #     # # Remember to always return the cleaned data.
-        #     # cleaned_data = super(ContactForm, self).clean()
-            
-        #     return data
 
 class SearchForm(forms.Form):
     searched_dept = forms.CharField(label='', max_length=4)
