@@ -44,7 +44,6 @@ https://github.com/othneildrew/Best-README-Template#readme
         <li><a href="#prerequisites">Prerequisites</a></li>
       </ul>
     </li>
-    <li><a href="#license">License</a></li>
     <li><a href="#team-members">Team Members</a></li>
     <li><a href="#acknowledgments">Acknowledgments</a></li>
   </ol>
@@ -127,15 +126,6 @@ python manage.py runserver
 ```bash
 deactivate your-venv-name
 ```
-
-<!-- LICENSE -->
-## License
-
-Distributed under the MIT License. See `LICENSE.txt` for more information.
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
 
 <!-- CONTACT -->
 ## Team Members
