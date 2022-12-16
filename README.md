@@ -142,6 +142,6 @@ deactivate your-venv-name
 <!-- ACKNOWLEDGMENTS -->
 ## Acknowledgments
 
-Many thanks to both Professor Sheriff and Professor McBurney for creating the Luther's List API (linked at top of page) and enabling this project as part of their curriculum. 
+Thank you to the CS 3240 Staff for helping us accomplish this project, and Professor Sheriff and Professor McBurney for creating the Luther's List API (linked at top of page) and enabling this project as part of their curriculum. 
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
